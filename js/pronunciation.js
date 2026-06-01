@@ -137,11 +137,23 @@
   }
 
   function getPayloadForDataset(key) {
+    var O = window.ChineseOffline;
+    if (O) {
+      var embedded = O.vocabPayload(key);
+      if (embedded) return Promise.resolve(embedded);
+      if (O.isOfflineFile()) {
+        var js =
+          key === "nhm" ? "data/nhm-1000-common.js" : "data/vocabulary.js";
+        var json =
+          key === "nhm" ? "data/nhm-1000-common.json" : "data/vocabulary.json";
+        return Promise.reject(new Error(O.offlineFetchHint(json, js, "")));
+      }
+    }
     if (key === "nhm") {
       if (window.__VOCAB_NHM__ && window.__VOCAB_NHM__.levels) {
         return Promise.resolve(window.__VOCAB_NHM__);
       }
-      return fetch("data/nhm-1000-common.json").then(function (r) {
+      return fetch("./data/nhm-1000-common.json").then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
       });
@@ -150,7 +162,7 @@
       if (window.__VOCAB__ && window.__VOCAB__.levels) {
         return Promise.resolve(window.__VOCAB__);
       }
-      return fetch("data/vocabulary.json").then(function (r) {
+      return fetch("./data/vocabulary.json").then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
       });
@@ -192,9 +204,11 @@
         renderList();
         persistNav();
       })
-      .catch(function () {
+      .catch(function (err) {
         loadError.textContent =
-          "Could not load vocabulary. Keep data/*.js next to this page or use a local server.";
+          err && err.message
+            ? err.message
+            : "Could not load vocabulary. Keep data/*.js next to this page or use a local server.";
         loadError.classList.remove("hidden");
       });
   }

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark light" />
+  <script>
+    (function () {
+      var loc = window.location;
+      var p = loc.protocol;
+      if (p === "file:" || p === "content:") {
+        window.__OFFLINE_FILE__ = true;
+        var href = loc.href.split("#")[0].split("?")[0];
+        var root = "./";
+        if (p === "file:") {
+          var slash = Math.max(href.lastIndexOf("/"), href.lastIndexOf("\\"));
+          if (slash >= 0) root = href.slice(0, slash + 1);
+        }
+        window.__SITE_ROOT__ = root;
+        if (!document.querySelector("base[data-chinese-root]")) {
+          var base = document.createElement("base");
+          base.setAttribute("data-chinese-root", "1");
+          base.href = root;
+          var head = document.head || document.getElementsByTagName("head")[0];
+          head.insertBefore(base, head.firstChild);
+        }
+      } else {
+        window.__OFFLINE_FILE__ = false;
+      }
+    })();
+  </script>
+  <script>
+    (function () {
+      try {
+        var k = "chinese-vocab-theme";
+        var t = localStorage.getItem(k);
+        if (t === "light" || t === "dark") {
+          document.documentElement.setAttribute("data-theme", t);
+        } else {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+  <title>Four tones — Mandarin syllables</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body class="page-shell">
+  <aside id="sidebar" class="sidebar" aria-label="Site navigation">
+    <div class="sidebar-brand">
+      <span class="sidebar-brand-title">四声练习</span>
+      <span class="sidebar-brand-sub">Four tones</span>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Pages">
+      <a href="./index.html" class="sidebar-link">Words · table &amp; study</a>
+      <a href="./pronunciation.html" class="sidebar-link">English · clusters</a>
+      <a href="./tones.html" class="sidebar-link is-active" aria-current="page">Mandarin · four tones</a>
+    </nav>
+
+    <div class="sidebar-meta">
+      <label class="sidebar-label" for="theme-toggle">Appearance</label>
+      <button type="button" id="theme-toggle" class="theme-toggle theme-toggle--block" aria-pressed="true">Light mode</button>
+    </div>
+  </aside>
+
+  <button
+    type="button"
+    id="sidebar-backdrop"
+    class="sidebar-backdrop"
+    hidden
+    aria-hidden="true"
+    tabindex="-1"
+    aria-label="Close menu"
+  ></button>
+
+  <div class="layout-main">
+    <header class="mobile-bar">
+      <button
+        type="button"
+        id="sidebar-open"
+        class="mobile-bar__menu"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="sidebar"
+      >
+        <span class="mobile-bar__menu-icon" aria-hidden="true"></span>
+      </button>
+      <div class="mobile-bar__text">
+        <span class="mobile-bar__title">Four tones</span>
+        <span class="mobile-bar__hint">Tap ☰ for menu</span>
+      </div>
+    </header>
+
+    <header class="header">
+      <h1>Mandarin syllables — all four tones</h1>
+      <p class="subtitle">
+        Each block is one syllable (like <strong>ma</strong>) with <strong>four tones</strong> and
+        <strong>four different meanings</strong>. Pinyin is color-coded. Tap a <strong>Chinese character</strong> for
+        Mandarin audio, or tap <strong>English</strong> / <strong>हिन्दी</strong> for that language (browser text-to-speech).
+      </p>
+    </header>
+
+    <main class="main">
+      <div class="tone-page-intro">
+        <p>
+          Tones change meaning: for example <span class="tone-t1">mā</span> (媽/妈) “mother”,
+          <span class="tone-t2">má</span> (麻) “hemp”, <span class="tone-t3">mǎ</span> (馬/马) “horse”,
+          <span class="tone-t4">mà</span> (罵/骂) “scold”. Below are more beginner-friendly sets in the same pattern.
+        </p>
+      </div>
+
+      <div class="tone-legend" aria-label="Tone color key">
+        <span><i class="tone-legend__swatch tone-legend__swatch--1" aria-hidden="true"></i> Tone 1 — high level</span>
+        <span><i class="tone-legend__swatch tone-legend__swatch--2" aria-hidden="true"></i> Tone 2 — rising</span>
+        <span><i class="tone-legend__swatch tone-legend__swatch--3" aria-hidden="true"></i> Tone 3 — dip</span>
+        <span><i class="tone-legend__swatch tone-legend__swatch--4" aria-hidden="true"></i> Tone 4 — falling</span>
+      </div>
+
+      <div id="tone-load-error" class="banner banner--error hidden" role="alert"></div>
+
+      <section aria-label="Tone sets">
+        <nav class="words-pager words-pager--top" aria-label="Syllable pagination">
+          <button type="button" id="tones-first" class="btn-page">First</button>
+          <button type="button" id="tones-prev" class="btn-page">Prev</button>
+          <span id="tones-page-info" class="words-page-info"></span>
+          <button type="button" id="tones-next" class="btn-page">Next</button>
+          <button type="button" id="tones-last" class="btn-page">Last</button>
+        </nav>
+
+        <div id="tone-quartet-list"></div>
+
+        <nav class="words-pager words-pager--bottom" aria-label="Syllable pagination">
+          <button type="button" id="tones-first2" class="btn-page">First</button>
+          <button type="button" id="tones-prev2" class="btn-page">Prev</button>
+          <span id="tones-page-info2" class="words-page-info"></span>
+          <button type="button" id="tones-next2" class="btn-page">Next</button>
+          <button type="button" id="tones-last2" class="btn-page">Last</button>
+        </nav>
+      </section>
+
+      <p class="hint">
+        This page only renders the <strong>four-tone syllable sets</strong> from <code>data/tone-quartets.json</code>.
+        On a phone (no server), copy the whole folder and use <code>data/tone-page.data.js</code>.
+        Regenerate with <code>node scripts/build-offline-bundles.js --with-tones</code>. See <code>OFFLINE.md</code>.
+        TTS: <code>zh-TW</code>, <code>en-US</code>, <code>hi-IN</code>.
+      </p>
+    </main>
+
+    <footer class="footer">
+      <span>Four-tone syllable practice.</span>
+    </footer>
+  </div>
+
+  <script src="./js/offline.js"></script>
+  <script src="./data/tone-page.data.js"></script>
+  <script src="./js/sidebar.js" defer></script>
+  <script src="./js/tones.js" defer></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var O = window.ChineseOffline;
+      if (!O || O.tonePayload()) return;
+      O.showSetupBanner(["Missing <code>data/tone-page.data.js</code> (four-tone sets)."]);
+    });
+  </script>
+</body>
+</html>

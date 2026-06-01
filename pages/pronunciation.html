@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark light" />
+  <script>
+    (function () {
+      var loc = window.location;
+      var p = loc.protocol;
+      if (p === "file:" || p === "content:") {
+        window.__OFFLINE_FILE__ = true;
+        var href = loc.href.split("#")[0].split("?")[0];
+        var root = "./";
+        if (p === "file:") {
+          var slash = Math.max(href.lastIndexOf("/"), href.lastIndexOf("\\"));
+          if (slash >= 0) root = href.slice(0, slash + 1);
+        }
+        window.__SITE_ROOT__ = root;
+        if (!document.querySelector("base[data-chinese-root]")) {
+          var base = document.createElement("base");
+          base.setAttribute("data-chinese-root", "1");
+          base.href = root;
+          var head = document.head || document.getElementsByTagName("head")[0];
+          head.insertBefore(base, head.firstChild);
+        }
+      } else {
+        window.__OFFLINE_FILE__ = false;
+      }
+    })();
+  </script>
+  <script>
+    (function () {
+      try {
+        var k = "chinese-vocab-theme";
+        var t = localStorage.getItem(k);
+        if (t === "light" || t === "dark") {
+          document.documentElement.setAttribute("data-theme", t);
+        } else {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+  <title>English pronunciation &amp; character clusters</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body class="page-shell">
+  <aside id="sidebar" class="sidebar" aria-label="Site navigation and lesson filters">
+    <div class="sidebar-brand">
+      <span class="sidebar-brand-title">中文词表</span>
+      <span class="sidebar-brand-sub">Chinese vocab</span>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Pages">
+      <a href="./index.html" class="sidebar-link">Words · table &amp; study</a>
+      <a href="./pronunciation.html" class="sidebar-link is-active" aria-current="page">English · clusters</a>
+      <a href="./tones.html" class="sidebar-link">Mandarin · four tones</a>
+    </nav>
+
+    <nav class="toolbar sidebar-toolbar" aria-label="Lesson filters">
+      <div class="field">
+        <label for="dataset-select">Word list</label>
+        <select id="dataset-select">
+          <option value="tocfl">TOCFL (Levels 1–2)</option>
+          <option value="nhm">Ni Hao Ma — 1000 common words</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="level-select">Level</label>
+        <select id="level-select"></select>
+      </div>
+      <div class="field">
+        <label for="lesson-select">Lesson</label>
+        <select id="lesson-select"></select>
+      </div>
+      <div class="field field--grow">
+        <label for="search">Search</label>
+        <input type="search" id="search" placeholder="Filter this lesson…" autocomplete="off" />
+      </div>
+    </nav>
+
+    <div class="sidebar-meta">
+      <label class="sidebar-label" for="theme-toggle">Appearance</label>
+      <button type="button" id="theme-toggle" class="theme-toggle theme-toggle--block" aria-pressed="true">Light mode</button>
+    </div>
+  </aside>
+
+  <button
+    type="button"
+    id="sidebar-backdrop"
+    class="sidebar-backdrop"
+    hidden
+    aria-hidden="true"
+    tabindex="-1"
+    aria-label="Close menu"
+  ></button>
+
+  <div class="layout-main">
+    <header class="mobile-bar">
+      <button
+        type="button"
+        id="sidebar-open"
+        class="mobile-bar__menu"
+        aria-label="Open menu and lesson filters"
+        aria-expanded="false"
+        aria-controls="sidebar"
+      >
+        <span class="mobile-bar__menu-icon" aria-hidden="true"></span>
+      </button>
+      <div class="mobile-bar__text">
+        <span class="mobile-bar__title">English &amp; clusters</span>
+        <span class="mobile-bar__hint">Tap ☰ for menu &amp; filters</span>
+      </div>
+    </header>
+
+    <header class="header">
+      <h1>English pronunciation &amp; character clusters</h1>
+      <p class="subtitle">
+        Each <strong>汉字</strong> is a cluster you can tap to hear. Use the buttons to hear the
+        <strong>English</strong> meaning in US or India English (browser text-to-speech). Pinyin stays the guide for Mandarin sounds.
+      </p>
+    </header>
+
+    <div id="load-error" class="banner banner--error hidden" role="alert"></div>
+
+    <main class="main pronounce-main">
+      <div id="pronounce-list" class="pronounce-list" aria-live="polite"></div>
+      <p class="hint pronounce-footnote">
+        English pronunciation is approximate machine speech, not a dictionary IPA. Slashes in the headword (e.g. <code>爸爸/爸</code>) show alternate clusters.
+      </p>
+    </main>
+
+    <footer class="footer">
+      <span>Same vocabulary data as the main page · picks up the lesson you last used there (this tab).</span>
+    </footer>
+  </div>
+
+  <script src="./js/offline.js"></script>
+  <script src="./data/vocabulary.js"></script>
+  <script src="./data/nhm-1000-common.js"></script>
+  <script src="./js/sidebar.js" defer></script>
+  <script src="./js/pronunciation.js" defer></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var O = window.ChineseOffline;
+      if (!O) return;
+      var issues = [];
+      if (!O.vocabPayload("tocfl")) issues.push("Missing <code>data/vocabulary.js</code> (TOCFL list).");
+      if (!O.vocabPayload("nhm")) issues.push("Missing <code>data/nhm-1000-common.js</code> (Ni Hao Ma list).");
+      O.showSetupBanner(issues);
+    });
+  </script>
+</body>
+</html>

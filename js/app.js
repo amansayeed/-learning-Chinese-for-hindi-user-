@@ -408,6 +408,18 @@
   }
 
   function getPayloadForDataset(key) {
+    var O = window.ChineseOffline;
+    if (O) {
+      var embedded = O.vocabPayload(key);
+      if (embedded) return Promise.resolve(embedded);
+      if (O.isOfflineFile()) {
+        var js =
+          key === "nhm" ? "data/nhm-1000-common.js" : "data/vocabulary.js";
+        var json =
+          key === "nhm" ? "data/nhm-1000-common.json" : "data/vocabulary.json";
+        return Promise.reject(new Error(O.offlineFetchHint(json, js, "")));
+      }
+    }
     if (key === "nhm") {
       if (
         typeof window.__VOCAB_NHM__ !== "undefined" &&
@@ -416,7 +428,7 @@
       ) {
         return Promise.resolve(window.__VOCAB_NHM__);
       }
-      return fetch("data/nhm-1000-common.json").then(function (r) {
+      return fetch("./data/nhm-1000-common.json").then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
       });
@@ -429,7 +441,7 @@
       ) {
         return Promise.resolve(window.__VOCAB__);
       }
-      return fetch("data/vocabulary.json").then(function (r) {
+      return fetch("./data/vocabulary.json").then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
       });
@@ -462,12 +474,8 @@
         updateViewLayout();
         persistNav();
       })
-      .catch(function () {
-        var hint =
-          key === "nhm"
-            ? "Could not load Ni Hao Ma list. Ensure data/nhm-1000-common.js is next to index.html."
-            : "Could not load TOCFL data. Ensure data/vocabulary.js is next to index.html.";
-        showLoadError(hint);
+      .catch(function (err) {
+        showLoadError(err && err.message ? err.message : "Could not load vocabulary data.");
       });
   }
 
