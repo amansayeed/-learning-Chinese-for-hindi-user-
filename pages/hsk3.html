@@ -59,12 +59,17 @@
 
     <nav class="sidebar-nav" aria-label="Pages">
       <a href="./index.html" class="sidebar-link">Words · table &amp; study</a>
-      <a href="./hsk.html" class="sidebar-link">HSK 1 · 500 words</a>
-      <a href="./hsk2.html" class="sidebar-link">HSK 2 · 772 words</a>
-      <a href="./hsk3.html" class="sidebar-link is-active" aria-current="page">HSK 3 · 973 words</a>
-      <a href="./hsk4.html" class="sidebar-link">HSK 4 · 1000 words</a>
-      <a href="./hsk5.html" class="sidebar-link">HSK 5 · 1071 words</a>
-      <a href="./hsk6.html" class="sidebar-link">HSK 6 · 1140 words</a>
+      <details class="sidebar-dropdown" id="sidebar-hsk-menu">
+        <summary class="sidebar-dropdown__toggle">HSK · levels 1–6</summary>
+        <div class="sidebar-dropdown__panel">
+          <a href="./hsk.html" class="sidebar-link sidebar-link--sub">Level 1 · 500 words</a>
+          <a href="./hsk2.html" class="sidebar-link sidebar-link--sub">Level 2 · 772 words</a>
+          <a href="./hsk3.html" class="sidebar-link sidebar-link--sub">Level 3 · 973 words</a>
+          <a href="./hsk4.html" class="sidebar-link sidebar-link--sub">Level 4 · 1000 words</a>
+          <a href="./hsk5.html" class="sidebar-link sidebar-link--sub">Level 5 · 1071 words</a>
+          <a href="./hsk6.html" class="sidebar-link sidebar-link--sub">Level 6 · 1140 words</a>
+        </div>
+      </details>
       <a href="./pronunciation.html" class="sidebar-link">English · clusters</a>
       <a href="./tones.html" class="sidebar-link">Mandarin · four tones</a>
     </nav>

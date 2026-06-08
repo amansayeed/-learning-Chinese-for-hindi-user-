@@ -5,7 +5,47 @@
   var openBtn = document.getElementById("sidebar-open");
   var backdrop = document.getElementById("sidebar-backdrop");
 
-  if (!shell || !openBtn) return;
+  function currentPageFile() {
+    var href = window.location.href.split("#")[0].split("?")[0];
+    var slash = Math.max(href.lastIndexOf("/"), href.lastIndexOf("\\"));
+    var file = slash >= 0 ? href.slice(slash + 1) : href;
+    return file || "index.html";
+  }
+
+  function normalizeHref(href) {
+    return String(href || "")
+      .replace(/^\.\//, "")
+      .split("#")[0]
+      .split("?")[0];
+  }
+
+  function initSidebarNav() {
+    var file = currentPageFile();
+    var hskMenu = document.getElementById("sidebar-hsk-menu");
+    var hskOpen = false;
+
+    document.querySelectorAll(".sidebar-nav .sidebar-link").forEach(function (link) {
+      var target = normalizeHref(link.getAttribute("href"));
+      if (target !== file) return;
+      link.classList.add("is-active");
+      link.setAttribute("aria-current", "page");
+      if (link.classList.contains("sidebar-link--sub")) {
+        hskOpen = true;
+      }
+    });
+
+    if (hskMenu && hskOpen) {
+      hskMenu.open = true;
+      hskMenu.classList.add("is-active-section");
+      var toggle = hskMenu.querySelector(".sidebar-dropdown__toggle");
+      if (toggle) toggle.classList.add("is-active");
+    }
+  }
+
+  if (!shell || !openBtn) {
+    initSidebarNav();
+    return;
+  }
 
   function setOpen(open) {
     if (open) {
@@ -66,4 +106,6 @@
       setOpen(false);
     }, 120);
   });
+
+  initSidebarNav();
 })();

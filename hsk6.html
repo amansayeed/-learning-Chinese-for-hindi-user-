@@ -283,6 +283,72 @@ body {
   color: var(--accent-hover);
 }
 
+.sidebar-dropdown {
+  border-radius: 10px;
+  border: 1px solid transparent;
+}
+
+.sidebar-dropdown[open],
+.sidebar-dropdown.is-active-section {
+  background: var(--table-row-even);
+  border-color: var(--border);
+}
+
+.sidebar-dropdown__toggle {
+  list-style: none;
+  cursor: pointer;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--text);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sidebar-dropdown__toggle::-webkit-details-marker {
+  display: none;
+}
+
+.sidebar-dropdown__toggle::marker {
+  content: "";
+}
+
+.sidebar-dropdown__toggle::after {
+  content: "▾";
+  float: right;
+  font-size: 0.75rem;
+  opacity: 0.65;
+  transition: transform 0.15s ease;
+}
+
+.sidebar-dropdown[open] .sidebar-dropdown__toggle::after {
+  transform: rotate(180deg);
+}
+
+.sidebar-dropdown__toggle.is-active {
+  color: var(--accent-hover);
+}
+
+.sidebar-dropdown__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.15rem 0.35rem 0.5rem 0.55rem;
+}
+
+.sidebar-link--sub {
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 0.45rem 0.6rem 0.45rem 0.75rem;
+  border-left: 2px solid var(--border);
+  border-radius: 0 8px 8px 0;
+}
+
+.sidebar-link--sub.is-active {
+  border-left-color: var(--accent);
+}
+
 .toolbar.sidebar-toolbar {
   flex-direction: column;
   flex-wrap: nowrap;
@@ -504,6 +570,12 @@ body {
     display: flex;
     align-items: center;
     padding: 0.55rem 0.75rem;
+  }
+
+  .sidebar-dropdown__toggle {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
   }
 
   .tone-page-intro {
@@ -1752,12 +1824,17 @@ html[data-theme="dark"] .tone-card .tone-char-tap--han {
 
     <nav class="sidebar-nav" aria-label="Pages">
       <a href="index.html" class="sidebar-link">Words · table &amp; study</a>
-      <a href="hsk.html" class="sidebar-link">HSK 1 · 500 words</a>
-      <a href="hsk2.html" class="sidebar-link">HSK 2 · 772 words</a>
-      <a href="hsk3.html" class="sidebar-link">HSK 3 · 973 words</a>
-      <a href="hsk4.html" class="sidebar-link">HSK 4 · 1000 words</a>
-      <a href="hsk5.html" class="sidebar-link">HSK 5 · 1071 words</a>
-      <a href="hsk6.html" class="sidebar-link is-active" aria-current="page">HSK 6 · 1140 words</a>
+      <details class="sidebar-dropdown" id="sidebar-hsk-menu">
+        <summary class="sidebar-dropdown__toggle">HSK · levels 1–6</summary>
+        <div class="sidebar-dropdown__panel">
+          <a href="hsk.html" class="sidebar-link sidebar-link--sub">Level 1 · 500 words</a>
+          <a href="hsk2.html" class="sidebar-link sidebar-link--sub">Level 2 · 772 words</a>
+          <a href="hsk3.html" class="sidebar-link sidebar-link--sub">Level 3 · 973 words</a>
+          <a href="hsk4.html" class="sidebar-link sidebar-link--sub">Level 4 · 1000 words</a>
+          <a href="hsk5.html" class="sidebar-link sidebar-link--sub">Level 5 · 1071 words</a>
+          <a href="hsk6.html" class="sidebar-link sidebar-link--sub">Level 6 · 1140 words</a>
+        </div>
+      </details>
       <a href="pronunciation.html" class="sidebar-link">English · clusters</a>
       <a href="tones.html" class="sidebar-link">Mandarin · four tones</a>
     </nav>
@@ -2009,7 +2086,47 @@ window.__VOCAB_HSK6__ = {"meta":{"title":"New HSK 6 — 1140 words","sourceUrl":
   var openBtn = document.getElementById("sidebar-open");
   var backdrop = document.getElementById("sidebar-backdrop");
 
-  if (!shell || !openBtn) return;
+  function currentPageFile() {
+    var href = window.location.href.split("#")[0].split("?")[0];
+    var slash = Math.max(href.lastIndexOf("/"), href.lastIndexOf("\\"));
+    var file = slash >= 0 ? href.slice(slash + 1) : href;
+    return file || "index.html";
+  }
+
+  function normalizeHref(href) {
+    return String(href || "")
+      .replace(/^\.\//, "")
+      .split("#")[0]
+      .split("?")[0];
+  }
+
+  function initSidebarNav() {
+    var file = currentPageFile();
+    var hskMenu = document.getElementById("sidebar-hsk-menu");
+    var hskOpen = false;
+
+    document.querySelectorAll(".sidebar-nav .sidebar-link").forEach(function (link) {
+      var target = normalizeHref(link.getAttribute("href"));
+      if (target !== file) return;
+      link.classList.add("is-active");
+      link.setAttribute("aria-current", "page");
+      if (link.classList.contains("sidebar-link--sub")) {
+        hskOpen = true;
+      }
+    });
+
+    if (hskMenu && hskOpen) {
+      hskMenu.open = true;
+      hskMenu.classList.add("is-active-section");
+      var toggle = hskMenu.querySelector(".sidebar-dropdown__toggle");
+      if (toggle) toggle.classList.add("is-active");
+    }
+  }
+
+  if (!shell || !openBtn) {
+    initSidebarNav();
+    return;
+  }
 
   function setOpen(open) {
     if (open) {
@@ -2070,6 +2187,8 @@ window.__VOCAB_HSK6__ = {"meta":{"title":"New HSK 6 — 1140 words","sourceUrl":
       setOpen(false);
     }, 120);
   });
+
+  initSidebarNav();
 })();
 
 </script>
