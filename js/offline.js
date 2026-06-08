@@ -47,6 +47,15 @@
       if (key === "nhm") {
         return hasGlobal("__VOCAB_NHM__") ? window.__VOCAB_NHM__ : null;
       }
+      if (key === "hsk3") {
+        return hasGlobal("__VOCAB_HSK3__") ? window.__VOCAB_HSK3__ : null;
+      }
+      if (key === "hsk2") {
+        return hasGlobal("__VOCAB_HSK2__") ? window.__VOCAB_HSK2__ : null;
+      }
+      if (key === "hsk1") {
+        return hasGlobal("__VOCAB_HSK1__") ? window.__VOCAB_HSK1__ : null;
+      }
       if (key === "tocfl") {
         return hasGlobal("__VOCAB__") ? window.__VOCAB__ : null;
       }

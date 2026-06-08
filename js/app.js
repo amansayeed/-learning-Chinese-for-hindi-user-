@@ -1,6 +1,9 @@
 (function () {
   "use strict";
 
+  const CFG = window.__VOCAB_APP_CONFIG__ || {};
+  const FIXED_DATASET = CFG.dataset || null;
+
   const datasetSelect = document.getElementById("dataset-select");
   const viewModeSelect = document.getElementById("view-mode");
   const levelSelect = document.getElementById("level-select");
@@ -25,15 +28,17 @@
   const themeToggle = document.getElementById("theme-toggle");
 
   const THEME_KEY = "chinese-vocab-theme";
-  const NAV_DATASET = "chinese-vocab-nav-dataset";
-  const NAV_LEVEL = "chinese-vocab-nav-level";
-  const NAV_LESSON = "chinese-vocab-nav-lesson";
+  const NAV_DATASET = CFG.navDatasetKey || "chinese-vocab-nav-dataset";
+  const NAV_LEVEL = CFG.navLevelKey || "chinese-vocab-nav-level";
+  const NAV_LESSON = CFG.navLessonKey || "chinese-vocab-nav-lesson";
 
   let listenersBound = false;
 
   function persistNav() {
     try {
-      sessionStorage.setItem(NAV_DATASET, datasetSelect.value);
+      if (datasetSelect && !FIXED_DATASET) {
+        sessionStorage.setItem(NAV_DATASET, datasetSelect.value);
+      }
       sessionStorage.setItem(NAV_LEVEL, String(levelSelect.selectedIndex));
       sessionStorage.setItem(NAV_LESSON, String(lessonSelect.selectedIndex));
     } catch (e) {}
@@ -304,12 +309,14 @@
     if (listenersBound) return;
     listenersBound = true;
 
-    datasetSelect.addEventListener("change", function () {
-      searchInput.value = "";
-      studyIndex = 0;
-      studyRevealed = false;
-      applyDataset(datasetSelect.value);
-    });
+    if (datasetSelect) {
+      datasetSelect.addEventListener("change", function () {
+        searchInput.value = "";
+        studyIndex = 0;
+        studyRevealed = false;
+        applyDataset(datasetSelect.value);
+      });
+    }
 
     viewModeSelect.addEventListener("change", function () {
       studyIndex = 0;
@@ -413,12 +420,63 @@
       var embedded = O.vocabPayload(key);
       if (embedded) return Promise.resolve(embedded);
       if (O.isOfflineFile()) {
-        var js =
-          key === "nhm" ? "data/nhm-1000-common.js" : "data/vocabulary.js";
-        var json =
-          key === "nhm" ? "data/nhm-1000-common.json" : "data/vocabulary.json";
+        var jsMap = {
+          nhm: "data/nhm-1000-common.js",
+          tocfl: "data/vocabulary.js",
+          hsk1: "data/hsk-1.js",
+          hsk2: "data/hsk-2.js",
+          hsk3: "data/hsk-3.js",
+        };
+        var jsonMap = {
+          nhm: "data/nhm-1000-common.json",
+          tocfl: "data/vocabulary.json",
+          hsk1: "data/hsk-1.json",
+          hsk2: "data/hsk-2.json",
+          hsk3: "data/hsk-3.json",
+        };
+        var js = jsMap[key] || "data/vocabulary.js";
+        var json = jsonMap[key] || "data/vocabulary.json";
         return Promise.reject(new Error(O.offlineFetchHint(json, js, "")));
       }
+    }
+    if (key === "hsk3") {
+      if (
+        typeof window.__VOCAB_HSK3__ !== "undefined" &&
+        window.__VOCAB_HSK3__ &&
+        window.__VOCAB_HSK3__.levels
+      ) {
+        return Promise.resolve(window.__VOCAB_HSK3__);
+      }
+      return fetch("./data/hsk-3.json").then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      });
+    }
+    if (key === "hsk2") {
+      if (
+        typeof window.__VOCAB_HSK2__ !== "undefined" &&
+        window.__VOCAB_HSK2__ &&
+        window.__VOCAB_HSK2__.levels
+      ) {
+        return Promise.resolve(window.__VOCAB_HSK2__);
+      }
+      return fetch("./data/hsk-2.json").then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      });
+    }
+    if (key === "hsk1") {
+      if (
+        typeof window.__VOCAB_HSK1__ !== "undefined" &&
+        window.__VOCAB_HSK1__ &&
+        window.__VOCAB_HSK1__.levels
+      ) {
+        return Promise.resolve(window.__VOCAB_HSK1__);
+      }
+      return fetch("./data/hsk-1.json").then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      });
     }
     if (key === "nhm") {
       if (
@@ -479,7 +537,56 @@
       });
   }
 
+  function readStoredNav() {
+    try {
+      var nav = {
+        level: sessionStorage.getItem(NAV_LEVEL),
+        lesson: sessionStorage.getItem(NAV_LESSON),
+      };
+      if (datasetSelect && !FIXED_DATASET) {
+        nav.dataset = sessionStorage.getItem(NAV_DATASET);
+      }
+      return nav;
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function applyStoredNav() {
+    var nav = readStoredNav();
+    if (datasetSelect && !FIXED_DATASET && (nav.dataset === "tocfl" || nav.dataset === "nhm")) {
+      datasetSelect.value = nav.dataset;
+    }
+    var key = FIXED_DATASET || (datasetSelect && datasetSelect.value) || "tocfl";
+    getPayloadForDataset(key)
+      .then(function (json) {
+        data = json;
+        hideLoadError();
+        setMetaLine(json);
+        populateLevels();
+        var li = parseInt(nav.level, 10);
+        var lo = parseInt(nav.lesson, 10);
+        if (!isNaN(li) && li >= 0 && li < levelSelect.options.length) {
+          levelSelect.selectedIndex = li;
+        }
+        populateLessons();
+        if (!isNaN(lo) && lo >= 0 && lo < lessonSelect.options.length) {
+          lessonSelect.selectedIndex = lo;
+        }
+        refresh();
+        updateViewLayout();
+        persistNav();
+      })
+      .catch(function (err) {
+        showLoadError(err && err.message ? err.message : "Could not load vocabulary data.");
+      });
+  }
+
   bindListenersOnce();
   initTheme();
-  applyDataset(datasetSelect.value || "tocfl");
+  if (FIXED_DATASET) {
+    applyStoredNav();
+  } else {
+    applyDataset((datasetSelect && datasetSelect.value) || "tocfl");
+  }
 })();

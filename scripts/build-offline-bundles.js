@@ -34,6 +34,21 @@ function writeBundle(jsonRel, jsRel, globalName) {
 
 writeBundle("data/vocabulary.json", "data/vocabulary.js", "__VOCAB__");
 writeBundle("data/nhm-1000-common.json", "data/nhm-1000-common.js", "__VOCAB_NHM__");
+if (fs.existsSync(path.join(root, "data", "hsk-1.json"))) {
+  writeBundle("data/hsk-1.json", "data/hsk-1.js", "__VOCAB_HSK1__");
+} else {
+  console.log("Skipped hsk-1.js (run: python scripts/build_hsk.py 1)");
+}
+if (fs.existsSync(path.join(root, "data", "hsk-2.json"))) {
+  writeBundle("data/hsk-2.json", "data/hsk-2.js", "__VOCAB_HSK2__");
+} else {
+  console.log("Skipped hsk-2.js (run: python scripts/build_hsk.py 2)");
+}
+if (fs.existsSync(path.join(root, "data", "hsk-3.json"))) {
+  writeBundle("data/hsk-3.json", "data/hsk-3.js", "__VOCAB_HSK3__");
+} else {
+  console.log("Skipped hsk-3.js (run: python scripts/build_hsk.py 3)");
+}
 
 if (process.argv.includes("--with-tones")) {
   const { spawnSync } = require("child_process");

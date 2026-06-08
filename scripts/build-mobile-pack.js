@@ -49,6 +49,9 @@ function stripExternalAssets(html) {
 function fixNavLinks(html) {
   return html
     .replace(/href="\.\/index\.html"/g, 'href="index.html"')
+    .replace(/href="\.\/hsk3\.html"/g, 'href="hsk3.html"')
+    .replace(/href="\.\/hsk2\.html"/g, 'href="hsk2.html"')
+    .replace(/href="\.\/hsk\.html"/g, 'href="hsk.html"')
     .replace(/href="\.\/pronunciation\.html"/g, 'href="pronunciation.html"')
     .replace(/href="\.\/tones\.html"/g, 'href="tones.html"')
     .replace(/href="mobile\/START\.html"/g, 'href="START.html"')
@@ -81,7 +84,7 @@ function bundlePage({ srcHtml, outNames, scripts, titleNote }) {
   html = html.replace("</head>", headInject + "\n</head>");
 
   const boot =
-    '<script>(function(){var v=window.__VOCAB__&&window.__VOCAB__.levels;var t=window.__TONE_PAGE_DATA__&&window.__TONE_PAGE_DATA__.quartets;if(v||t)return;var m=document.querySelector(".layout-main");if(!m)return;var b=document.createElement("div");b.setAttribute("role","alert");b.style.cssText="margin:0 0 1rem;padding:0.75rem;background:#991b1b;color:#fff;border-radius:8px;font-size:0.9rem;font-weight:600";b.textContent="Word data did not load. Download index.html again from git (about 400 KB, not a few KB).";m.insertBefore(b,m.firstChild);})();</script>';
+    '<script>(function(){var v=(window.__VOCAB__&&window.__VOCAB__.levels)||(window.__VOCAB_NHM__&&window.__VOCAB_NHM__.levels)||(window.__VOCAB_HSK1__&&window.__VOCAB_HSK1__.levels)||(window.__VOCAB_HSK2__&&window.__VOCAB_HSK2__.levels)||(window.__VOCAB_HSK3__&&window.__VOCAB_HSK3__.levels);var t=window.__TONE_PAGE_DATA__&&window.__TONE_PAGE_DATA__.quartets;if(v||t)return;var m=document.querySelector(".layout-main");if(!m)return;var b=document.createElement("div");b.setAttribute("role","alert");b.style.cssText="margin:0 0 1rem;padding:0.75rem;background:#991b1b;color:#fff;border-radius:8px;font-size:0.9rem;font-weight:600";b.textContent="Word data did not load. Download this HTML again from git (large file, not a few KB).";m.insertBefore(b,m.firstChild);})();</script>';
 
   html = html.replace("</body>", scriptBlocks + "\n" + boot + "\n</body>");
 
@@ -146,6 +149,27 @@ bundlePage({
 });
 
 bundlePage({
+  srcHtml: "hsk3.html",
+  outNames: ["hsk3.html", "mobile/hsk3.html"],
+  titleNote: "Tap ☰ for menu & filters",
+  scripts: ["js/offline.js", "data/hsk-3.js", "js/sidebar.js", "js/app.js"],
+});
+
+bundlePage({
+  srcHtml: "hsk2.html",
+  outNames: ["hsk2.html", "mobile/hsk2.html"],
+  titleNote: "Tap ☰ for menu & filters",
+  scripts: ["js/offline.js", "data/hsk-2.js", "js/sidebar.js", "js/app.js"],
+});
+
+bundlePage({
+  srcHtml: "hsk.html",
+  outNames: ["hsk.html", "mobile/hsk.html"],
+  titleNote: "Tap ☰ for menu & filters",
+  scripts: ["js/offline.js", "data/hsk-1.js", "js/sidebar.js", "js/app.js"],
+});
+
+bundlePage({
   srcHtml: "tones.html",
   outNames: ["tones.html", "mobile/tones.html"],
   titleNote: "Tap ☰ for menu",
@@ -169,6 +193,9 @@ const launcher = `<!DOCTYPE html>
   <h1>中文 · Chinese study</h1>
   <p>Tap a page (each file works offline from Google Drive or phone storage).</p>
   <a href="index.html">Words · table &amp; study</a>
+  <a href="hsk.html">HSK 1 · 500 words</a>
+  <a href="hsk2.html">HSK 2 · 772 words</a>
+  <a href="hsk3.html">HSK 3 · 973 words</a>
   <a href="pronunciation.html">English · clusters</a>
   <a href="tones.html">Four tones</a>
 </body>
