@@ -1,26 +1,27 @@
 # Phone / Google Drive (no server)
 
-## What you see when it is broken
+## Quick start (phone)
 
-Unstyled black text, empty table, URL starts with `content://` — the browser **blocked** separate `css/` and `js/` files.
+1. Copy the **`mobile/`** folder from git to your phone (or copy **`mobile/index.html`** alone).
+2. Open **`index.html`** in Chrome — **not** hsk.html, START menu links, or the small root index.
+3. Tap **☰** in the top bar — Words, HSK 1–6, pronunciation, and tones switch **inside** that file.
 
-## Fix: use the built `index.html`
+**File size check:** `mobile/index.html` must be about **1.5–2 MB**. If it is only ~400 KB, you have the old broken copy — pull latest git or rebuild (below).
 
-After `node scripts/build-mobile-pack.js`, **`index.html` is one large file (~400 KB)** with styles, scripts, and word data **inside** it.
+Chrome on phone often **blocks localStorage** for files opened from Drive or Downloads. The app includes a memory fallback so this does not break navigation or word lists.
 
-1. Copy the project from git (or run the build on a PC and copy the folder).
-2. On the phone, open **`index.html`** in Chrome (from Drive or Downloads).
-3. Check size: **index.html must be ~400 KB**. If it is only ~10 KB, you have the old dev file — pull/build again.
+## Why other links fail on phone
 
-You do **not** need the `css/`, `js/`, or `data/` folders on the phone for the main pages (they are already inside `index.html`).
+Opening one HTML file from Google Drive uses a `content://` URL. The browser **cannot open other `.html` files** next to it (`hsk2.html`, etc.) → `ERR_FILE_NOT_FOUND`. The unified **`mobile/index.html`** avoids that by keeping everything in one file.
 
-## Edit the site on a PC
+## Rebuild on a PC (optional)
 
-- Change **`pages/*.html`**, **`css/styles.css`**, **`js/*.js`**
-- Run: `node scripts/build-offline-bundles.js --with-tones` then `node scripts/build-mobile-pack.js`
-- That refreshes **`index.html`**, **`pronunciation.html`**, **`tones.html`** at the project root
+```bash
+node scripts/build-offline-bundles.js --with-tones
+```
 
-## Optional
+That writes **`mobile/index.html`** (all-in-one). Commit and push so phones get the updated file from git.
 
-- **`mobile/`** — same self-contained copies (handy if you only copy that folder)
-- **`START.html`** — small menu linking to the three pages
+## PC / full folder
+
+If you copy the **whole project** and open via **`file://`**, separate pages at the repo root still work.

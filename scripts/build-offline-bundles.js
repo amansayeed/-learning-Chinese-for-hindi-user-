@@ -88,5 +88,13 @@ const pack = spawnSync(process.execPath, [path.join(__dirname, "build-mobile-pac
 if (pack.status !== 0) {
   console.warn("Mobile pack not built. Run: node scripts/build-mobile-pack.js");
 } else {
-  console.log("Phone folder: mobile/ — open mobile/START.html on your device.");
+  console.log("Phone folder: mobile/ — open mobile/chinese.html on your device.");
+}
+
+const unified = spawnSync(process.execPath, [path.join(__dirname, "build-offline-app.js")], {
+  cwd: root,
+  stdio: "inherit",
+});
+if (unified.status !== 0) {
+  console.warn("Unified app not built. Run: node scripts/build-offline-app.js");
 }

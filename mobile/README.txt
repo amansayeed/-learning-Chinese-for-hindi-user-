@@ -1,8 +1,8 @@
 PHONE INSTALL
 =============
-1. Copy this entire 'mobile' folder to your phone (Downloads/chinese-mobile/).
-2. Open START.html or index.html with Chrome or Firefox.
-3. Do NOT use 'HTML Viewer' apps that open only one file.
-4. No internet required after copy (except optional fonts).
+1. Copy the mobile/ folder to your phone (or only mobile/index.html).
+2. Open index.html in Chrome (about 1.5–2 MB — all pages inside one file).
+3. Tap the menu (☰) to switch Words / HSK / pronunciation / tones.
+4. Do NOT open hsk.html, hsk2.html, etc. separately on phone — those need a full folder.
 
-Rebuild on PC: node scripts/build-mobile-pack.js
+Rebuild on PC: node scripts/build-offline-bundles.js --with-tones

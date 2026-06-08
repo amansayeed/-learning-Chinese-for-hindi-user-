@@ -2,7 +2,10 @@
   "use strict";
 
   const CFG = window.__VOCAB_APP_CONFIG__ || {};
-  const FIXED_DATASET = CFG.dataset || null;
+  let FIXED_DATASET = CFG.dataset || null;
+  let NAV_DATASET = CFG.navDatasetKey || "chinese-vocab-nav-dataset";
+  let NAV_LEVEL = CFG.navLevelKey || "chinese-vocab-nav-level";
+  let NAV_LESSON = CFG.navLessonKey || "chinese-vocab-nav-lesson";
 
   const datasetSelect = document.getElementById("dataset-select");
   const viewModeSelect = document.getElementById("view-mode");
@@ -28,9 +31,6 @@
   const themeToggle = document.getElementById("theme-toggle");
 
   const THEME_KEY = "chinese-vocab-theme";
-  const NAV_DATASET = CFG.navDatasetKey || "chinese-vocab-nav-dataset";
-  const NAV_LEVEL = CFG.navLevelKey || "chinese-vocab-nav-level";
-  const NAV_LESSON = CFG.navLessonKey || "chinese-vocab-nav-lesson";
 
   let listenersBound = false;
 
@@ -629,7 +629,63 @@
 
   bindListenersOnce();
   initTheme();
-  if (FIXED_DATASET) {
+
+  var HSK_ROUTES = {
+    hsk1: { dataset: "hsk1", navLevelKey: "chinese-hsk-nav-level", navLessonKey: "chinese-hsk-nav-lesson" },
+    hsk2: { dataset: "hsk2", navLevelKey: "chinese-hsk2-nav-level", navLessonKey: "chinese-hsk2-nav-lesson" },
+    hsk3: { dataset: "hsk3", navLevelKey: "chinese-hsk3-nav-level", navLessonKey: "chinese-hsk3-nav-lesson" },
+    hsk4: { dataset: "hsk4", navLevelKey: "chinese-hsk4-nav-level", navLessonKey: "chinese-hsk4-nav-lesson" },
+    hsk5: { dataset: "hsk5", navLevelKey: "chinese-hsk5-nav-level", navLessonKey: "chinese-hsk5-nav-lesson" },
+    hsk6: { dataset: "hsk6", navLevelKey: "chinese-hsk6-nav-level", navLessonKey: "chinese-hsk6-nav-lesson" },
+  };
+
+  function fieldDatasetEl() {
+    var sel = document.getElementById("dataset-select");
+    return sel ? sel.closest(".field") : null;
+  }
+
+  function fieldViewModeEl() {
+    var sel = document.getElementById("view-mode");
+    return sel ? sel.closest(".field") : null;
+  }
+
+  window.ChineseVocabApp = {
+    switchTo: function (mode) {
+      studyIndex = 0;
+      studyRevealed = false;
+      if (searchInput) searchInput.value = "";
+
+      if (mode === "words") {
+        window.__VOCAB_APP_CONFIG__ = {};
+        FIXED_DATASET = null;
+        NAV_LEVEL = "chinese-vocab-nav-level";
+        NAV_LESSON = "chinese-vocab-nav-lesson";
+        var fd = fieldDatasetEl();
+        var fv = fieldViewModeEl();
+        if (fd) fd.classList.remove("hidden");
+        if (fv) fv.classList.remove("hidden");
+        applyDataset((datasetSelect && datasetSelect.value) || "tocfl");
+        return;
+      }
+
+      if (HSK_ROUTES[mode]) {
+        var route = HSK_ROUTES[mode];
+        window.__VOCAB_APP_CONFIG__ = route;
+        FIXED_DATASET = route.dataset;
+        NAV_LEVEL = route.navLevelKey;
+        NAV_LESSON = route.navLessonKey;
+        var fd2 = fieldDatasetEl();
+        var fv2 = fieldViewModeEl();
+        if (fd2) fd2.classList.add("hidden");
+        if (fv2) fv2.classList.remove("hidden");
+        applyStoredNav();
+      }
+    },
+  };
+
+  if (window.__UNIFIED_APP__) {
+    /* AppRouter calls ChineseVocabApp.switchTo after load */
+  } else if (FIXED_DATASET) {
     applyStoredNav();
   } else {
     applyDataset((datasetSelect && datasetSelect.value) || "tocfl");

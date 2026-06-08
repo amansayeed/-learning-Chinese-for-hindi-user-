@@ -210,12 +210,15 @@ const launcher = `<!DOCTYPE html>
     body{font-family:system-ui,sans-serif;margin:0;padding:max(1rem,env(safe-area-inset-top)) max(1rem,env(safe-area-inset-right)) max(1rem,env(safe-area-inset-bottom)) max(1rem,env(safe-area-inset-left));background:#0f172a;color:#e2e8f0;line-height:1.5}
     h1{font-size:1.25rem}
     a{display:block;padding:1rem;margin:0.5rem 0;background:#1e293b;border:1px solid #334155;border-radius:12px;color:#5eead4;text-decoration:none;font-weight:700;font-size:1.05rem}
+    a.primary{background:#134e4a;border-color:#0d9488}
     p{color:#94a3b8;font-size:0.9rem}
   </style>
 </head>
 <body>
   <h1>中文 · Chinese study</h1>
-  <p>Tap a page (each file works offline from Google Drive or phone storage).</p>
+  <p><strong>On phone (Google Drive / one file):</strong> open <code>chinese.html</code> only — sidebar works inside that file.</p>
+  <a href="chinese.html" class="primary">Open all-in-one app (recommended for phone)</a>
+  <p>Or open separate pages (needs every .html file in the same folder):</p>
   <a href="index.html">Words · table &amp; study</a>
   <a href="hsk.html">HSK 1 · 500 words</a>
   <a href="hsk2.html">HSK 2 · 772 words</a>
@@ -233,4 +236,4 @@ fs.writeFileSync(path.join(mobileDir, "START.html"), launcher, "utf8");
 fs.writeFileSync(path.join(root, "START.html"), launcher, "utf8");
 console.log("Wrote START.html (root + mobile/)");
 
-console.log("\nDone. On phone: open index.html from your copied folder (file ~400 KB).");
+console.log("\nDone. On phone: open mobile/chinese.html (one file, ~2–3 MB) or copy the whole mobile/ folder.");

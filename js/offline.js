@@ -102,8 +102,10 @@
           .join("") +
         "</ul><p style=\"margin:0.65rem 0 0;font-size:0.9rem\">" +
         (isMobilePack()
-          ? "Re-copy the <code>mobile/</code> folder from git or rebuild on a PC."
-          : "On phone, use the <code>mobile/</code> folder and open <code>START.html</code> in Chrome—not the root index.html.") +
+          ? window.__UNIFIED_APP__
+            ? "Re-copy <code>chinese.html</code> from git or rebuild: node scripts/build-offline-app.js"
+            : "Re-copy the <code>mobile/</code> folder from git or rebuild on a PC."
+          : "On phone, copy <code>mobile/chinese.html</code> and open it in Chrome—not separate page links from Drive.") +
         "</p>";
       main.insertBefore(el, main.firstChild);
     },

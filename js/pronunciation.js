@@ -6,12 +6,21 @@
   var NAV_LESSON = "chinese-vocab-nav-lesson";
   var THEME_KEY = "chinese-vocab-theme";
 
-  var datasetSelect = document.getElementById("dataset-select");
-  var levelSelect = document.getElementById("level-select");
-  var lessonSelect = document.getElementById("lesson-select");
-  var searchInput = document.getElementById("search");
+  function appEl(id) {
+    if (window.__UNIFIED_APP__) {
+      return document.getElementById("pronounce-" + id);
+    }
+    return document.getElementById(id);
+  }
+
+  var datasetSelect = appEl("dataset-select");
+  var levelSelect = appEl("level-select");
+  var lessonSelect = appEl("lesson-select");
+  var searchInput = appEl("search");
   var listRoot = document.getElementById("pronounce-list");
-  var loadError = document.getElementById("load-error");
+  var loadError = document.getElementById(
+    window.__UNIFIED_APP__ ? "pronounce-load-error" : "load-error"
+  );
   var themeToggle = document.getElementById("theme-toggle");
 
   var data = null;
@@ -368,7 +377,9 @@
   }
 
   function bind() {
-    if (themeToggle) {
+    if (!datasetSelect || !levelSelect || !lessonSelect || !searchInput || !listRoot) return;
+
+    if (themeToggle && !window.__UNIFIED_APP__) {
       themeToggle.addEventListener("click", function () {
         setTheme(getTheme() === "dark" ? "light" : "dark");
       });

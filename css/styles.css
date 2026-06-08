@@ -1763,3 +1763,22 @@ html[data-theme="dark"] .tone-card .tone-char-tap--han {
     align-items: stretch;
   }
 }
+
+/* Unified offline app: hash fallback when JS is still loading (mobile file:// / content://) */
+.unified-app .app-view {
+  display: none;
+}
+
+.unified-app #app-view-words {
+  display: block;
+}
+
+.unified-app #app-view-pronounce:target,
+.unified-app #app-view-tones:target {
+  display: block;
+}
+
+.unified-app .layout-main:has(#app-view-pronounce:target) #app-view-words,
+.unified-app .layout-main:has(#app-view-tones:target) #app-view-words {
+  display: none;
+}

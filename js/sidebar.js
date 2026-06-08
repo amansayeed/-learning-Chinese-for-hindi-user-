@@ -20,6 +20,8 @@
   }
 
   function initSidebarNav() {
+    if (window.__UNIFIED_APP__) return;
+
     var file = currentPageFile();
     var hskMenu = document.getElementById("sidebar-hsk-menu");
     var hskOpen = false;
@@ -65,6 +67,10 @@
     }
   }
 
+  window.__closeSidebarDrawer = function () {
+    setOpen(false);
+  };
+
   function toggle() {
     setOpen(!shell.classList.contains("nav-open"));
   }
@@ -79,11 +85,12 @@
 
   document.querySelectorAll(".sidebar-nav a").forEach(function (link) {
     link.addEventListener("click", function () {
+      if (window.__UNIFIED_APP__ && link.hasAttribute("data-app-view")) return;
       setOpen(false);
     });
   });
 
-  ["dataset-select", "view-mode", "level-select", "lesson-select"].forEach(function (id) {
+  ["dataset-select", "view-mode", "level-select", "lesson-select", "pronounce-dataset-select", "pronounce-level-select", "pronounce-lesson-select"].forEach(function (id) {
     var el = document.getElementById(id);
     if (!el) return;
     el.addEventListener("change", function () {
