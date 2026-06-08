@@ -427,6 +427,7 @@
           hsk2: "data/hsk-2.js",
           hsk3: "data/hsk-3.js",
           hsk4: "data/hsk-4.js",
+          hsk5: "data/hsk-5.js",
         };
         var jsonMap = {
           nhm: "data/nhm-1000-common.json",
@@ -435,11 +436,25 @@
           hsk2: "data/hsk-2.json",
           hsk3: "data/hsk-3.json",
           hsk4: "data/hsk-4.json",
+          hsk5: "data/hsk-5.json",
         };
         var js = jsMap[key] || "data/vocabulary.js";
         var json = jsonMap[key] || "data/vocabulary.json";
         return Promise.reject(new Error(O.offlineFetchHint(json, js, "")));
       }
+    }
+    if (key === "hsk5") {
+      if (
+        typeof window.__VOCAB_HSK5__ !== "undefined" &&
+        window.__VOCAB_HSK5__ &&
+        window.__VOCAB_HSK5__.levels
+      ) {
+        return Promise.resolve(window.__VOCAB_HSK5__);
+      }
+      return fetch("./data/hsk-5.json").then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      });
     }
     if (key === "hsk4") {
       if (

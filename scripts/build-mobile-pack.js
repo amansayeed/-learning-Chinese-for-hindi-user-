@@ -49,6 +49,7 @@ function stripExternalAssets(html) {
 function fixNavLinks(html) {
   return html
     .replace(/href="\.\/index\.html"/g, 'href="index.html"')
+    .replace(/href="\.\/hsk5\.html"/g, 'href="hsk5.html"')
     .replace(/href="\.\/hsk4\.html"/g, 'href="hsk4.html"')
     .replace(/href="\.\/hsk3\.html"/g, 'href="hsk3.html"')
     .replace(/href="\.\/hsk2\.html"/g, 'href="hsk2.html"')
@@ -85,7 +86,7 @@ function bundlePage({ srcHtml, outNames, scripts, titleNote }) {
   html = html.replace("</head>", headInject + "\n</head>");
 
   const boot =
-    '<script>(function(){var v=(window.__VOCAB__&&window.__VOCAB__.levels)||(window.__VOCAB_NHM__&&window.__VOCAB_NHM__.levels)||(window.__VOCAB_HSK1__&&window.__VOCAB_HSK1__.levels)||(window.__VOCAB_HSK2__&&window.__VOCAB_HSK2__.levels)||(window.__VOCAB_HSK3__&&window.__VOCAB_HSK3__.levels)||(window.__VOCAB_HSK4__&&window.__VOCAB_HSK4__.levels);var t=window.__TONE_PAGE_DATA__&&window.__TONE_PAGE_DATA__.quartets;if(v||t)return;var m=document.querySelector(".layout-main");if(!m)return;var b=document.createElement("div");b.setAttribute("role","alert");b.style.cssText="margin:0 0 1rem;padding:0.75rem;background:#991b1b;color:#fff;border-radius:8px;font-size:0.9rem;font-weight:600";b.textContent="Word data did not load. Download this HTML again from git (large file, not a few KB).";m.insertBefore(b,m.firstChild);})();</script>';
+    '<script>(function(){var v=(window.__VOCAB__&&window.__VOCAB__.levels)||(window.__VOCAB_NHM__&&window.__VOCAB_NHM__.levels)||(window.__VOCAB_HSK1__&&window.__VOCAB_HSK1__.levels)||(window.__VOCAB_HSK2__&&window.__VOCAB_HSK2__.levels)||(window.__VOCAB_HSK3__&&window.__VOCAB_HSK3__.levels)||(window.__VOCAB_HSK4__&&window.__VOCAB_HSK4__.levels)||(window.__VOCAB_HSK5__&&window.__VOCAB_HSK5__.levels);var t=window.__TONE_PAGE_DATA__&&window.__TONE_PAGE_DATA__.quartets;if(v||t)return;var m=document.querySelector(".layout-main");if(!m)return;var b=document.createElement("div");b.setAttribute("role","alert");b.style.cssText="margin:0 0 1rem;padding:0.75rem;background:#991b1b;color:#fff;border-radius:8px;font-size:0.9rem;font-weight:600";b.textContent="Word data did not load. Download this HTML again from git (large file, not a few KB).";m.insertBefore(b,m.firstChild);})();</script>';
 
   html = html.replace("</body>", scriptBlocks + "\n" + boot + "\n</body>");
 
@@ -150,6 +151,13 @@ bundlePage({
 });
 
 bundlePage({
+  srcHtml: "hsk5.html",
+  outNames: ["hsk5.html", "mobile/hsk5.html"],
+  titleNote: "Tap ☰ for menu & filters",
+  scripts: ["js/offline.js", "data/hsk-5.js", "js/sidebar.js", "js/app.js"],
+});
+
+bundlePage({
   srcHtml: "hsk4.html",
   outNames: ["hsk4.html", "mobile/hsk4.html"],
   titleNote: "Tap ☰ for menu & filters",
@@ -205,6 +213,7 @@ const launcher = `<!DOCTYPE html>
   <a href="hsk2.html">HSK 2 · 772 words</a>
   <a href="hsk3.html">HSK 3 · 973 words</a>
   <a href="hsk4.html">HSK 4 · 1000 words</a>
+  <a href="hsk5.html">HSK 5 · 1071 words</a>
   <a href="pronunciation.html">English · clusters</a>
   <a href="tones.html">Four tones</a>
 </body>

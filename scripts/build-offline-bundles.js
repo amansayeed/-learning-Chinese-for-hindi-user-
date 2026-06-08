@@ -54,6 +54,11 @@ if (fs.existsSync(path.join(root, "data", "hsk-4.json"))) {
 } else {
   console.log("Skipped hsk-4.js (run: python scripts/build_hsk.py 4)");
 }
+if (fs.existsSync(path.join(root, "data", "hsk-5.json"))) {
+  writeBundle("data/hsk-5.json", "data/hsk-5.js", "__VOCAB_HSK5__");
+} else {
+  console.log("Skipped hsk-5.js (run: python scripts/build_hsk.py 5)");
+}
 
 if (process.argv.includes("--with-tones")) {
   const { spawnSync } = require("child_process");
