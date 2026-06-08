@@ -47,6 +47,9 @@
       if (key === "nhm") {
         return hasGlobal("__VOCAB_NHM__") ? window.__VOCAB_NHM__ : null;
       }
+      if (key === "hsk6") {
+        return hasGlobal("__VOCAB_HSK6__") ? window.__VOCAB_HSK6__ : null;
+      }
       if (key === "hsk5") {
         return hasGlobal("__VOCAB_HSK5__") ? window.__VOCAB_HSK5__ : null;
       }

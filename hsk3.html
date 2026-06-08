@@ -1757,6 +1757,7 @@ html[data-theme="dark"] .tone-card .tone-char-tap--han {
       <a href="hsk3.html" class="sidebar-link is-active" aria-current="page">HSK 3 · 973 words</a>
       <a href="hsk4.html" class="sidebar-link">HSK 4 · 1000 words</a>
       <a href="hsk5.html" class="sidebar-link">HSK 5 · 1071 words</a>
+      <a href="hsk6.html" class="sidebar-link">HSK 6 · 1140 words</a>
       <a href="pronunciation.html" class="sidebar-link">English · clusters</a>
       <a href="tones.html" class="sidebar-link">Mandarin · four tones</a>
     </nav>
@@ -1929,6 +1930,9 @@ html[data-theme="dark"] .tone-card .tone-char-tap--han {
     vocabPayload: function (key) {
       if (key === "nhm") {
         return hasGlobal("__VOCAB_NHM__") ? window.__VOCAB_NHM__ : null;
+      }
+      if (key === "hsk6") {
+        return hasGlobal("__VOCAB_HSK6__") ? window.__VOCAB_HSK6__ : null;
       }
       if (key === "hsk5") {
         return hasGlobal("__VOCAB_HSK5__") ? window.__VOCAB_HSK5__ : null;
@@ -2500,6 +2504,7 @@ window.__VOCAB_HSK3__ = {"meta":{"title":"New HSK 3 — 973 words","sourceUrl":"
           hsk3: "data/hsk-3.js",
           hsk4: "data/hsk-4.js",
           hsk5: "data/hsk-5.js",
+          hsk6: "data/hsk-6.js",
         };
         var jsonMap = {
           nhm: "data/nhm-1000-common.json",
@@ -2509,11 +2514,25 @@ window.__VOCAB_HSK3__ = {"meta":{"title":"New HSK 3 — 973 words","sourceUrl":"
           hsk3: "data/hsk-3.json",
           hsk4: "data/hsk-4.json",
           hsk5: "data/hsk-5.json",
+          hsk6: "data/hsk-6.json",
         };
         var js = jsMap[key] || "data/vocabulary.js";
         var json = jsonMap[key] || "data/vocabulary.json";
         return Promise.reject(new Error(O.offlineFetchHint(json, js, "")));
       }
+    }
+    if (key === "hsk6") {
+      if (
+        typeof window.__VOCAB_HSK6__ !== "undefined" &&
+        window.__VOCAB_HSK6__ &&
+        window.__VOCAB_HSK6__.levels
+      ) {
+        return Promise.resolve(window.__VOCAB_HSK6__);
+      }
+      return fetch("./data/hsk-6.json").then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      });
     }
     if (key === "hsk5") {
       if (
@@ -2694,6 +2713,6 @@ window.__VOCAB_HSK3__ = {"meta":{"title":"New HSK 3 — 973 words","sourceUrl":"
 })();
 
 </script>
-<script>(function(){var v=(window.__VOCAB__&&window.__VOCAB__.levels)||(window.__VOCAB_NHM__&&window.__VOCAB_NHM__.levels)||(window.__VOCAB_HSK1__&&window.__VOCAB_HSK1__.levels)||(window.__VOCAB_HSK2__&&window.__VOCAB_HSK2__.levels)||(window.__VOCAB_HSK3__&&window.__VOCAB_HSK3__.levels)||(window.__VOCAB_HSK4__&&window.__VOCAB_HSK4__.levels)||(window.__VOCAB_HSK5__&&window.__VOCAB_HSK5__.levels);var t=window.__TONE_PAGE_DATA__&&window.__TONE_PAGE_DATA__.quartets;if(v||t)return;var m=document.querySelector(".layout-main");if(!m)return;var b=document.createElement("div");b.setAttribute("role","alert");b.style.cssText="margin:0 0 1rem;padding:0.75rem;background:#991b1b;color:#fff;border-radius:8px;font-size:0.9rem;font-weight:600";b.textContent="Word data did not load. Download this HTML again from git (large file, not a few KB).";m.insertBefore(b,m.firstChild);})();</script>
+<script>(function(){var v=(window.__VOCAB__&&window.__VOCAB__.levels)||(window.__VOCAB_NHM__&&window.__VOCAB_NHM__.levels)||(window.__VOCAB_HSK1__&&window.__VOCAB_HSK1__.levels)||(window.__VOCAB_HSK2__&&window.__VOCAB_HSK2__.levels)||(window.__VOCAB_HSK3__&&window.__VOCAB_HSK3__.levels)||(window.__VOCAB_HSK4__&&window.__VOCAB_HSK4__.levels)||(window.__VOCAB_HSK5__&&window.__VOCAB_HSK5__.levels)||(window.__VOCAB_HSK6__&&window.__VOCAB_HSK6__.levels);var t=window.__TONE_PAGE_DATA__&&window.__TONE_PAGE_DATA__.quartets;if(v||t)return;var m=document.querySelector(".layout-main");if(!m)return;var b=document.createElement("div");b.setAttribute("role","alert");b.style.cssText="margin:0 0 1rem;padding:0.75rem;background:#991b1b;color:#fff;border-radius:8px;font-size:0.9rem;font-weight:600";b.textContent="Word data did not load. Download this HTML again from git (large file, not a few KB).";m.insertBefore(b,m.firstChild);})();</script>
 </body>
 </html>
