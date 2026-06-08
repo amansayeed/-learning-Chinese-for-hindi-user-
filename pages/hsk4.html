@@ -44,7 +44,7 @@
       }
     })();
   </script>
-  <title>English pronunciation &amp; character clusters</title>
+  <title>HSK 4 — 1000 words · Traditional · Hindi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -53,8 +53,8 @@
 <body class="page-shell">
   <aside id="sidebar" class="sidebar" aria-label="Site navigation and lesson filters">
     <div class="sidebar-brand">
-      <span class="sidebar-brand-title">中文词表</span>
-      <span class="sidebar-brand-sub">Chinese vocab</span>
+      <span class="sidebar-brand-title">HSK 四级</span>
+      <span class="sidebar-brand-sub">New HSK 4</span>
     </div>
 
     <nav class="sidebar-nav" aria-label="Pages">
@@ -62,17 +62,17 @@
       <a href="./hsk.html" class="sidebar-link">HSK 1 · 500 words</a>
       <a href="./hsk2.html" class="sidebar-link">HSK 2 · 772 words</a>
       <a href="./hsk3.html" class="sidebar-link">HSK 3 · 973 words</a>
-      <a href="./hsk4.html" class="sidebar-link">HSK 4 · 1000 words</a>
-      <a href="./pronunciation.html" class="sidebar-link is-active" aria-current="page">English · clusters</a>
+      <a href="./hsk4.html" class="sidebar-link is-active" aria-current="page">HSK 4 · 1000 words</a>
+      <a href="./pronunciation.html" class="sidebar-link">English · clusters</a>
       <a href="./tones.html" class="sidebar-link">Mandarin · four tones</a>
     </nav>
 
     <nav class="toolbar sidebar-toolbar" aria-label="Lesson filters">
       <div class="field">
-        <label for="dataset-select">Word list</label>
-        <select id="dataset-select">
-          <option value="tocfl">TOCFL (Levels 1–2)</option>
-          <option value="nhm">Ni Hao Ma — 1000 common words</option>
+        <label for="view-mode">View</label>
+        <select id="view-mode" title="Table scans many words; Study focuses on one word at a time">
+          <option value="table">Table (all rows)</option>
+          <option value="study">Study (one word, flashcard)</option>
         </select>
       </div>
       <div class="field">
@@ -85,7 +85,7 @@
       </div>
       <div class="field field--grow">
         <label for="search">Search</label>
-        <input type="search" id="search" placeholder="Filter this lesson…" autocomplete="off" />
+        <input type="search" id="search" placeholder="Filter by pinyin, English, Hindi, 汉字…" autocomplete="off" />
       </div>
     </nav>
 
@@ -118,47 +118,77 @@
         <span class="mobile-bar__menu-icon" aria-hidden="true"></span>
       </button>
       <div class="mobile-bar__text">
-        <span class="mobile-bar__title">English &amp; clusters</span>
+        <span class="mobile-bar__title">HSK Level 4</span>
         <span class="mobile-bar__hint">Tap ☰ for menu &amp; filters</span>
       </div>
     </header>
 
     <header class="header">
-      <h1>English pronunciation &amp; character clusters</h1>
-      <p class="subtitle">
-        Each <strong>汉字</strong> is a cluster you can tap to hear. Use the buttons to hear the
-        <strong>English</strong> meaning in US or India English (browser text-to-speech). Pinyin stays the guide for Mandarin sounds.
-      </p>
+      <h1>New HSK 4 — 1000 words</h1>
+      <p class="subtitle">Traditional 漢字 · English · Hindi · Tap character to hear Mandarin · Table or study mode</p>
     </header>
 
     <div id="load-error" class="banner banner--error hidden" role="alert"></div>
 
-    <main class="main pronounce-main">
-      <div id="pronounce-list" class="pronounce-list" aria-live="polite"></div>
-      <p class="hint pronounce-footnote">
-        English pronunciation is approximate machine speech, not a dictionary IPA. Slashes in the headword (e.g. <code>爸爸/爸</code>) show alternate clusters.
-      </p>
+    <main class="main">
+      <div id="table-panel" class="table-panel">
+        <div class="table-wrap">
+          <table class="word-table">
+            <thead>
+              <tr>
+                <th scope="col" class="col-num">#</th>
+                <th scope="col">Traditional</th>
+                <th scope="col">Simplified</th>
+                <th scope="col">Pinyin</th>
+                <th scope="col">English</th>
+                <th scope="col">Hindi</th>
+              </tr>
+            </thead>
+            <tbody id="word-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <section id="study-panel" class="study-panel hidden" aria-label="Study mode — one word at a time">
+        <div class="study-progress-outer" aria-hidden="true">
+          <div class="study-progress-inner" id="study-progress"></div>
+        </div>
+        <p class="study-meta" id="study-meta"></p>
+        <div class="study-card" id="study-card">
+          <button type="button" class="study-han" id="study-han" title="Play pronunciation"></button>
+          <p class="study-py" id="study-py"></p>
+          <div id="study-meaning-wrap" class="study-meaning-wrap is-hidden">
+            <p class="study-en" id="study-en"></p>
+            <p class="study-hi" id="study-hi"></p>
+          </div>
+          <button type="button" class="study-reveal-btn" id="study-reveal">Show English &amp; Hindi</button>
+        </div>
+        <div class="study-nav">
+          <button type="button" class="btn-nav" id="study-prev">← Previous</button>
+          <button type="button" class="btn-nav btn-nav--ghost" id="study-rand">Random</button>
+          <button type="button" class="btn-nav" id="study-next">Next →</button>
+        </div>
+        <p class="study-kbd-hint">Shortcuts: <kbd>←</kbd> <kbd>→</kbd> move · <kbd>Space</kbd> reveal · <kbd>P</kbd> play audio</p>
+      </section>
+
+      <p class="hint">Word list from <a href="https://github.com/oetia/new-hsk-csv" target="_blank" rel="noopener">New HSK CSV</a> (HSK 4). Hindi matched from other lists where possible, otherwise translated from English.</p>
     </main>
 
     <footer class="footer">
-      <span>Same vocabulary data as the main page · picks up the lesson you last used there (this tab).</span>
+      <span id="meta-line"></span>
     </footer>
   </div>
 
-  <script src="./js/offline.js"></script>
-  <script src="./data/vocabulary.js"></script>
-  <script src="./data/nhm-1000-common.js"></script>
-  <script src="./js/sidebar.js" defer></script>
-  <script src="./js/pronunciation.js" defer></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      var O = window.ChineseOffline;
-      if (!O) return;
-      var issues = [];
-      if (!O.vocabPayload("tocfl")) issues.push("Missing <code>data/vocabulary.js</code> (TOCFL list).");
-      if (!O.vocabPayload("nhm")) issues.push("Missing <code>data/nhm-1000-common.js</code> (Ni Hao Ma list).");
-      O.showSetupBanner(issues);
-    });
+    window.__VOCAB_APP_CONFIG__ = {
+      dataset: "hsk4",
+      navLevelKey: "chinese-hsk4-nav-level",
+      navLessonKey: "chinese-hsk4-nav-lesson"
+    };
   </script>
+  <script src="./js/offline.js"></script>
+  <script src="./data/hsk-4.js"></script>
+  <script src="./js/sidebar.js" defer></script>
+  <script src="./js/app.js" defer></script>
 </body>
 </html>

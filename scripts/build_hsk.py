@@ -43,6 +43,12 @@ LEVELS = {
         "label": "HSK Level 3",
         "title": "New HSK 3 — 973 words",
     },
+    4: {
+        "global": "__VOCAB_HSK4__",
+        "code": "HSK4",
+        "label": "HSK Level 4",
+        "title": "New HSK 4 — 1000 words",
+    },
 }
 
 
@@ -74,6 +80,7 @@ def build_hindi_lookup() -> tuple[dict[str, str], dict[str, str]]:
     ingest(load_json(ROOT / "data" / "vocabulary.json"))
     ingest(load_json(ROOT / "data" / "hsk-1.json"))
     ingest(load_json(ROOT / "data" / "hsk-2.json"))
+    ingest(load_json(ROOT / "data" / "hsk-3.json"))
     return by_simp, by_en
 
 
