@@ -10,15 +10,29 @@
     hsk6: { navLevelKey: "chinese-hsk6-nav-level", navLessonKey: "chinese-hsk6-nav-lesson" },
   };
 
-  var VIEWS = ["words", "pronounce", "tones"].concat(Object.keys(HSK_NAV));
+  var VIEWS = [
+    "dashboard",
+    "hsk",
+    "categories",
+    "learn",
+    "favorites",
+    "progress",
+    "words",
+    "pronounce",
+    "tones",
+  ].concat(Object.keys(HSK_NAV));
 
   function normalizeView(id) {
-    if (!id) return "words";
-    if (id === "hsk") return "hsk1";
+    if (!id) return "dashboard";
     return id;
   }
 
   function viewPanelId(view) {
+    if (view === "dashboard") return "app-view-dashboard";
+    if (view === "hsk" || view === "categories") return "app-view-browse";
+    if (view === "learn") return "app-view-learn";
+    if (view === "favorites") return "app-view-favorites";
+    if (view === "progress") return "app-view-progress";
     if (view === "words" || HSK_NAV[view]) return "app-view-words";
     if (view === "pronounce") return "app-view-pronounce";
     if (view === "tones") return "app-view-tones";
@@ -37,9 +51,16 @@
     var hskMenu = document.getElementById("sidebar-hsk-menu");
     var hskOpen = !!HSK_NAV[view];
 
-    document.querySelectorAll(".sidebar-nav [data-app-view]").forEach(function (el) {
+    document.querySelectorAll("[data-app-view]").forEach(function (el) {
       var v = el.getAttribute("data-app-view");
-      var on = v === view || (v === "words" && view === "words");
+      var activeView = view;
+      if (el.closest(".bottom-nav")) {
+        if (view === "hsk") activeView = "categories";
+        if (view === "words" || view === "pronounce" || view === "tones" || HSK_NAV[view]) {
+          activeView = "learn";
+        }
+      }
+      var on = v === activeView;
       el.classList.toggle("is-active", on);
       if (on) {
         el.setAttribute("aria-current", "page");
@@ -97,7 +118,7 @@
 
   function go(view, replace) {
     view = normalizeView(view);
-    if (VIEWS.indexOf(view) < 0 && !HSK_NAV[view]) view = "words";
+    if (VIEWS.indexOf(view) < 0 && !HSK_NAV[view]) view = "dashboard";
 
     showPanel(view);
     setToolbar(view);
@@ -107,6 +128,16 @@
       window.ChineseVocabApp.switchTo(view);
     } else if (view === "words" && window.ChineseVocabApp) {
       window.ChineseVocabApp.switchTo("words");
+    }
+    if (
+      view === "pronounce" &&
+      window.ChinesePronunciation &&
+      typeof window.ChinesePronunciation.refreshFromStoredNav === "function"
+    ) {
+      window.ChinesePronunciation.refreshFromStoredNav();
+    }
+    if (window.VocabularyUI && typeof window.VocabularyUI.onView === "function") {
+      window.VocabularyUI.onView(view);
     }
 
     updateUrlHash(view, replace);
@@ -118,10 +149,10 @@
     go: go,
     init: function () {
       var fromHash = normalizeView((location.hash || "").replace(/^#/, ""));
-      if (fromHash && (fromHash === "words" || fromHash === "pronounce" || fromHash === "tones" || HSK_NAV[fromHash])) {
+      if (fromHash && VIEWS.indexOf(fromHash) >= 0) {
         go(fromHash, true);
       } else {
-        go("words", true);
+        go("dashboard", true);
       }
 
       document.querySelectorAll("[data-app-view]").forEach(function (el) {
@@ -136,14 +167,12 @@
 
       window.addEventListener("hashchange", function () {
         var v = normalizeView((location.hash || "").replace(/^#/, ""));
-        if (v === "words" || v === "pronounce" || v === "tones" || HSK_NAV[v]) {
-          go(v, true);
-        }
+        go(v, true);
       });
 
       window.addEventListener("popstate", function () {
         var v = normalizeView((location.hash || "").replace(/^#/, ""));
-        go(v || "words", true);
+        go(v || "dashboard", true);
       });
     },
   };

@@ -4,7 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark light" />
-  <script src="./js/storage-safe.js"></script>
+  <script>
+    window.__OFFLINE_FILE__ =
+      window.location.protocol === "file:" ||
+      window.location.protocol === "content:" ||
+      window.location.protocol.indexOf("content") === 0;
+    window.__SITE_ROOT__ = "../";
+  </script>
+  <script src="../js/storage-safe.js"></script>
   <script>
     (function () {
       try {
@@ -24,30 +31,37 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./css/styles.css" />
+  <link rel="stylesheet" href="../css/styles.css" />
 </head>
 <body class="page-shell unified-app">
+  <a class="skip-link" href="#app-content">Skip to learning content</a>
   <aside id="sidebar" class="sidebar" aria-label="Site navigation and lesson filters">
     <div class="sidebar-brand">
-      <span class="sidebar-brand-title">中文词表</span>
-      <span class="sidebar-brand-sub">Chinese vocab · offline</span>
+      <span class="sidebar-brand-title">臺灣華語</span>
+      <span class="sidebar-brand-sub">Traditional Chinese · हिन्दी</span>
     </div>
 
     <nav class="sidebar-nav" aria-label="Pages">
-      <a href="#words" class="sidebar-link" data-app-view="words">Words · table &amp; study</a>
+      <a href="#dashboard" class="sidebar-link" data-app-view="dashboard">Dashboard</a>
+      <a href="#hsk" class="sidebar-link" data-app-view="hsk">Browse by HSK</a>
+      <a href="#categories" class="sidebar-link" data-app-view="categories">Daily categories</a>
+      <a href="#learn" class="sidebar-link" data-app-view="learn">Learn</a>
+      <a href="#favorites" class="sidebar-link" data-app-view="favorites">Favorites</a>
+      <a href="#progress" class="sidebar-link" data-app-view="progress">Progress</a>
       <details class="sidebar-dropdown" id="sidebar-hsk-menu">
-        <summary class="sidebar-dropdown__toggle">HSK · levels 1–6</summary>
+        <summary class="sidebar-dropdown__toggle">More practice</summary>
         <div class="sidebar-dropdown__panel">
-          <a href="#hsk1" class="sidebar-link sidebar-link--sub" data-app-view="hsk1">Level 1 · 500 words</a>
-          <a href="#hsk2" class="sidebar-link sidebar-link--sub" data-app-view="hsk2">Level 2 · 772 words</a>
-          <a href="#hsk3" class="sidebar-link sidebar-link--sub" data-app-view="hsk3">Level 3 · 973 words</a>
-          <a href="#hsk4" class="sidebar-link sidebar-link--sub" data-app-view="hsk4">Level 4 · 1000 words</a>
-          <a href="#hsk5" class="sidebar-link sidebar-link--sub" data-app-view="hsk5">Level 5 · 1071 words</a>
-          <a href="#hsk6" class="sidebar-link sidebar-link--sub" data-app-view="hsk6">Level 6 · 1140 words</a>
+          <a href="#words" class="sidebar-link sidebar-link--sub" data-app-view="words">Legacy table &amp; study</a>
+          <a href="#hsk1" class="sidebar-link sidebar-link--sub" data-app-view="hsk1">Level 1 lessons</a>
+          <a href="#hsk2" class="sidebar-link sidebar-link--sub" data-app-view="hsk2">Level 2 lessons</a>
+          <a href="#hsk3" class="sidebar-link sidebar-link--sub" data-app-view="hsk3">Level 3 lessons</a>
+          <a href="#hsk4" class="sidebar-link sidebar-link--sub" data-app-view="hsk4">Level 4 lessons</a>
+          <a href="#hsk5" class="sidebar-link sidebar-link--sub" data-app-view="hsk5">Level 5 lessons</a>
+          <a href="#hsk6" class="sidebar-link sidebar-link--sub" data-app-view="hsk6">Level 6 lessons</a>
+          <a href="#pronounce" class="sidebar-link sidebar-link--sub" data-app-view="pronounce">Pronunciation clusters</a>
+          <a href="#tones" class="sidebar-link sidebar-link--sub" data-app-view="tones">Four tones</a>
         </div>
       </details>
-      <a href="#pronounce" class="sidebar-link" data-app-view="pronounce">English · clusters</a>
-      <a href="#tones" class="sidebar-link" data-app-view="tones">Mandarin · four tones</a>
     </nav>
 
     <nav id="toolbar-words" class="toolbar sidebar-toolbar" aria-label="Word list and lesson">
@@ -117,7 +131,7 @@
     aria-label="Close menu"
   ></button>
 
-  <div class="layout-main">
+  <div class="layout-main" id="app-content">
     <header class="mobile-bar">
       <button
         type="button"
@@ -130,12 +144,156 @@
         <span class="mobile-bar__menu-icon" aria-hidden="true"></span>
       </button>
       <div class="mobile-bar__text">
-        <span class="mobile-bar__title">Chinese study</span>
-        <span class="mobile-bar__hint">All pages in this one file · tap ☰</span>
+        <span class="mobile-bar__title">臺灣華語</span>
+        <span class="mobile-bar__hint">Chinese · Pinyin · English · हिन्दी</span>
       </div>
     </header>
 
-    <div id="app-view-words" class="app-view">
+    <div id="app-view-dashboard" class="app-view">
+      <header class="header app-header">
+        <div>
+          <p class="eyebrow">Everyday Traditional Chinese</p>
+          <h1>Welcome back</h1>
+          <p class="subtitle">Learn by New HSK / HSK 3.0 level or practical daily-life category.</p>
+        </div>
+        <a href="#learn" class="primary-button" data-app-view="learn">Start learning</a>
+      </header>
+      <main class="main dashboard-main">
+        <section aria-labelledby="dashboard-overview-title">
+          <div class="section-heading">
+            <div><p class="eyebrow">Your overview</p><h2 id="dashboard-overview-title">Learning progress</h2></div>
+          </div>
+          <div id="dashboard-stats" class="stats-grid"></div>
+        </section>
+        <section class="daily-goal-card" aria-labelledby="daily-goal-title">
+          <div>
+            <p class="eyebrow">Today</p>
+            <h2 id="daily-goal-title">Daily learning goal</h2>
+            <p id="daily-goal-text" class="muted"></p>
+          </div>
+          <progress id="daily-goal-progress" max="20" value="0"></progress>
+          <label>Goal
+            <input id="daily-goal-input" type="number" min="1" max="200" value="20" inputmode="numeric" />
+            words
+          </label>
+        </section>
+        <section aria-labelledby="dashboard-categories-title">
+          <div class="section-heading">
+            <div><p class="eyebrow">Browse quickly</p><h2 id="dashboard-categories-title">Popular categories</h2></div>
+            <a href="#categories" data-app-view="categories">View all</a>
+          </div>
+          <div id="dashboard-categories" class="category-grid"></div>
+        </section>
+        <section aria-labelledby="dashboard-recent-title">
+          <div class="section-heading">
+            <div><p class="eyebrow">Continue</p><h2 id="dashboard-recent-title">Recently learned</h2></div>
+          </div>
+          <div id="dashboard-recent" class="vocab-grid vocab-grid--compact"></div>
+        </section>
+      </main>
+    </div>
+
+    <div id="app-view-browse" class="app-view hidden">
+      <header class="header app-header">
+        <div>
+          <p class="eyebrow">Explore vocabulary</p>
+          <h1>HSK 3.0 vocabulary with pinyin, meanings, examples and audio</h1>
+          <p class="subtitle">Browse by level or category, then combine filters to build your own word list.</p>
+        </div>
+      </header>
+      <main class="main">
+        <div class="browse-tabs" role="group" aria-label="Primary browse mode">
+          <button type="button" data-browse-tab="hsk" aria-pressed="true">HSK view</button>
+          <button type="button" data-browse-tab="category" aria-pressed="false">Category view</button>
+        </div>
+        <div id="browse-overview" class="category-grid browse-overview" aria-label="Browse shortcuts"></div>
+        <div class="browse-result-toolbar">
+          <div class="result-view-switch" role="group" aria-label="Vocabulary display">
+            <button type="button" data-result-view="list" class="is-active" aria-pressed="true">List view</button>
+            <button type="button" data-result-view="grid" aria-pressed="false">Grid view</button>
+          </div>
+        </div>
+        <section class="filter-panel" aria-label="Vocabulary filters">
+          <label class="filter-search">Search all fields
+            <input id="browse-search" type="search" placeholder="水, shuǐ, water, पानी, HSK 1…" autocomplete="off" />
+          </label>
+          <label id="browse-hsk-field">HSK level
+            <select id="browse-hsk">
+              <option value="all">All HSK levels</option>
+              <option value="1">HSK 1</option><option value="2">HSK 2</option>
+              <option value="3">HSK 3</option><option value="4">HSK 4</option>
+              <option value="5">HSK 5</option><option value="6">HSK 6</option>
+              <option value="outside-hsk">Outside HSK</option>
+            </select>
+          </label>
+          <label id="browse-category-field">Category
+            <select id="browse-category"></select>
+          </label>
+          <label>Learning status
+            <select id="browse-status">
+              <option value="all">All words</option><option value="unlearned">Not learned</option>
+              <option value="learned">Learned</option><option value="favorite">Favorites</option>
+              <option value="difficult">Difficult</option>
+            </select>
+          </label>
+          <label>Sort
+            <select id="browse-sort">
+              <option value="pinyin">Pinyin A–Z</option><option value="hsk">HSK level</option>
+              <option value="difficulty">Difficulty</option>
+            </select>
+          </label>
+        </section>
+        <div class="result-heading"><strong id="browse-result-count">0 words</strong><span>Traditional → Pinyin → English → हिन्दी</span></div>
+        <div id="browse-results" class="vocab-grid" aria-live="polite"></div>
+        <button type="button" id="browse-more" class="secondary-button hidden">Show more</button>
+      </main>
+    </div>
+
+    <div id="app-view-learn" class="app-view hidden">
+      <header class="header app-header">
+        <div><p class="eyebrow">Focused practice</p><h1>Learn one word at a time</h1><p class="subtitle">Listen, reveal the meaning, then mark what you know.</p></div>
+      </header>
+      <main class="main learn-main">
+        <section class="learn-filters" aria-label="Learning session filters">
+          <label>HSK
+            <select id="learn-hsk">
+              <option value="all">All levels</option><option value="1">HSK 1</option><option value="2">HSK 2</option>
+              <option value="3">HSK 3</option><option value="4">HSK 4</option><option value="5">HSK 5</option>
+              <option value="6">HSK 6</option><option value="outside-hsk">Outside HSK</option>
+            </select>
+          </label>
+          <label>Category<select id="learn-category"></select></label>
+          <label>Review
+            <select id="learn-review"><option value="all">All words</option><option value="unlearned">Not learned</option><option value="difficult">Difficult</option></select>
+          </label>
+        </section>
+        <div class="learn-progress-wrap"><progress id="learn-progress" max="1" value="0"></progress><span id="learn-progress-text">0 / 0 words</span></div>
+        <div id="learn-card"></div>
+        <nav class="learn-nav" aria-label="Learning card navigation">
+          <button type="button" id="learn-prev" class="secondary-button">Previous</button>
+          <button type="button" id="learn-random" class="secondary-button">Random</button>
+          <button type="button" id="learn-next" class="primary-button">Next</button>
+        </nav>
+      </main>
+    </div>
+
+    <div id="app-view-favorites" class="app-view hidden">
+      <header class="header app-header"><div><p class="eyebrow">Your collection</p><h1>Favorite words</h1><p class="subtitle" id="favorites-count">0 favorite words</p></div></header>
+      <main class="main"><div id="favorites-results" class="vocab-grid"></div></main>
+    </div>
+
+    <div id="app-view-progress" class="app-view hidden">
+      <header class="header app-header"><div><p class="eyebrow">Learning history</p><h1>Progress</h1><p class="subtitle">Simple, useful motivation without distractions.</p></div></header>
+      <main class="main">
+        <div id="progress-summary" class="stats-grid"></div>
+        <section class="progress-panel" aria-labelledby="progress-hsk-title">
+          <div class="section-heading"><div><p class="eyebrow">By level</p><h2 id="progress-hsk-title">HSK completion</h2></div></div>
+          <div id="progress-hsk"></div>
+        </section>
+      </main>
+    </div>
+
+    <div id="app-view-words" class="app-view hidden">
       <header class="header">
         <h1>Chinese Vocabulary</h1>
         <p class="subtitle">Bilingual meanings (English + Hindi) · Tap Chinese to hear it · Table or study mode</p>
@@ -272,21 +430,33 @@
     </div>
   </div>
 
+  <nav class="bottom-nav" aria-label="Primary navigation">
+    <a href="#dashboard" data-app-view="dashboard"><span aria-hidden="true">⌂</span>Home</a>
+    <a href="#categories" data-app-view="categories"><span aria-hidden="true">▦</span>Categories</a>
+    <a href="#learn" data-app-view="learn"><span aria-hidden="true">▶</span>Learn</a>
+    <a href="#favorites" data-app-view="favorites"><span aria-hidden="true">★</span>Favorites</a>
+    <a href="#progress" data-app-view="progress"><span aria-hidden="true">↗</span>Progress</a>
+  </nav>
+
   <script>window.__UNIFIED_APP__ = true;</script>
-  <script src="./js/offline.js"></script>
-  <script src="./data/vocabulary.js"></script>
-  <script src="./data/nhm-1000-common.js"></script>
-  <script src="./data/hsk-1.js"></script>
-  <script src="./data/hsk-2.js"></script>
-  <script src="./data/hsk-3.js"></script>
-  <script src="./data/hsk-4.js"></script>
-  <script src="./data/hsk-5.js"></script>
-  <script src="./data/hsk-6.js"></script>
-  <script src="./data/tone-page.data.js"></script>
-  <script src="./js/sidebar.js" defer></script>
-  <script src="./js/app.js" defer></script>
-  <script src="./js/pronunciation.js" defer></script>
-  <script src="./js/tones.js" defer></script>
-  <script src="./js/app-router.js" defer></script>
+  <script src="../js/offline.js"></script>
+  <script src="../data/vocabulary.js"></script>
+  <script src="../data/nhm-1000-common.js"></script>
+  <script src="../data/hsk-1.js"></script>
+  <script src="../data/hsk-2.js"></script>
+  <script src="../data/hsk-3.js"></script>
+  <script src="../data/hsk-4.js"></script>
+  <script src="../data/hsk-5.js"></script>
+  <script src="../data/hsk-6.js"></script>
+  <script src="../data/vocabulary-master.js"></script>
+  <script src="../data/tone-page.data.js"></script>
+  <script src="../js/sidebar.js" defer></script>
+  <script src="../js/learning-state.js" defer></script>
+  <script src="../js/vocab-store.js" defer></script>
+  <script src="../js/vocabulary-ui.js" defer></script>
+  <script src="../js/app.js" defer></script>
+  <script src="../js/pronunciation.js" defer></script>
+  <script src="../js/tones.js" defer></script>
+  <script src="../js/app-router.js" defer></script>
 </body>
 </html>

@@ -31,7 +31,7 @@ if (!fs.existsSync(htmlPath)) {
 const html = fs.readFileSync(htmlPath, "utf8");
 const sizeKB = Math.round(fs.statSync(htmlPath).size / 1024);
 
-if (sizeKB < 1200) fail("File too small (" + sizeKB + " KB) — expected ~1500+ KB unified bundle");
+if (fs.statSync(htmlPath).size < 6000000) fail("File too small (" + sizeKB + " KB) — expected ~7–8 MB unified bundle");
 else pass("Size " + sizeKB + " KB");
 
 if (!html.includes("window.__CHINESE_STORAGE_PATCHED__")) {
@@ -53,17 +53,40 @@ else pass("TOCFL data embedded");
 if (!html.includes("window.__VOCAB_HSK6__")) fail("Missing HSK6 data");
 else pass("HSK6 data embedded");
 
+if (!html.includes("window.__VOCAB_MASTER__")) fail("Missing canonical vocabulary data");
+else pass("Canonical vocabulary data embedded");
+
+["window.LearningState", "window.VocabStore", "window.VocabularyUI"].forEach(function (name) {
+  if (!html.includes(name)) fail("Missing " + name);
+  else pass(name + " bundled");
+});
+
 if (!html.includes("window.__TONE_PAGE_DATA__")) fail("Missing tone data");
 else pass("Tone data embedded");
 
 const appViews = (html.match(/data-app-view="/g) || []).length;
-if (appViews < 9) fail("Expected 9 sidebar data-app-view links, found " + appViews);
+if (appViews < 20) fail("Expected modern navigation links, found " + appViews);
 else pass(appViews + " in-app navigation links");
 
 if (/href="hsk2\.html"/.test(html)) fail("Still has broken hsk2.html link");
 else pass("No cross-file hsk2.html links");
 
-["app-view-words", "app-view-pronounce", "app-view-tones", "toolbar-words", "toolbar-pronounce"].forEach(function (id) {
+[
+  "app-view-dashboard",
+  "app-view-browse",
+  "app-view-learn",
+  "app-view-favorites",
+  "app-view-progress",
+  "app-view-words",
+  "app-view-pronounce",
+  "app-view-tones",
+  "browse-search",
+  "browse-hsk",
+  "browse-category",
+  "dashboard-stats",
+  "toolbar-words",
+  "toolbar-pronounce",
+].forEach(function (id) {
   if (!html.includes('id="' + id + '"')) fail("Missing #" + id);
   else pass("DOM id #" + id);
 });
@@ -123,6 +146,11 @@ function makeEl(id, tag) {
 
 function runRuntimeRouterTest() {
   const ids = [
+    "app-view-dashboard",
+    "app-view-browse",
+    "app-view-learn",
+    "app-view-favorites",
+    "app-view-progress",
     "app-view-words",
     "app-view-pronounce",
     "app-view-tones",
@@ -131,6 +159,12 @@ function runRuntimeRouterTest() {
     "sidebar-hsk-menu",
   ];
   const navLinks = [
+    { view: "dashboard" },
+    { view: "hsk" },
+    { view: "categories" },
+    { view: "learn" },
+    { view: "favorites" },
+    { view: "progress" },
     { view: "words" },
     { view: "hsk1" },
     { view: "hsk2" },
@@ -198,6 +232,14 @@ function runRuntimeRouterTest() {
     return;
   }
   pass("AppRouter loads in runtime sandbox");
+
+  window.AppRouter.go("dashboard", true);
+  if (byId["app-view-dashboard"].classList.contains("hidden")) fail("Dashboard view hidden");
+  else pass("Router: dashboard view visible");
+
+  window.AppRouter.go("hsk", true);
+  if (byId["app-view-browse"].classList.contains("hidden")) fail("HSK browse view hidden");
+  else pass("Router: HSK browse view visible");
 
   window.AppRouter.go("words", true);
   if (byId["app-view-words"].classList.contains("hidden")) fail("Words view hidden");

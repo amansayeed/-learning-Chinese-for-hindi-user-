@@ -46,8 +46,12 @@ const scripts = [
   "data/hsk-4.js",
   "data/hsk-5.js",
   "data/hsk-6.js",
+  "data/vocabulary-master.js",
   "data/tone-page.data.js",
   "js/sidebar.js",
+  "js/learning-state.js",
+  "js/vocab-store.js",
+  "js/vocabulary-ui.js",
   "js/app.js",
   "js/pronunciation.js",
   "js/tones.js",
@@ -91,29 +95,5 @@ fs.mkdirSync(mobileDir, { recursive: true });
   const kb = Math.round(fs.statSync(outPath).size / 1024);
   console.log("Wrote", outName, "(" + kb + " KB)");
 });
-
-const startRedirect = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Chinese study</title>
-  <meta http-equiv="refresh" content="0;url=index.html" />
-  <style>
-    body{font-family:system-ui,sans-serif;margin:0;padding:2rem;background:#0f172a;color:#e2e8f0;text-align:center}
-    a{color:#5eead4;font-weight:700}
-  </style>
-</head>
-<body>
-  <p>Opening Chinese study app…</p>
-  <p><a href="index.html">Tap here if not redirected</a></p>
-  <p style="color:#94a3b8;font-size:0.9rem;margin-top:2rem">Use <strong>index.html</strong> only (one file, all pages inside).</p>
-</body>
-</html>
-`;
-
-fs.writeFileSync(path.join(mobileDir, "START.html"), startRedirect, "utf8");
-fs.writeFileSync(path.join(root, "START.html"), startRedirect.replace(/url=index\.html/g, "url=mobile/index.html").replace(/href="index\.html"/g, 'href="mobile/index.html"'), "utf8");
-console.log("Wrote START.html (redirects to unified app)");
 
 console.log("\nOn phone: copy mobile/index.html (or whole mobile/ folder) and open index.html in Chrome.");

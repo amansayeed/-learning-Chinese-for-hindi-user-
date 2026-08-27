@@ -1,0 +1,338 @@
+{
+  "totalInputWords": 798,
+  "totalCategorizedWords": 798,
+  "numberOfCategoriesCreated": 31,
+  "categoryCounts": {
+    "Time & Dates": 61,
+    "Numbers & Counting": 54,
+    "Adjectives": 48,
+    "Common Verbs": 46,
+    "School & Education": 45,
+    "People & Family": 42,
+    "Directions & Locations": 42,
+    "Food & Drinks": 39,
+    "Common Adverbs": 36,
+    "Communication & Conversation": 34,
+    "Restaurants & Eating": 31,
+    "Connectors & Grammar Words": 27,
+    "Daily Activities": 26,
+    "Health & Body": 25,
+    "Leisure, Sports & Hobbies": 24,
+    "Home & Household": 23,
+    "Weather, Nature & Animals": 23,
+    "Pronouns": 21,
+    "Greetings & Basic Expressions": 19,
+    "Feelings & Emotions": 17,
+    "Clothing & Personal Items": 15,
+    "Transportation": 13,
+    "Places & Buildings": 13,
+    "Work & Office": 12,
+    "Travel": 12,
+    "Shopping": 11,
+    "Question Words": 10,
+    "Money & Banking": 10,
+    "Technology & Internet": 7,
+    "Taiwan Daily Life": 7,
+    "Relationships & Dating": 5
+  },
+  "largestCategories": [
+    [
+      "Time & Dates",
+      61
+    ],
+    [
+      "Numbers & Counting",
+      54
+    ],
+    [
+      "Adjectives",
+      48
+    ],
+    [
+      "Common Verbs",
+      46
+    ],
+    [
+      "School & Education",
+      45
+    ],
+    [
+      "People & Family",
+      42
+    ],
+    [
+      "Directions & Locations",
+      42
+    ],
+    [
+      "Food & Drinks",
+      39
+    ]
+  ],
+  "wordsNotConfidentlyCategorized": [],
+  "duplicateTraditionalForms": [
+    {
+      "traditional": "哪",
+      "count": 2,
+      "pinyin": [
+        "nǎ",
+        "na"
+      ],
+      "english": [
+        "how, which, (emphatic sentence-final particle, used instead of 啊[a5] after a wor",
+        "(emphatic sentence-final particle, used instead of 啊[a5] after a word ending in "
+      ]
+    },
+    {
+      "traditional": "得",
+      "count": 2,
+      "pinyin": [
+        "děi",
+        "de"
+      ],
+      "english": [
+        "to have to, must, ought to, to need to",
+        "structural particle: used after a verb (or adjective as main verb), linking it t"
+      ]
+    },
+    {
+      "traditional": "長",
+      "count": 2,
+      "pinyin": [
+        "cháng",
+        "zhǎng"
+      ],
+      "english": [
+        "length, long, forever, always, constantly",
+        "chief, head, elder, to grow, to develop, to increase, to enhance"
+      ]
+    },
+    {
+      "traditional": "還",
+      "count": 2,
+      "pinyin": [
+        "hái",
+        "huán"
+      ],
+      "english": [
+        "still, still in progress, still more, yet, even more, in addition, fairly, passa",
+        "to pay back, to return"
+      ]
+    },
+    {
+      "traditional": "行",
+      "count": 2,
+      "pinyin": [
+        "háng",
+        "xíng"
+      ],
+      "english": [
+        "row, line, commercial firm, line of business, profession, to rank (first, second",
+        "to walk, to go, to travel, a visit, temporary, makeshift, current, in circulatio"
+      ]
+    },
+    {
+      "traditional": "地",
+      "count": 2,
+      "pinyin": [
+        "dì",
+        "de"
+      ],
+      "english": [
+        "earth, ground, field, place, land, CL:片[pian4]",
+        "-ly, structural particle: used before a verb or adjective, linking it to precedi"
+      ]
+    }
+  ],
+  "wordsWithMultipleMeanings": [
+    {
+      "traditional": "哪",
+      "meanings": "nǎ which / na sentence particle"
+    },
+    {
+      "traditional": "得",
+      "meanings": "děi must / de degree particle"
+    },
+    {
+      "traditional": "長",
+      "meanings": "cháng long / zhǎng to grow, elder"
+    },
+    {
+      "traditional": "還",
+      "meanings": "hái still / huán to return (money)"
+    },
+    {
+      "traditional": "地",
+      "meanings": "dì ground, place / de adverb particle"
+    },
+    {
+      "traditional": "行",
+      "meanings": "xíng OK, to go / háng row, profession"
+    },
+    {
+      "traditional": "花/花兒",
+      "meanings": "flower / to spend (money, time)"
+    },
+    {
+      "traditional": "點",
+      "meanings": "o'clock / to order (food)"
+    },
+    {
+      "traditional": "會",
+      "meanings": "can / to meet, meeting"
+    },
+    {
+      "traditional": "過",
+      "meanings": "to pass / experienced-action marker"
+    },
+    {
+      "traditional": "意思",
+      "meanings": "meaning / a small token of goodwill"
+    },
+    {
+      "traditional": "想",
+      "meanings": "to think / to want / to miss"
+    },
+    {
+      "traditional": "看",
+      "meanings": "to look, read / to visit (a doctor)"
+    },
+    {
+      "traditional": "好",
+      "meanings": "good / hello (你好)"
+    },
+    {
+      "traditional": "分",
+      "meanings": "minute / to divide / 0.01 yuan"
+    },
+    {
+      "traditional": "號",
+      "meanings": "number / day of the month / size"
+    },
+    {
+      "traditional": "元",
+      "meanings": "Taiwan/China dollar / first, original"
+    },
+    {
+      "traditional": "站",
+      "meanings": "to stand / station"
+    },
+    {
+      "traditional": "信",
+      "meanings": "letter / to believe"
+    },
+    {
+      "traditional": "空",
+      "meanings": "free time / vacant"
+    },
+    {
+      "traditional": "帶",
+      "meanings": "to bring / belt"
+    },
+    {
+      "traditional": "對",
+      "meanings": "correct / towards"
+    },
+    {
+      "traditional": "本",
+      "meanings": "classifier for books / this, origin"
+    },
+    {
+      "traditional": "早",
+      "meanings": "early / good morning"
+    },
+    {
+      "traditional": "熱",
+      "meanings": "hot (weather) / to heat"
+    },
+    {
+      "traditional": "冷",
+      "meanings": "cold (weather/feeling)"
+    },
+    {
+      "traditional": "便宜",
+      "meanings": "inexpensive / a petty advantage"
+    },
+    {
+      "traditional": "客氣",
+      "meanings": "polite / you're being too polite"
+    },
+    {
+      "traditional": "加油",
+      "meanings": "add fuel / hang in there, go for it"
+    },
+    {
+      "traditional": "方便",
+      "meanings": "convenient / (euphemism) use the restroom"
+    }
+  ],
+  "wordsWithMultipleMeaningsCount": 30,
+  "levelLessonTitles": {
+    "Level 1 (A1)": [
+      "Greetings & Basic Expressions (9)",
+      "Pronouns (16)",
+      "People & Family (24)",
+      "Numbers & Counting (31)",
+      "Time & Dates (41)",
+      "Question Words (9)",
+      "Daily Activities (14)",
+      "Food & Drinks (17)",
+      "Restaurants & Eating (11)",
+      "Shopping (5)",
+      "Money & Banking (1)",
+      "Home & Household (9)",
+      "Clothing & Personal Items (3)",
+      "Health & Body (18)",
+      "School & Education (18)",
+      "Work & Office (1)",
+      "Transportation (6)",
+      "Directions & Locations (19)",
+      "Places & Buildings (8)",
+      "Travel (3)",
+      "Leisure, Sports & Hobbies (9)",
+      "Weather, Nature & Animals (11)",
+      "Feelings & Emotions (6)",
+      "Relationships & Dating (2)",
+      "Communication & Conversation (18)",
+      "Technology & Internet (2)",
+      "Taiwan Daily Life (2)",
+      "Common Verbs (20)",
+      "Adjectives (25)",
+      "Common Adverbs (23)",
+      "Connectors & Grammar Words (15)"
+    ],
+    "Level 2 (A2)": [
+      "Greetings & Basic Expressions (10)",
+      "Pronouns (5)",
+      "People & Family (18)",
+      "Numbers & Counting (23)",
+      "Time & Dates (20)",
+      "Question Words (1)",
+      "Daily Activities (12)",
+      "Food & Drinks (22)",
+      "Restaurants & Eating (20)",
+      "Shopping (6)",
+      "Money & Banking (9)",
+      "Home & Household (14)",
+      "Clothing & Personal Items (12)",
+      "Health & Body (7)",
+      "School & Education (27)",
+      "Work & Office (11)",
+      "Transportation (7)",
+      "Directions & Locations (23)",
+      "Places & Buildings (5)",
+      "Travel (9)",
+      "Leisure, Sports & Hobbies (15)",
+      "Weather, Nature & Animals (12)",
+      "Feelings & Emotions (11)",
+      "Relationships & Dating (3)",
+      "Communication & Conversation (16)",
+      "Technology & Internet (5)",
+      "Taiwan Daily Life (5)",
+      "Common Verbs (26)",
+      "Adjectives (23)",
+      "Common Adverbs (13)",
+      "Connectors & Grammar Words (12)"
+    ]
+  }
+}

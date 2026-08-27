@@ -8,6 +8,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = ROOT / "pages"
 SNIPPET = (PAGES / "_sidebar-nav.snippet.html").read_text(encoding="utf-8").rstrip() + "\n"
+APP_SNIPPET = (
+    (PAGES / "_sidebar-nav-app.snippet.html").read_text(encoding="utf-8").rstrip() + "\n"
+)
 PAT = re.compile(
     r'    <nav class="sidebar-nav" aria-label="Pages">.*?</nav>\n',
     re.DOTALL,
@@ -19,7 +22,8 @@ def main() -> None:
         if path.name.startswith("_"):
             continue
         text = path.read_text(encoding="utf-8")
-        new, n = PAT.subn(SNIPPET, text, count=1)
+        snippet = APP_SNIPPET if path.name == "app.html" else SNIPPET
+        new, n = PAT.subn(snippet, text, count=1)
         if n != 1:
             print(f"skip {path.name} (matches={n})")
             continue

@@ -6,7 +6,7 @@
 2. Open **`index.html`** in Chrome — **not** hsk.html, START menu links, or the small root index.
 3. Tap **☰** in the top bar — Words, HSK 1–6, pronunciation, and tones switch **inside** that file.
 
-**File size check:** `mobile/index.html` must be about **1.5–2 MB**. If it is only ~400 KB, you have the old broken copy — pull latest git or rebuild (below).
+**File size check:** `mobile/index.html` should be about **7–8 MB** with the canonical vocabulary embedded. If it is only ~400 KB, you have the old broken copy — pull latest git or rebuild (below).
 
 Chrome on phone often **blocks localStorage** for files opened from Drive or Downloads. The app includes a memory fallback so this does not break navigation or word lists.
 
@@ -18,6 +18,14 @@ Opening one HTML file from Google Drive uses a `content://` URL. The browser **c
 
 ```bash
 node scripts/build-offline-bundles.js --with-tones
+```
+
+If Node.js is unavailable, run:
+
+```bash
+python scripts/build_vocabulary_master.py
+python scripts/build_mobile_pack.py
+python scripts/build_offline_app.py
 ```
 
 That writes **`mobile/index.html`** (all-in-one). Commit and push so phones get the updated file from git.

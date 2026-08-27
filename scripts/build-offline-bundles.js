@@ -34,6 +34,11 @@ function writeBundle(jsonRel, jsRel, globalName) {
 
 writeBundle("data/vocabulary.json", "data/vocabulary.js", "__VOCAB__");
 writeBundle("data/nhm-1000-common.json", "data/nhm-1000-common.js", "__VOCAB_NHM__");
+if (fs.existsSync(path.join(root, "data", "vocabulary-master.json"))) {
+  writeBundle("data/vocabulary-master.json", "data/vocabulary-master.js", "__VOCAB_MASTER__");
+} else {
+  console.log("Skipped vocabulary-master.js (run: python scripts/build_vocabulary_master.py)");
+}
 if (fs.existsSync(path.join(root, "data", "hsk-1.json"))) {
   writeBundle("data/hsk-1.json", "data/hsk-1.js", "__VOCAB_HSK1__");
 } else {

@@ -26,7 +26,7 @@
     syncThemeToggle();
   }
 
-  if (themeToggle) {
+  if (themeToggle && !window.__UNIFIED_APP__) {
     themeToggle.addEventListener("click", function () {
       setTheme(getTheme() === "dark" ? "light" : "dark");
     });

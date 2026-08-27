@@ -72,7 +72,7 @@ function bundlePage({ srcHtml, outNames, scripts, titleNote }) {
   html = fixNavLinks(html);
 
   const css = read("css/styles.css");
-  const scriptBlocks = scripts
+  const scriptBlocks = ["js/storage-safe.js"].concat(scripts)
     .map(function (rel) {
       return "<script>\n" + escapeForScript(read(rel)) + "\n</script>";
     })
@@ -105,8 +105,11 @@ function bundlePage({ srcHtml, outNames, scripts, titleNote }) {
 
   outNames.forEach(function (outName) {
     const outPath = path.join(root, outName);
+    const outputHtml = outName.startsWith("mobile/")
+      ? html.replace(/href="index\.html"/g, 'href="words.html"')
+      : html;
     fs.mkdirSync(path.dirname(outPath), { recursive: true });
-    fs.writeFileSync(outPath, html, "utf8");
+    fs.writeFileSync(outPath, outputHtml, "utf8");
     const kb = Math.round(fs.statSync(outPath).size / 1024);
     console.log("Wrote", outName, "(" + kb + " KB)");
   });
@@ -127,7 +130,7 @@ fs.mkdirSync(mobileDir, { recursive: true });
 
 bundlePage({
   srcHtml: "index.html",
-  outNames: ["index.html", "mobile/index.html"],
+  outNames: ["index.html", "mobile/words.html"],
   titleNote: "Tap ☰ for menu & filters",
   scripts: [
     "js/offline.js",
@@ -219,7 +222,7 @@ const launcher = `<!DOCTYPE html>
   <p><strong>On phone (Google Drive / one file):</strong> open <code>chinese.html</code> only — sidebar works inside that file.</p>
   <a href="chinese.html" class="primary">Open all-in-one app (recommended for phone)</a>
   <p>Or open separate pages (needs every .html file in the same folder):</p>
-  <a href="index.html">Words · table &amp; study</a>
+  <a href="words.html">Words · table &amp; study</a>
   <a href="hsk.html">HSK 1 · 500 words</a>
   <a href="hsk2.html">HSK 2 · 772 words</a>
   <a href="hsk3.html">HSK 3 · 973 words</a>
@@ -233,7 +236,11 @@ const launcher = `<!DOCTYPE html>
 `;
 
 fs.writeFileSync(path.join(mobileDir, "START.html"), launcher, "utf8");
-fs.writeFileSync(path.join(root, "START.html"), launcher, "utf8");
+fs.writeFileSync(
+  path.join(root, "START.html"),
+  launcher.replace('href="words.html"', 'href="index.html"'),
+  "utf8"
+);
 console.log("Wrote START.html (root + mobile/)");
 
 console.log("\nDone. On phone: open mobile/chinese.html (one file, ~2–3 MB) or copy the whole mobile/ folder.");

@@ -419,6 +419,10 @@
     });
   }
 
+  window.ChinesePronunciation = {
+    refreshFromStoredNav: applyStoredNav,
+  };
+
   bind();
   applyStoredNav();
 })();

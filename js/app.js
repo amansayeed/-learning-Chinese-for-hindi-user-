@@ -664,7 +664,7 @@
         var fv = fieldViewModeEl();
         if (fd) fd.classList.remove("hidden");
         if (fv) fv.classList.remove("hidden");
-        applyDataset((datasetSelect && datasetSelect.value) || "tocfl");
+        applyStoredNav();
         return;
       }
 
@@ -688,6 +688,6 @@
   } else if (FIXED_DATASET) {
     applyStoredNav();
   } else {
-    applyDataset((datasetSelect && datasetSelect.value) || "tocfl");
+    applyStoredNav();
   }
 })();
