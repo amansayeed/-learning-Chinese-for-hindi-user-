@@ -24,6 +24,7 @@ DATA = ROOT / "data"
 OUT_JSON = DATA / "vocabulary-master.json"
 OUT_JS = DATA / "vocabulary-master.js"
 OUT_REPORT = DATA / "vocabulary-master-report.json"
+LINGUISTIC_OVERRIDES = DATA / "vocabulary-linguistic-overrides.json"
 POS_PATH = DATA / "external" / "hsk-complete.json"
 CSV_PATH = (
     DATA
@@ -538,13 +539,31 @@ def difficulty(hsk_level: int | None, tocfl_levels: list[str], sources: list[str
 def generated_example(word: dict[str, Any]) -> dict[str, Any]:
     en = word["english"].split(";")[0].split(",")[0].strip()
     return {
-        "chinese": f"我在学习“{word['simplified']}”这个词。",
+        "chinese": f"我在學習「{word['traditional']}」這個詞。",
+        "traditional": f"我在學習「{word['traditional']}」這個詞。",
+        "simplified": f"我在学习“{word['simplified']}”这个词。",
         "pinyin": f"Wǒ zài xuéxí “{word['pinyin']}” zhège cí.",
         "english": f'I am learning the word “{en}”.',
         "hindi": f"मैं “{word['hindi']}” शब्द सीख रहा/रही हूँ।",
         "generated": True,
         "needsReview": True,
     }
+
+
+def classify_example(example: dict[str, Any], word: dict[str, Any]) -> dict[str, Any]:
+    """Attach stable HSK-and-topic metadata without replacing reviewed examples."""
+    result = dict(example)
+    chinese = text(result.get("chinese") or result.get("traditional") or result.get("sentence"))
+    result.setdefault("chinese", chinese)
+    result.setdefault("traditional", chinese)
+    result.setdefault("simplified", chinese)
+    hsk_level = word["hsk"]["level"]
+    level_label = f"HSK {hsk_level}" if hsk_level is not None else "Outside HSK"
+    topic = word["primaryCategory"]
+    result["hskLevel"] = hsk_level
+    result["topic"] = topic
+    result["sentenceCategory"] = f"{level_label} · {topic}"
+    return result
 
 
 def preserved_examples() -> dict[str, dict[str, Any]]:
@@ -564,7 +583,19 @@ def preserved_examples() -> dict[str, dict[str, Any]]:
     return preserved
 
 
-def build() -> tuple[dict[str, Any], dict[str, Any]]:
+def linguistic_overrides() -> dict[str, dict[str, Any]]:
+    if not LINGUISTIC_OVERRIDES.is_file():
+        return {}
+    payload = json.loads(LINGUISTIC_OVERRIDES.read_text(encoding="utf-8"))
+    overrides = payload.get("overrides", {})
+    if not isinstance(overrides, dict):
+        raise ValueError("Linguistic overrides must be keyed by canonical word ID")
+    if payload.get("recordCount") != len(overrides):
+        raise ValueError("Linguistic override record count does not match payload")
+    return overrides
+
+
+def build(*, apply_linguistic_overrides: bool = True) -> tuple[dict[str, Any], dict[str, Any]]:
     all_rows: list[dict[str, Any]] = []
     source_counts: dict[str, int] = {}
     for source, path in JSON_SOURCES:
@@ -597,6 +628,8 @@ def build() -> tuple[dict[str, Any], dict[str, Any]]:
     exact_form, exact_reading = load_category_seeds()
     pos_form, pos_reading = load_pos_lookup()
     old_examples = preserved_examples()
+    reviewed_overrides = linguistic_overrides() if apply_linguistic_overrides else {}
+    applied_override_ids: set[str] = set()
     words: list[dict[str, Any]] = []
     accounting: dict[str, list[str]] = defaultdict(list)
     duplicate_groups: list[dict[str, Any]] = []
@@ -677,7 +710,21 @@ def build() -> tuple[dict[str, Any], dict[str, Any]]:
             "difficulty": difficulty(hsk_level, tocfl_levels, source_names),
             "sources": refs,
         }
-        word["example"] = old_examples.get(word_id, generated_example(word))
+        override = reviewed_overrides.get(word_id)
+        if override:
+            for field in REQUIRED_WORD_FIELDS:
+                if not text(override.get(field)):
+                    raise ValueError(f"Linguistic override {word_id} is missing {field}")
+                word[field] = override[field]
+            word["secondaryMeanings"] = override.get("secondaryMeanings", {})
+            word["review"] = override.get("review", {})
+            example = override.get("example")
+            if not isinstance(example, dict):
+                raise ValueError(f"Linguistic override {word_id} is missing its example")
+            applied_override_ids.add(word_id)
+        else:
+            example = old_examples.get(word_id, generated_example(word))
+        word["example"] = classify_example(example, word)
         words.append(word)
         for ref in refs:
             accounting[ref["source"]].append(word_id)
@@ -697,6 +744,9 @@ def build() -> tuple[dict[str, Any], dict[str, Any]]:
     if len(ids) != len(set(ids)):
         collisions = sorted(key for key, count in Counter(ids).items() if count > 1)
         raise ValueError(f"Stable ID collision(s): {collisions}")
+    unknown_override_ids = sorted(set(reviewed_overrides) - applied_override_ids)
+    if unknown_override_ids:
+        raise ValueError(f"Linguistic overrides reference missing IDs: {unknown_override_ids[:10]}")
 
     missing_fields = [
         {"id": word["id"], "fields": [field for field in REQUIRED_WORD_FIELDS if not text(word.get(field))]}
@@ -768,6 +818,21 @@ def build() -> tuple[dict[str, Any], dict[str, Any]]:
         for word in words
         if word["hsk"]["level"] is None
     ]
+    reviewed_by_hsk = Counter(
+        str(word["hsk"]["level"]) if word["hsk"]["level"] else "outside-hsk"
+        for word in words
+        if word.get("review", {}).get("status") == "reviewed"
+    )
+    review_issue_counts = Counter(
+        issue
+        for word in words
+        for issue in word.get("review", {}).get("issues", [])
+    )
+    corrected_field_counts = {
+        issue.removeprefix("normalized "): count
+        for issue, count in review_issue_counts.items()
+        if issue.startswith("normalized ")
+    }
 
     payload = {
         "meta": {
@@ -818,6 +883,31 @@ def build() -> tuple[dict[str, Any], dict[str, Any]]:
         "missingRequiredFields": [],
         "stableIdCollisionCount": 0,
         "preservedReviewedExampleCount": sum(word["id"] in old_examples for word in words),
+        "linguisticReview": {
+            "overrideCount": len(reviewed_overrides),
+            "appliedCount": len(applied_override_ids),
+            "reviewedRecordCount": sum(
+                word.get("review", {}).get("status") == "reviewed" for word in words
+            ),
+            "reviewedSentenceCount": sum(
+                word["example"].get("generated") is False
+                and word["example"].get("needsReview") is False
+                for word in words
+            ),
+            "unresolvedCount": sum(
+                word.get("review", {}).get("status") != "reviewed"
+                for word in words
+            ),
+            "reviewedByHskLevel": dict(sorted(reviewed_by_hsk.items())),
+            "correctionsByField": dict(sorted(corrected_field_counts.items())),
+            "issueTypeCounts": dict(sorted(review_issue_counts.items())),
+            "generatedSentenceCount": sum(
+                word["example"].get("generated") is not False for word in words
+            ),
+            "sentenceNeedsReviewCount": sum(
+                word["example"].get("needsReview") is not False for word in words
+            ),
+        },
     }
     return payload, report
 

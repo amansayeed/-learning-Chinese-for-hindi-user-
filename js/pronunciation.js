@@ -255,14 +255,16 @@
     } catch (e) {}
   }
 
-  function renderList() {
-    listRoot.textContent = "";
-    var words = getFilteredWords();
+  function renderList(wordsOverride, rootOverride) {
+    var targetRoot = rootOverride || listRoot;
+    if (!targetRoot) return;
+    targetRoot.textContent = "";
+    var words = Array.isArray(wordsOverride) ? wordsOverride : getFilteredWords();
     if (words.length === 0) {
       var empty = document.createElement("p");
       empty.className = "pronounce-empty";
-      empty.textContent = "No words in this lesson, or nothing matches your search.";
-      listRoot.appendChild(empty);
+      empty.textContent = "No words match this level, topic or search.";
+      targetRoot.appendChild(empty);
       return;
     }
 
@@ -372,19 +374,19 @@
       hi.textContent = w.hindi;
 
       card.appendChild(hi);
-      listRoot.appendChild(card);
+      targetRoot.appendChild(card);
     });
   }
 
   function bind() {
-    if (!datasetSelect || !levelSelect || !lessonSelect || !searchInput || !listRoot) return;
-
     if (themeToggle && !window.__UNIFIED_APP__) {
       themeToggle.addEventListener("click", function () {
         setTheme(getTheme() === "dark" ? "light" : "dark");
       });
       syncThemeToggle();
     }
+
+    if (!datasetSelect || !levelSelect || !lessonSelect || !searchInput || !listRoot) return;
 
     datasetSelect.addEventListener("change", function () {
       searchInput.value = "";
@@ -421,8 +423,13 @@
 
   window.ChinesePronunciation = {
     refreshFromStoredNav: applyStoredNav,
+    renderWords: function (root, words) {
+      renderList(words, root);
+    },
   };
 
   bind();
-  applyStoredNav();
+  if (datasetSelect && levelSelect && lessonSelect && searchInput && listRoot) {
+    applyStoredNav();
+  }
 })();

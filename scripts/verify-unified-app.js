@@ -65,7 +65,7 @@ if (!html.includes("window.__TONE_PAGE_DATA__")) fail("Missing tone data");
 else pass("Tone data embedded");
 
 const appViews = (html.match(/data-app-view="/g) || []).length;
-if (appViews < 20) fail("Expected modern navigation links, found " + appViews);
+if (appViews < 8) fail("Expected four-section desktop and mobile navigation, found " + appViews);
 else pass(appViews + " in-app navigation links");
 
 if (/href="hsk2\.html"/.test(html)) fail("Still has broken hsk2.html link");
@@ -74,6 +74,8 @@ else pass("No cross-file hsk2.html links");
 [
   "app-view-dashboard",
   "app-view-browse",
+  "app-view-level",
+  "app-view-tocfl",
   "app-view-learn",
   "app-view-favorites",
   "app-view-progress",
@@ -83,9 +85,15 @@ else pass("No cross-file hsk2.html links");
   "browse-search",
   "browse-hsk",
   "browse-category",
-  "dashboard-stats",
+  "level-switch",
+  "level-categories",
+  "level-search",
+  "level-results",
+  "browse-pagination",
+  "level-pagination",
+  "start-today",
+  "dashboard-simple-stats",
   "toolbar-words",
-  "toolbar-pronounce",
 ].forEach(function (id) {
   if (!html.includes('id="' + id + '"')) fail("Missing #" + id);
   else pass("DOM id #" + id);
@@ -148,6 +156,8 @@ function runRuntimeRouterTest() {
   const ids = [
     "app-view-dashboard",
     "app-view-browse",
+    "app-view-level",
+    "app-view-tocfl",
     "app-view-learn",
     "app-view-favorites",
     "app-view-progress",
@@ -155,23 +165,28 @@ function runRuntimeRouterTest() {
     "app-view-pronounce",
     "app-view-tones",
     "toolbar-words",
-    "toolbar-pronounce",
     "sidebar-hsk-menu",
   ];
   const navLinks = [
-    { view: "dashboard" },
-    { view: "hsk" },
-    { view: "categories" },
+    { view: "home" },
+    { view: "browse" },
     { view: "learn" },
-    { view: "favorites" },
     { view: "progress" },
-    { view: "words" },
+    { view: "tocfl" },
     { view: "hsk1" },
     { view: "hsk2" },
     { view: "hsk3" },
     { view: "hsk4" },
     { view: "hsk5" },
     { view: "hsk6" },
+    { view: "hsk-other" },
+    { view: "words" },
+    { view: "lessons1" },
+    { view: "lessons2" },
+    { view: "lessons3" },
+    { view: "lessons4" },
+    { view: "lessons5" },
+    { view: "lessons6" },
     { view: "pronounce" },
     { view: "tones" },
   ].map(function (x) {
@@ -245,17 +260,25 @@ function runRuntimeRouterTest() {
   if (byId["app-view-words"].classList.contains("hidden")) fail("Words view hidden");
   else pass("Router: words view visible");
 
-  window.AppRouter.go("hsk2", true);
-  if (byId["app-view-words"].classList.contains("hidden")) fail("Words panel hidden on hsk2");
-  else pass("Router: hsk2 keeps words panel visible");
-  if (switchedTo !== "hsk2") fail("switchTo not called for hsk2 (got " + switchedTo + ")");
+  ["hsk1", "hsk2", "hsk3", "hsk4", "hsk5", "hsk6", "hsk-other"].forEach(function (view) {
+    window.AppRouter.go(view, true);
+    if (byId["app-view-level"].classList.contains("hidden")) fail(view + " level page hidden");
+    else pass("Router: " + view + " opens its own level page");
+  });
+
+  window.AppRouter.go("lessons2", true);
+  if (byId["app-view-words"].classList.contains("hidden")) fail("Words panel hidden on lessons2");
+  else pass("Router: lessons2 keeps words panel visible");
+  if (switchedTo !== "hsk2") fail("switchTo not called for lessons2 (got " + switchedTo + ")");
   else pass("Router: ChineseVocabApp.switchTo('hsk2')");
 
   window.AppRouter.go("pronounce", true);
   if (byId["app-view-pronounce"].classList.contains("hidden")) fail("Pronounce view hidden");
   else pass("Router: pronounce view visible");
-  if (!byId["toolbar-pronounce"].classList.contains("hidden")) pass("Router: pronounce toolbar shown");
-  else fail("Pronounce toolbar hidden");
+
+  window.AppRouter.go("tocfl", true);
+  if (byId["app-view-tocfl"].classList.contains("hidden")) fail("TOCFL view hidden");
+  else pass("Router: TOCFL category view visible");
 
   window.AppRouter.go("tones", true);
   if (byId["app-view-tones"].classList.contains("hidden")) fail("Tones view hidden");

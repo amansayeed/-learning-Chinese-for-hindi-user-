@@ -29,6 +29,7 @@
   const studyNext = document.getElementById("study-next");
   const studyRand = document.getElementById("study-rand");
   const themeToggle = document.getElementById("theme-toggle");
+  const themeFloatToggle = document.getElementById("theme-float-toggle");
 
   const THEME_KEY = "chinese-vocab-theme";
 
@@ -49,14 +50,23 @@
   }
 
   function syncThemeToggle() {
-    if (!themeToggle) return;
     var dark = getTheme() === "dark";
-    themeToggle.textContent = dark ? "Light mode" : "Dark mode";
-    themeToggle.setAttribute("aria-pressed", dark ? "true" : "false");
-    themeToggle.setAttribute(
-      "aria-label",
-      dark ? "Switch to light theme" : "Switch to dark theme"
-    );
+    if (themeToggle) {
+      themeToggle.textContent = dark ? "Light mode" : "Dark mode";
+      themeToggle.setAttribute("aria-pressed", dark ? "true" : "false");
+      themeToggle.setAttribute(
+        "aria-label",
+        dark ? "Switch to light theme" : "Switch to dark theme"
+      );
+    }
+    if (themeFloatToggle) {
+      themeFloatToggle.textContent = dark ? "☀️" : "🌙";
+      themeFloatToggle.setAttribute("aria-pressed", dark ? "true" : "false");
+      themeFloatToggle.setAttribute(
+        "aria-label",
+        dark ? "Switch to light theme" : "Switch to dark theme"
+      );
+    }
   }
 
   function setTheme(mode) {
@@ -69,9 +79,11 @@
   }
 
   function initTheme() {
-    if (!themeToggle) return;
-    themeToggle.addEventListener("click", function () {
-      setTheme(getTheme() === "dark" ? "light" : "dark");
+    [themeToggle, themeFloatToggle].forEach(function (button) {
+      if (!button) return;
+      button.addEventListener("click", function () {
+        setTheme(getTheme() === "dark" ? "light" : "dark");
+      });
     });
     syncThemeToggle();
   }
@@ -117,6 +129,64 @@
 
   function normalize(s) {
     return (s || "").toLowerCase();
+  }
+
+  function normalizedPinyin(s) {
+    return normalize(s)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/ü/g, "u")
+      .replace(/u:/g, "u")
+      .replace(/v/g, "u")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function wordKey(word) {
+    return [
+      normalize(word.traditional).normalize("NFKC").replace(/\s+/g, ""),
+      normalize(word.simplified).normalize("NFKC").replace(/\s+/g, ""),
+      normalizedPinyin(word.pinyin).replace(/\s+/g, ""),
+    ].join("\u001f");
+  }
+
+  function relatedWordSort(a, b) {
+    var aWord = String(a.traditional || a.simplified || "").split("/")[0];
+    var bWord = String(b.traditional || b.simplified || "").split("/")[0];
+    var aPinyin = normalizedPinyin(a.pinyin);
+    var bPinyin = normalizedPinyin(b.pinyin);
+    var groupDiff = aPinyin.split(" ")[0].localeCompare(bPinyin.split(" ")[0]);
+    if (groupDiff) return groupDiff;
+    var characterDiff = aWord.charAt(0).localeCompare(bWord.charAt(0));
+    if (characterDiff) return characterDiff;
+    if (aWord.length !== bWord.length) return aWord.length - bWord.length;
+    return aPinyin.localeCompare(bPinyin) || aWord.localeCompare(bWord);
+  }
+
+  function prepareHskPayload(payload) {
+    var seen = {};
+    var removed = 0;
+    (payload.levels || []).forEach(function (level) {
+      var levelWords = 0;
+      (level.lessons || []).forEach(function (lesson) {
+        lesson.words = (lesson.words || [])
+          .filter(function (word) {
+            var key = wordKey(word);
+            if (seen[key]) {
+              removed += 1;
+              return false;
+            }
+            seen[key] = true;
+            return true;
+          })
+          .sort(relatedWordSort);
+        lesson.wordCount = lesson.words.length;
+        levelWords += lesson.words.length;
+      });
+      level.wordCount = levelWords;
+    });
+    payload.__duplicatesRemoved = removed;
+    return payload;
   }
 
   function filterWords(words, q) {
@@ -568,7 +638,7 @@
     if (!key) key = "tocfl";
     getPayloadForDataset(key)
       .then(function (json) {
-        data = json;
+        data = /^hsk[1-6]$/.test(key) ? prepareHskPayload(json) : json;
         hideLoadError();
         setMetaLine(json);
         populateLevels();
@@ -605,7 +675,7 @@
     var key = FIXED_DATASET || (datasetSelect && datasetSelect.value) || "tocfl";
     getPayloadForDataset(key)
       .then(function (json) {
-        data = json;
+        data = /^hsk[1-6]$/.test(key) ? prepareHskPayload(json) : json;
         hideLoadError();
         setMetaLine(json);
         populateLevels();

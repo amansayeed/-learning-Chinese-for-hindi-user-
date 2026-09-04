@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark light" />
+  <title>TOCFL and CCCC vocabulary by level and category</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body class="page-shell">
+  <aside id="sidebar" class="sidebar" aria-label="Site navigation">
+    <div class="sidebar-brand">
+      <span class="sidebar-brand-title">臺灣華語</span>
+      <span class="sidebar-brand-sub">Traditional Chinese · हिन्दी</span>
+    </div>
+    <nav class="sidebar-nav" aria-label="Pages">
+      <a href="./chinese.html#dashboard" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🏠</span>Dashboard</a>
+      <a href="./chinese.html#categories" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🗂️</span>All Categories</a>
+      <a href="./chinese.html#hsk" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📚</span>HSK + Category Filters</a>
+      <a href="./chinese.html#learn" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🎯</span>Learn</a>
+      <a href="./chinese.html#favorites" class="sidebar-link"><span class="nav-icon" aria-hidden="true">⭐</span>Favorites</a>
+      <a href="./chinese.html#progress" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📈</span>Progress</a>
+      <a href="./index.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📖</span>Words · table &amp; study</a>
+      <a href="./tocfl.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📘</span>TOCFL + CCCC</a>
+      <details class="sidebar-dropdown" id="sidebar-hsk-menu">
+        <summary class="sidebar-dropdown__toggle"><span class="nav-icon" aria-hidden="true">🧩</span>HSK · levels 1–6</summary>
+        <div class="sidebar-dropdown__panel">
+          <a href="./hsk.html" class="sidebar-link sidebar-link--sub">Level 1 · 500 words</a>
+          <a href="./hsk2.html" class="sidebar-link sidebar-link--sub">Level 2 · 772 words</a>
+          <a href="./hsk3.html" class="sidebar-link sidebar-link--sub">Level 3 · 973 words</a>
+          <a href="./hsk4.html" class="sidebar-link sidebar-link--sub">Level 4 · 1000 words</a>
+          <a href="./hsk5.html" class="sidebar-link sidebar-link--sub">Level 5 · 1071 words</a>
+          <a href="./hsk6.html" class="sidebar-link sidebar-link--sub">Level 6 · 1140 words</a>
+        </div>
+      </details>
+      <a href="./pronunciation.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🗣️</span>Pronunciation</a>
+      <a href="./tones.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🎵</span>Mandarin · four tones</a>
+    </nav>
+    <div class="sidebar-meta">
+      <label class="sidebar-label" for="theme-toggle">Appearance</label>
+      <button type="button" id="theme-toggle" class="theme-toggle theme-toggle--block" aria-pressed="false">Dark mode</button>
+    </div>
+  </aside>
+  <button type="button" id="sidebar-backdrop" class="sidebar-backdrop" hidden aria-hidden="true" tabindex="-1" aria-label="Close menu"></button>
+
+  <div class="layout-main">
+    <header class="mobile-bar">
+      <button type="button" id="sidebar-open" class="mobile-bar__menu" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
+        <span class="mobile-bar__menu-icon" aria-hidden="true"></span>
+      </button>
+      <div class="mobile-bar__text">
+        <span class="mobile-bar__title">TOCFL + CCCC</span>
+        <span class="mobile-bar__hint">Seven official vocabulary levels</span>
+      </div>
+    </header>
+
+    <div data-tocfl-browser data-tocfl-level="novice-1">
+      <header class="header app-header">
+        <div>
+          <p class="eyebrow">Official TOCFL vocabulary</p>
+          <h1 data-tocfl-role="title">準備級一級 · Novice 1</h1>
+          <p class="subtitle" data-tocfl-role="subtitle">Words grouped by topic for this level.</p>
+        </div>
+      </header>
+      <main class="main">
+        <nav class="level-switch" data-tocfl-role="levels" aria-label="Switch TOCFL level"></nav>
+        <nav class="topic-chip-row" data-tocfl-role="categories" aria-label="Topics in this TOCFL level"></nav>
+        <nav class="topic-chip-row hidden" data-tocfl-role="subcategories" aria-label="Subcategories in the selected topic"></nav>
+        <section class="filter-panel filter-panel--compact" aria-label="TOCFL filters">
+          <label class="filter-search">Search in this level
+            <input data-tocfl-role="search" type="search" placeholder="水, shuǐ, water, पानी…" autocomplete="off" />
+          </label>
+          <label>Learning status
+            <select data-tocfl-role="status">
+              <option value="all">All words</option><option value="unlearned">Not learned</option>
+              <option value="learned">Learned</option><option value="favorite">Favorites</option>
+              <option value="difficult">Difficult</option>
+            </select>
+          </label>
+        </section>
+        <div class="result-heading"><strong data-tocfl-role="count">0 words</strong><span>繁體中文 · 简体中文 · Pinyin · English · हिन्दी</span></div>
+        <div class="vocab-results--list" data-tocfl-role="results" aria-live="polite"></div>
+        <nav class="words-pager words-pager--bottom hidden" data-tocfl-role="pagination" aria-label="TOCFL word pages"></nav>
+      </main>
+    </div>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Primary navigation">
+    <a href="./chinese.html#home"><span aria-hidden="true">🏠</span>Home</a>
+    <a href="./chinese.html#learn"><span aria-hidden="true">📚</span>Learn</a>
+    <a href="./chinese.html#browse"><span aria-hidden="true">🔎</span>Browse</a>
+    <a href="./chinese.html#progress"><span aria-hidden="true">📊</span>Progress</a>
+    <a href="./tocfl.html"><span aria-hidden="true">📘</span>TOCFL</a>
+    <a href="./pronunciation.html"><span aria-hidden="true">🗣️</span>Speak</a>
+  </nav>
+
+  <script src="./js/storage-safe.js"></script>
+  <script src="./js/offline.js"></script>
+  <script src="./data/tocfl-8000.js"></script>
+  <script src="./data/tocfl-cccc.js"></script>
+  <script src="./data/vocabulary-master.js"></script>
+  <script src="./js/sidebar.js" defer></script>
+  <script src="./js/learning-state.js" defer></script>
+  <script src="./js/vocab-store.js" defer></script>
+  <script src="./js/vocabulary-ui.js" defer></script>
+  <script src="./js/pronunciation.js" defer></script>
+  <script src="./js/tocfl-ui.js" defer></script>
+</body>
+</html>

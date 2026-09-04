@@ -1,72 +1,29 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark light" />
-  <script>
-    (function () {
-      var loc = window.location;
-      var p = loc.protocol;
-      if (p === "file:" || p === "content:") {
-        window.__OFFLINE_FILE__ = true;
-        var href = loc.href.split("#")[0].split("?")[0];
-        var root = "./";
-        if (p === "file:") {
-          var slash = Math.max(href.lastIndexOf("/"), href.lastIndexOf("\\"));
-          if (slash >= 0) root = href.slice(0, slash + 1);
-        }
-        window.__SITE_ROOT__ = root;
-        if (!document.querySelector("base[data-chinese-root]")) {
-          var base = document.createElement("base");
-          base.setAttribute("data-chinese-root", "1");
-          base.href = root;
-          var head = document.head || document.getElementsByTagName("head")[0];
-          head.insertBefore(base, head.firstChild);
-        }
-      } else {
-        window.__OFFLINE_FILE__ = false;
-      }
-    })();
-  </script>
-  <script>
-    (function () {
-      try {
-        var k = "chinese-vocab-theme";
-        var t = localStorage.getItem(k);
-        if (t === "light" || t === "dark") {
-          document.documentElement.setAttribute("data-theme", t);
-        } else {
-          document.documentElement.setAttribute("data-theme", "dark");
-        }
-      } catch (e) {
-        document.documentElement.setAttribute("data-theme", "dark");
-      }
-    })();
-  </script>
-  <title>English pronunciation &amp; character clusters</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <title>TOCFL and CCCC pronunciation by category</title>
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
 <body class="page-shell">
-  <aside id="sidebar" class="sidebar" aria-label="Site navigation and lesson filters">
+  <aside id="sidebar" class="sidebar" aria-label="Site navigation">
     <div class="sidebar-brand">
-      <span class="sidebar-brand-title">中文词表</span>
-      <span class="sidebar-brand-sub">Chinese vocab</span>
+      <span class="sidebar-brand-title">臺灣華語</span>
+      <span class="sidebar-brand-sub">Traditional Chinese · हिन्दी</span>
     </div>
-
     <nav class="sidebar-nav" aria-label="Pages">
-      <a href="./chinese.html#dashboard" class="sidebar-link">Dashboard</a>
-      <a href="./chinese.html#categories" class="sidebar-link">All Categories</a>
-      <a href="./chinese.html#hsk" class="sidebar-link">HSK + Category Filters</a>
-      <a href="./chinese.html#learn" class="sidebar-link">Learn</a>
-      <a href="./chinese.html#favorites" class="sidebar-link">Favorites</a>
-      <a href="./chinese.html#progress" class="sidebar-link">Progress</a>
-      <a href="./index.html" class="sidebar-link">Words · table &amp; study</a>
+      <a href="./chinese.html#dashboard" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🏠</span>Dashboard</a>
+      <a href="./chinese.html#categories" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🗂️</span>All Categories</a>
+      <a href="./chinese.html#hsk" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📚</span>HSK + Category Filters</a>
+      <a href="./chinese.html#learn" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🎯</span>Learn</a>
+      <a href="./chinese.html#favorites" class="sidebar-link"><span class="nav-icon" aria-hidden="true">⭐</span>Favorites</a>
+      <a href="./chinese.html#progress" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📈</span>Progress</a>
+      <a href="./index.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📖</span>Words · table &amp; study</a>
+      <a href="./tocfl.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📘</span>TOCFL + CCCC</a>
       <details class="sidebar-dropdown" id="sidebar-hsk-menu">
-        <summary class="sidebar-dropdown__toggle">HSK · levels 1–6</summary>
+        <summary class="sidebar-dropdown__toggle"><span class="nav-icon" aria-hidden="true">🧩</span>HSK · levels 1–6</summary>
         <div class="sidebar-dropdown__panel">
           <a href="./hsk.html" class="sidebar-link sidebar-link--sub">Level 1 · 500 words</a>
           <a href="./hsk2.html" class="sidebar-link sidebar-link--sub">Level 2 · 772 words</a>
@@ -76,102 +33,71 @@
           <a href="./hsk6.html" class="sidebar-link sidebar-link--sub">Level 6 · 1140 words</a>
         </div>
       </details>
-      <a href="./pronunciation.html" class="sidebar-link">English · clusters</a>
-      <a href="./tones.html" class="sidebar-link">Mandarin · four tones</a>
+      <a href="./pronunciation.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🗣️</span>Pronunciation</a>
+      <a href="./tones.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🎵</span>Mandarin · four tones</a>
     </nav>
-
-    <nav class="toolbar sidebar-toolbar" aria-label="Lesson filters">
-      <div class="field">
-        <label for="dataset-select">Word list</label>
-        <select id="dataset-select">
-          <option value="tocfl">TOCFL (Levels 1–2)</option>
-          <option value="nhm">Ni Hao Ma — 1000 common words</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="level-select">Level</label>
-        <select id="level-select"></select>
-      </div>
-      <div class="field">
-        <label for="lesson-select">Lesson</label>
-        <select id="lesson-select"></select>
-      </div>
-      <div class="field field--grow">
-        <label for="search">Search</label>
-        <input type="search" id="search" placeholder="Filter this lesson…" autocomplete="off" />
-      </div>
-    </nav>
-
     <div class="sidebar-meta">
       <label class="sidebar-label" for="theme-toggle">Appearance</label>
-      <button type="button" id="theme-toggle" class="theme-toggle theme-toggle--block" aria-pressed="true">Light mode</button>
+      <button type="button" id="theme-toggle" class="theme-toggle theme-toggle--block" aria-pressed="false">Dark mode</button>
     </div>
   </aside>
-
-  <button
-    type="button"
-    id="sidebar-backdrop"
-    class="sidebar-backdrop"
-    hidden
-    aria-hidden="true"
-    tabindex="-1"
-    aria-label="Close menu"
-  ></button>
+  <button type="button" id="sidebar-backdrop" class="sidebar-backdrop" hidden aria-hidden="true" tabindex="-1" aria-label="Close menu"></button>
 
   <div class="layout-main">
     <header class="mobile-bar">
-      <button
-        type="button"
-        id="sidebar-open"
-        class="mobile-bar__menu"
-        aria-label="Open menu and lesson filters"
-        aria-expanded="false"
-        aria-controls="sidebar"
-      >
+      <button type="button" id="sidebar-open" class="mobile-bar__menu" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
         <span class="mobile-bar__menu-icon" aria-hidden="true"></span>
       </button>
       <div class="mobile-bar__text">
-        <span class="mobile-bar__title">English &amp; clusters</span>
-        <span class="mobile-bar__hint">Tap ☰ for menu &amp; filters</span>
+        <span class="mobile-bar__title">Pronunciation</span>
+        <span class="mobile-bar__hint">TOCFL levels by topic</span>
       </div>
     </header>
 
-    <header class="header">
-      <h1>English pronunciation &amp; character clusters</h1>
-      <p class="subtitle">
-        Each <strong>汉字</strong> is a cluster you can tap to hear. Use the buttons to hear the
-        <strong>English</strong> meaning in US or India English (browser text-to-speech). Pinyin stays the guide for Mandarin sounds.
-      </p>
-    </header>
-
-    <div id="load-error" class="banner banner--error hidden" role="alert"></div>
-
-    <main class="main pronounce-main">
-      <div id="pronounce-list" class="pronounce-list" aria-live="polite"></div>
-      <p class="hint pronounce-footnote">
-        English pronunciation is approximate machine speech, not a dictionary IPA. Slashes in the headword (e.g. <code>爸爸/爸</code>) show alternate clusters.
-      </p>
-    </main>
-
-    <footer class="footer">
-      <span>Same vocabulary data as the main page · picks up the lesson you last used there (this tab).</span>
-    </footer>
+    <div data-tocfl-pronunciation data-tocfl-level="novice-1">
+      <header class="header app-header">
+        <div>
+          <p class="eyebrow">TOCFL pronunciation practice</p>
+          <h1 data-tocfl-role="title">準備級一級 · Novice 1</h1>
+          <p class="subtitle" data-tocfl-role="subtitle">Hear Chinese and English, grouped by useful topic.</p>
+        </div>
+      </header>
+      <main class="main pronounce-main">
+        <nav class="level-switch" data-tocfl-role="levels" aria-label="Switch pronunciation level"></nav>
+        <nav class="topic-chip-row" data-tocfl-role="categories" aria-label="Pronunciation topics"></nav>
+        <nav class="topic-chip-row hidden" data-tocfl-role="subcategories" aria-label="Pronunciation subcategories"></nav>
+        <section class="filter-panel filter-panel--compact" aria-label="Pronunciation filters">
+          <label class="filter-search">Search in this level
+            <input data-tocfl-role="search" type="search" placeholder="水, shuǐ, water, पानी…" autocomplete="off" />
+          </label>
+        </section>
+        <div class="result-heading"><strong data-tocfl-role="count">0 words</strong><span>Tap Chinese characters or an English play button</span></div>
+        <div class="pronounce-list" data-tocfl-role="results" aria-live="polite"></div>
+        <nav class="words-pager words-pager--bottom hidden" data-tocfl-role="pagination" aria-label="Pronunciation pages"></nav>
+        <p class="hint pronounce-footnote">English pronunciation is approximate machine speech, not dictionary IPA.</p>
+      </main>
+    </div>
   </div>
 
+  <nav class="bottom-nav" aria-label="Primary navigation">
+    <a href="./chinese.html#home"><span aria-hidden="true">🏠</span>Home</a>
+    <a href="./chinese.html#learn"><span aria-hidden="true">📚</span>Learn</a>
+    <a href="./chinese.html#browse"><span aria-hidden="true">🔎</span>Browse</a>
+    <a href="./chinese.html#progress"><span aria-hidden="true">📊</span>Progress</a>
+    <a href="./tocfl.html"><span aria-hidden="true">📘</span>TOCFL</a>
+    <a href="./pronunciation.html"><span aria-hidden="true">🗣️</span>Speak</a>
+  </nav>
+
+  <script src="./js/storage-safe.js"></script>
   <script src="./js/offline.js"></script>
-  <script src="./data/vocabulary.js"></script>
-  <script src="./data/nhm-1000-common.js"></script>
+  <script src="./data/tocfl-8000.js"></script>
+  <script src="./data/tocfl-cccc.js"></script>
+  <script src="./data/vocabulary-master.js"></script>
   <script src="./js/sidebar.js" defer></script>
+  <script src="./js/learning-state.js" defer></script>
+  <script src="./js/vocab-store.js" defer></script>
+  <script src="./js/vocabulary-ui.js" defer></script>
   <script src="./js/pronunciation.js" defer></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      var O = window.ChineseOffline;
-      if (!O) return;
-      var issues = [];
-      if (!O.vocabPayload("tocfl")) issues.push("Missing <code>data/vocabulary.js</code> (TOCFL list).");
-      if (!O.vocabPayload("nhm")) issues.push("Missing <code>data/nhm-1000-common.js</code> (Ni Hao Ma list).");
-      O.showSetupBanner(issues);
-    });
-  </script>
+  <script src="./js/tocfl-ui.js" defer></script>
 </body>
 </html>

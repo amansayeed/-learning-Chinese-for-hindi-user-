@@ -11,8 +11,15 @@ SNIPPET = (PAGES / "_sidebar-nav.snippet.html").read_text(encoding="utf-8").rstr
 APP_SNIPPET = (
     (PAGES / "_sidebar-nav-app.snippet.html").read_text(encoding="utf-8").rstrip() + "\n"
 )
+BOTTOM_SNIPPET = (
+    (PAGES / "_bottom-nav.snippet.html").read_text(encoding="utf-8").rstrip() + "\n"
+)
 PAT = re.compile(
     r'    <nav class="sidebar-nav" aria-label="Pages">.*?</nav>\n',
+    re.DOTALL,
+)
+BOTTOM_PAT = re.compile(
+    r'  <nav class="bottom-nav" aria-label="Primary navigation">.*?</nav>\n',
     re.DOTALL,
 )
 
@@ -26,7 +33,11 @@ def main() -> None:
         new, n = PAT.subn(snippet, text, count=1)
         if n != 1:
             print(f"skip {path.name} (matches={n})")
-            continue
+            new = text
+        if path.name != "app.html":
+            new, bottom_n = BOTTOM_PAT.subn(BOTTOM_SNIPPET, new, count=1)
+            if bottom_n == 0:
+                new = new.replace("</body>", BOTTOM_SNIPPET + "</body>", 1)
         path.write_text(new, encoding="utf-8")
         print(f"updated {path.name}")
 

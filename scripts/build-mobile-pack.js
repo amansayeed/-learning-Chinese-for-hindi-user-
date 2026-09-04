@@ -208,29 +208,33 @@ const launcher = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Chinese study</title>
+  <title>Taiwan Chinese Learning</title>
   <style>
-    body{font-family:system-ui,sans-serif;margin:0;padding:max(1rem,env(safe-area-inset-top)) max(1rem,env(safe-area-inset-right)) max(1rem,env(safe-area-inset-bottom)) max(1rem,env(safe-area-inset-left));background:#0f172a;color:#e2e8f0;line-height:1.5}
-    h1{font-size:1.25rem}
-    a{display:block;padding:1rem;margin:0.5rem 0;background:#1e293b;border:1px solid #334155;border-radius:12px;color:#5eead4;text-decoration:none;font-weight:700;font-size:1.05rem}
-    a.primary{background:#134e4a;border-color:#0d9488}
-    p{color:#94a3b8;font-size:0.9rem}
+    *{box-sizing:border-box}body{font-family:"Segoe UI",system-ui,sans-serif;margin:0;min-height:100vh;padding:max(1rem,env(safe-area-inset-top)) max(1rem,env(safe-area-inset-right)) max(1rem,env(safe-area-inset-bottom)) max(1rem,env(safe-area-inset-left));background:linear-gradient(135deg,#667eea,#764ba2);color:#2d3748;line-height:1.5}
+    .container{width:min(1180px,100%);margin:auto}.hero{padding:clamp(2rem,7vw,5rem) 1.25rem;margin-bottom:1.5rem;border-radius:22px;background:rgba(255,255,255,.96);box-shadow:0 12px 42px rgba(25,28,48,.25);text-align:center}
+    h1{margin:0;font-size:clamp(2rem,7vw,4rem);line-height:1.08;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{color:#667085;font-size:clamp(1rem,2vw,1.25rem)}
+    .stats{display:flex;justify-content:center;gap:clamp(.6rem,3vw,2.5rem);flex-wrap:wrap;margin-top:2rem}.stat{min-width:120px;padding:.9rem 1.2rem;border-radius:14px;background:rgba(102,126,234,.1)}.stat strong{display:block;color:#667eea;font-size:1.7rem}.stat span{color:#667085;font-size:.82rem;font-weight:700}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem}.card{display:flex;min-height:180px;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;padding:1.25rem;border:2px solid transparent;border-radius:18px;background:rgba(255,255,255,.96);color:#2d3748;text-align:center;text-decoration:none;box-shadow:0 8px 28px rgba(25,28,48,.2);transition:transform .25s,box-shadow .25s,border-color .25s}.card:hover{transform:translateY(-7px);border-color:#667eea;box-shadow:0 16px 40px rgba(25,28,48,.3)}.card .icon{font-size:2.8rem}.card strong{color:#5b6fd6;font-size:1.08rem}.card small{color:#667085}.card.primary{grid-column:1/-1;min-height:145px;background:linear-gradient(135deg,rgba(255,255,255,.98),#eef0ff)}.note{margin:1.25rem 0;color:rgba(255,255,255,.9);text-align:center}
+    @media(max-width:520px){.grid{grid-template-columns:1fr}.card{min-height:140px}.stats{display:grid;grid-template-columns:repeat(3,1fr)}.stat{min-width:0;padding:.7rem .35rem}.stat strong{font-size:1.3rem}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important}}
   </style>
 </head>
 <body>
-  <h1>中文 · Chinese study</h1>
-  <p><strong>On phone (Google Drive / one file):</strong> open <code>chinese.html</code> only — sidebar works inside that file.</p>
-  <a href="chinese.html" class="primary">Open all-in-one app (recommended for phone)</a>
-  <p>Or open separate pages (needs every .html file in the same folder):</p>
-  <a href="words.html">Words · table &amp; study</a>
-  <a href="hsk.html">HSK 1 · 500 words</a>
-  <a href="hsk2.html">HSK 2 · 772 words</a>
-  <a href="hsk3.html">HSK 3 · 973 words</a>
-  <a href="hsk4.html">HSK 4 · 1000 words</a>
-  <a href="hsk5.html">HSK 5 · 1071 words</a>
-  <a href="hsk6.html">HSK 6 · 1140 words</a>
-  <a href="pronunciation.html">English · clusters</a>
-  <a href="tones.html">Four tones</a>
+  <main class="container"><section class="hero"><h1>🇹🇼 Taiwan Chinese Learning</h1>
+  <p>Traditional Chinese · Pinyin · English · हिन्दी</p><div class="stats"><div class="stat"><strong>6,070</strong><span>Words</span></div><div class="stat"><strong>69</strong><span>Categories</span></div><div class="stat"><strong>6</strong><span>HSK Levels</span></div></div></section>
+  <p class="note"><strong>Phone:</strong> choose the all-in-one app. Separate pages require the complete folder.</p>
+  <section class="grid" aria-label="Learning modules">
+  <a href="chinese.html" class="card primary"><span class="icon" aria-hidden="true">🚀</span><strong>Open all-in-one app</strong><small>Dashboard, categories, search, learn and progress</small></a>
+  <a href="words.html" class="card"><span class="icon" aria-hidden="true">📖</span><strong>Words · table &amp; study</strong><small>Browse TOCFL and common vocabulary</small></a>
+  <a href="hsk.html" class="card"><span class="icon" aria-hidden="true">1️⃣</span><strong>HSK 1 · 500 words</strong><small>Start with essential beginner vocabulary</small></a>
+  <a href="hsk2.html" class="card"><span class="icon" aria-hidden="true">2️⃣</span><strong>HSK 2 · 772 words</strong><small>Build everyday communication skills</small></a>
+  <a href="hsk3.html" class="card"><span class="icon" aria-hidden="true">3️⃣</span><strong>HSK 3 · 973 words</strong><small>Grow practical intermediate vocabulary</small></a>
+  <a href="hsk4.html" class="card"><span class="icon" aria-hidden="true">4️⃣</span><strong>HSK 4 · 1000 words</strong><small>Strengthen confident communication</small></a>
+  <a href="hsk5.html" class="card"><span class="icon" aria-hidden="true">5️⃣</span><strong>HSK 5 · 1071 words</strong><small>Study advanced words and expressions</small></a>
+  <a href="hsk6.html" class="card"><span class="icon" aria-hidden="true">6️⃣</span><strong>HSK 6 · 1140 words</strong><small>Master high-level vocabulary</small></a>
+  <a href="pronunciation.html" class="card"><span class="icon" aria-hidden="true">🗣️</span><strong>Pronunciation</strong><small>Practice Chinese sounds and clusters</small></a>
+  <a href="tones.html" class="card"><span class="icon" aria-hidden="true">🎵</span><strong>Four tones</strong><small>Train Mandarin tone recognition</small></a>
+  </section></main>
 </body>
 </html>
 `;
@@ -243,4 +247,4 @@ fs.writeFileSync(
 );
 console.log("Wrote START.html (root + mobile/)");
 
-console.log("\nDone. On phone: open mobile/chinese.html (one file, ~2–3 MB) or copy the whole mobile/ folder.");
+console.log("\nDone. On phone: open mobile/chinese.html (one file, ~7–8 MB) or copy the whole mobile/ folder.");
