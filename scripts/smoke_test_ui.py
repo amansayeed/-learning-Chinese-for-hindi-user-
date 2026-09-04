@@ -328,6 +328,30 @@ try {
   report.errors.push("TOCFL routes: " + e);
 }
 
+/* An Android file manager serves the page from a content:// URI whose access
+   grant dies with the first URL change, so views must switch in place there. */
+report.sandboxedNav = { detected: false, hashUntouched: false, viewSwitched: false };
+try {
+  var savedProtocol = window.location.protocol;
+  var savedHash = window.location.hash;
+  window.location.protocol = "content:";
+  window.location.hash = "#sentinel";
+  report.sandboxedNav.detected = window.ChineseOffline
+    ? window.ChineseOffline.isSandboxed()
+    : true;
+  window.AppRouter.go("tocfl", false);
+  report.sandboxedNav.hashUntouched = window.location.hash === "#sentinel";
+  report.sandboxedNav.viewSwitched =
+    !document.getElementById("app-view-tocfl").classList.contains("hidden");
+  window.location.protocol = savedProtocol;
+  window.location.hash = savedHash;
+  if (window.ChineseOffline && window.ChineseOffline.isSandboxed()) {
+    report.errors.push("file:// documents must not be treated as sandboxed");
+  }
+} catch (e) {
+  report.errors.push("sandboxed navigation: " + e);
+}
+
 try { window.VocabularyUI.onView("learn"); } catch (e) { report.errors.push("learn: " + e); }
 report.learnHtml = html("learn-card").length;
 
@@ -417,6 +441,9 @@ def main() -> None:
 
     check(report.get("tocflRouteVisible"), "Router opens the TOCFL category page")
     check(report.get("pronounceRouteVisible"), "Router opens TOCFL pronunciation")
+    check(report["sandboxedNav"]["detected"], "content:// documents are detected as sandboxed")
+    check(report["sandboxedNav"]["hashUntouched"], "sandboxed navigation leaves the URL alone")
+    check(report["sandboxedNav"]["viewSwitched"], "sandboxed navigation still switches the view")
     check(report["learnHtml"] > 0, "Learn renders a card")
     check(report["progressHtml"] > 0, "Progress renders HSK rows")
     check(bool(report["homeStats"]), f"Home stats: {report['homeStats']}")

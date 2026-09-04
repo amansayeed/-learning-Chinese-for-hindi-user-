@@ -17,6 +17,16 @@
     }
   }
 
+  /* An Android file manager hands Chrome a content:// URI that grants access to
+     the opened file alone. Any navigation re-requests that URI, so even a bare
+     fragment change dies with ERR_FILE_NOT_FOUND, and sibling pages were never
+     reachable to begin with. Such a document has to route purely in memory. */
+  function isSandboxedDocument() {
+    var protocol = protocolLabel();
+    if (!protocol) return true;
+    return protocol !== "http:" && protocol !== "https:" && protocol !== "file:";
+  }
+
   function offlineFetchHint(jsonPath, jsPath) {
     if (isMobilePack()) {
       return "Mobile pack failed to load embedded data. Re-copy the mobile/ folder from git or rebuild with: node scripts/build-mobile-pack.js";
@@ -41,6 +51,7 @@
   window.ChineseOffline = {
     isOfflineFile: isOfflineFile,
     isMobilePack: isMobilePack,
+    isSandboxed: isSandboxedDocument,
     offlineFetchHint: offlineFetchHint,
     hasGlobal: hasGlobal,
     vocabPayload: function (key) {

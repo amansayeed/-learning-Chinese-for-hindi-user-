@@ -195,6 +195,7 @@ def write_launchers() -> None:
         )
         for index, (href, icon, label, description) in enumerate(links)
     )
+    all_in_one = links[0][0]
     template = f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -209,7 +210,26 @@ h1{{margin:0;font-size:clamp(2rem,7vw,4rem);line-height:1.08;background:linear-g
 </style></head><body><main class="container"><section class="hero"><h1>🇹🇼 Taiwan Chinese Learning</h1>
 <p>Traditional Chinese · Pinyin · English · हिन्दी</p><div class="stats"><div class="stat"><strong>6,070</strong><span>Words</span></div><div class="stat"><strong>69</strong><span>Categories</span></div><div class="stat"><strong>6</strong><span>HSK Levels</span></div></div></section>
 <p class="note"><strong>Phone:</strong> choose the all-in-one app. Separate pages require the complete folder.</p>
-<section class="grid" aria-label="Learning modules">{body}</section></main></body></html>"""
+<p class="note" id="sandbox-note" hidden></p>
+<section class="grid" aria-label="Learning modules">{body}</section></main>
+<script>
+(function(){{
+  /* A file manager can share this launcher with the browser as a one-file
+     content:// grant, which cannot reach the pages stored beside it. */
+  var protocol=location.protocol;
+  if(protocol==="http:"||protocol==="https:"||protocol==="file:")return;
+  var note=document.getElementById("sandbox-note");
+  document.addEventListener("click",function(event){{
+    var link=event.target&&event.target.closest?event.target.closest("a[href]"):null;
+    if(!link)return;
+    event.preventDefault();
+    note.hidden=false;
+    note.innerHTML="<strong>Your file manager shared only this launcher with the browser.</strong> It cannot open the pages stored beside it. Open <code>{all_in_one}</code> from the same folder instead \u2014 that single file holds every page.";
+    note.scrollIntoView({{block:"nearest"}});
+  }},true);
+}})();
+</script>
+</body></html>"""
     MOBILE.mkdir(parents=True, exist_ok=True)
     (MOBILE / "START.html").write_text(template, encoding="utf-8")
     (ROOT / "START.html").write_text(

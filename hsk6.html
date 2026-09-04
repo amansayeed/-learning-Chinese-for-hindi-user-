@@ -5009,6 +5009,16 @@ html[data-theme="dark"] .bottom-nav {
     }
   }
 
+  /* An Android file manager hands Chrome a content:// URI that grants access to
+     the opened file alone. Any navigation re-requests that URI, so even a bare
+     fragment change dies with ERR_FILE_NOT_FOUND, and sibling pages were never
+     reachable to begin with. Such a document has to route purely in memory. */
+  function isSandboxedDocument() {
+    var protocol = protocolLabel();
+    if (!protocol) return true;
+    return protocol !== "http:" && protocol !== "https:" && protocol !== "file:";
+  }
+
   function offlineFetchHint(jsonPath, jsPath) {
     if (isMobilePack()) {
       return "Mobile pack failed to load embedded data. Re-copy the mobile/ folder from git or rebuild with: node scripts/build-mobile-pack.js";
@@ -5033,6 +5043,7 @@ html[data-theme="dark"] .bottom-nav {
   window.ChineseOffline = {
     isOfflineFile: isOfflineFile,
     isMobilePack: isMobilePack,
+    isSandboxed: isSandboxedDocument,
     offlineFetchHint: offlineFetchHint,
     hasGlobal: hasGlobal,
     vocabPayload: function (key) {
@@ -5112,6 +5123,66 @@ window.__VOCAB_HSK6__ = {"meta":{"title":"New HSK 6 — 1140 words","sourceUrl":
 
 </script>
 <script>
+(function () {
+  "use strict";
+
+  /* Standalone pages link to their siblings by filename. When Chrome opened this
+     document from a one-file content:// grant those files are unreachable, so the
+     link is answered with an explanation rather than a browser error page. */
+  function sandboxed() {
+    return !!(
+      window.ChineseOffline &&
+      typeof window.ChineseOffline.isSandboxed === "function" &&
+      window.ChineseOffline.isSandboxed()
+    );
+  }
+
+  if (!sandboxed()) return;
+
+  var NOTICE_ID = "sandboxed-nav-notice";
+  var ALL_IN_ONE = window.__MOBILE_PACK__ ? "index.html" : "chinese.html";
+
+  function explain(label) {
+    var host = document.querySelector(".layout-main") || document.body;
+    if (!host) return;
+    var previous = document.getElementById(NOTICE_ID);
+    if (previous && previous.parentNode) previous.parentNode.removeChild(previous);
+
+    var notice = document.createElement("div");
+    notice.id = NOTICE_ID;
+    notice.className = "banner banner--error";
+    notice.setAttribute("role", "alert");
+    notice.innerHTML =
+      "<strong>" +
+      (label ? "“" + label + "” cannot open from here." : "That page cannot open from here.") +
+      "</strong> Your file manager shared this single file with the browser, so it " +
+      "cannot reach the other pages stored beside it. Open <code>" +
+      ALL_IN_ONE +
+      "</code> instead — every page lives inside that one file — or open the folder " +
+      "from device storage so the address starts with <code>file://</code>.";
+    host.insertBefore(notice, host.firstChild);
+    if (typeof notice.scrollIntoView === "function") {
+      notice.scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  document.addEventListener(
+    "click",
+    function (event) {
+      var target = event.target;
+      var link = target && target.closest ? target.closest("a[href]") : null;
+      if (!link) return;
+      var href = link.getAttribute("href") || "";
+      /* Same-document fragments still work; absolute schemes are the browser's job. */
+      if (!href || href.charAt(0) === "#" || /^[a-z][a-z0-9+.-]*:/i.test(href)) return;
+      event.preventDefault();
+      if (window.__closeSidebarDrawer) window.__closeSidebarDrawer();
+      explain((link.textContent || "").replace(/\s+/g, " ").trim());
+    },
+    true
+  );
+})();
+
 (function () {
   "use strict";
 

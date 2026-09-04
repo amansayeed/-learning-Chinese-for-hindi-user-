@@ -134,7 +134,23 @@
     }
   }
 
+  function isSandboxed() {
+    if (window.ChineseOffline && typeof window.ChineseOffline.isSandboxed === "function") {
+      return window.ChineseOffline.isSandboxed();
+    }
+    var p = "";
+    try {
+      p = window.location.protocol || "";
+    } catch (e) {
+      return true;
+    }
+    return !p || (p !== "http:" && p !== "https:" && p !== "file:");
+  }
+
   function updateUrlHash(view, replace) {
+    /* A content:// document loses its one-file access grant as soon as the URL
+       changes, so there the address bar is left exactly as Chrome opened it. */
+    if (isSandboxed()) return;
     var want = "#" + view;
     if (location.hash === want) return;
     try {
@@ -202,7 +218,7 @@
           if (!v) return;
           go(v, false);
           if (window.__closeSidebarDrawer) window.__closeSidebarDrawer();
-          if (!isHashOnlyNav()) e.preventDefault();
+          if (isSandboxed() || !isHashOnlyNav()) e.preventDefault();
         });
       });
 

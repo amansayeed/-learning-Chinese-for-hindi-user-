@@ -74,6 +74,9 @@ def main() -> None:
     check(report["tocflCounts"].get("A2", 0) > 300, "bundle: TOCFL A2 count is populated")
     check(report.get("tocflRouteVisible"), "bundle: TOCFL category route opens")
     check(report.get("pronounceRouteVisible"), "bundle: TOCFL pronunciation route opens")
+    check(report["sandboxedNav"]["detected"], "bundle: content:// documents are detected as sandboxed")
+    check(report["sandboxedNav"]["hashUntouched"], "bundle: sandboxed navigation leaves the URL alone")
+    check(report["sandboxedNav"]["viewSwitched"], "bundle: sandboxed navigation still switches the view")
     check(report["duplicatesRemoved"] > 0, f"bundle: removed {report['duplicatesRemoved']} duplicate HSK entries")
     check(report["hskDuplicateExtras"] == 0, "bundle: no duplicate entries remain across HSK 1–6")
     hai = [str(value).lower() for value in report["haiFamily"]]

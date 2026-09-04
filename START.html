@@ -12,6 +12,7 @@ h1{margin:0;font-size:clamp(2rem,7vw,4rem);line-height:1.08;background:linear-gr
 </style></head><body><main class="container"><section class="hero"><h1>🇹🇼 Taiwan Chinese Learning</h1>
 <p>Traditional Chinese · Pinyin · English · हिन्दी</p><div class="stats"><div class="stat"><strong>6,070</strong><span>Words</span></div><div class="stat"><strong>69</strong><span>Categories</span></div><div class="stat"><strong>6</strong><span>HSK Levels</span></div></div></section>
 <p class="note"><strong>Phone:</strong> choose the all-in-one app. Separate pages require the complete folder.</p>
+<p class="note" id="sandbox-note" hidden></p>
 <section class="grid" aria-label="Learning modules"><a href="chinese.html" class="card primary"><span class="icon" aria-hidden="true">🚀</span><strong>Open all-in-one app</strong><small>Dashboard, categories, search, learn and progress</small></a>
 <a href="index.html" class="card"><span class="icon" aria-hidden="true">📖</span><strong>Words · table & study</strong><small>Browse TOCFL and common vocabulary</small></a>
 <a href="hsk.html" class="card"><span class="icon" aria-hidden="true">1️⃣</span><strong>HSK 1 · 500 words</strong><small>Start with essential beginner vocabulary</small></a>
@@ -22,4 +23,22 @@ h1{margin:0;font-size:clamp(2rem,7vw,4rem);line-height:1.08;background:linear-gr
 <a href="hsk6.html" class="card"><span class="icon" aria-hidden="true">6️⃣</span><strong>HSK 6 · 1140 words</strong><small>Master high-level vocabulary</small></a>
 <a href="pronunciation.html" class="card"><span class="icon" aria-hidden="true">🗣️</span><strong>Pronunciation</strong><small>Practice Chinese sounds and clusters</small></a>
 <a href="tocfl.html" class="card"><span class="icon" aria-hidden="true">📘</span><strong>TOCFL 8,000</strong><small>Browse all seven official vocabulary levels</small></a>
-<a href="tones.html" class="card"><span class="icon" aria-hidden="true">🎵</span><strong>Four tones</strong><small>Train Mandarin tone recognition</small></a></section></main></body></html>
+<a href="tones.html" class="card"><span class="icon" aria-hidden="true">🎵</span><strong>Four tones</strong><small>Train Mandarin tone recognition</small></a></section></main>
+<script>
+(function(){
+  /* A file manager can share this launcher with the browser as a one-file
+     content:// grant, which cannot reach the pages stored beside it. */
+  var protocol=location.protocol;
+  if(protocol==="http:"||protocol==="https:"||protocol==="file:")return;
+  var note=document.getElementById("sandbox-note");
+  document.addEventListener("click",function(event){
+    var link=event.target&&event.target.closest?event.target.closest("a[href]"):null;
+    if(!link)return;
+    event.preventDefault();
+    note.hidden=false;
+    note.innerHTML="<strong>Your file manager shared only this launcher with the browser.</strong> It cannot open the pages stored beside it. Open <code>chinese.html</code> from the same folder instead — that single file holds every page.";
+    note.scrollIntoView({block:"nearest"});
+  },true);
+})();
+</script>
+</body></html>
