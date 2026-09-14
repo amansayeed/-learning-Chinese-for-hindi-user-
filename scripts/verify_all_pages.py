@@ -71,6 +71,12 @@ def audit_generated(path: Path) -> None:
         not re.search(r'<link[^>]+rel=["\']stylesheet', html, flags=re.I),
         f"{path.relative_to(ROOT)}: styles are bundled",
     )
+    # A <base> makes even #fragment links resolve against the base URL, which on a
+    # content:// document is a directory Android will not serve.
+    check(
+        "data-chinese-root" not in html,
+        f"{path.relative_to(ROOT)}: installs no <base> that would break #links",
+    )
     for reference in local_refs(html, "href"):
         clean = reference.split("#", 1)[0].split("?", 1)[0]
         if not clean or not clean.endswith(".html"):

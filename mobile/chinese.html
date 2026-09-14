@@ -2230,6 +2230,68 @@ progress {
   display: block;
 }
 
+/* A tinted caption band names the topic each block of words belongs to, and
+   doubles as a shortcut that filters the list down to that topic. */
+.vocab-group + .vocab-group {
+  margin-top: 1.15rem;
+}
+
+.vocab-group__head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--accent-border);
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.vocab-group__head:hover {
+  border-color: var(--accent);
+}
+
+.vocab-group__icon {
+  flex: none;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.vocab-group__name {
+  flex: 1;
+  min-width: 0;
+  color: var(--accent-hover);
+  font-size: 1rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.vocab-group__count {
+  flex: none;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .vocab-group__head {
+    padding: 0.55rem 0.7rem;
+  }
+
+  .vocab-group__name {
+    font-size: 0.95rem;
+  }
+
+  .vocab-group__count {
+    font-size: 0.78rem;
+  }
+}
+
 .vocab-list-wrap {
   overflow-x: auto;
   border: 1px solid var(--border);
@@ -6929,14 +6991,84 @@ window.__TONE_PAGE_DATA__ = {"meta":{"title":"Mandarin learning data: four-tone 
     select.value = keep;
   }
 
+  function groupKey(word) {
+    return store.primaryCategory(word) || "Other / Miscellaneous";
+  }
+
+  /* Smart order interleaves topics, so the list is re-ordered into one block per
+     topic. A heading then covers a contiguous run and survives pagination. */
+  function groupedByCategory(list) {
+    var buckets = {};
+    (list || []).forEach(function (word) {
+      var key = groupKey(word);
+      if (!buckets[key]) buckets[key] = [];
+      buckets[key].push(word);
+    });
+    var keys = Object.keys(buckets).sort(function (a, b) {
+      return buckets[b].length - buckets[a].length || a.localeCompare(b);
+    });
+    var words = [];
+    var totals = {};
+    keys.forEach(function (key) {
+      totals[key] = buckets[key].length;
+      words = words.concat(buckets[key]);
+    });
+    return { words: words, totals: totals };
+  }
+
+  function groupHead(run, total) {
+    var shown = run.words.length;
+    var label =
+      shown === total
+        ? total + " word" + (total === 1 ? "" : "s")
+        : shown + " of " + total + " words";
+    return (
+      '<button type="button" class="vocab-group__head" data-open-level-category="' +
+      escapeHtml(run.key) +
+      '" aria-label="Show only ' +
+      escapeHtml(run.key) +
+      '"><span class="vocab-group__icon" aria-hidden="true">' +
+      categoryIcon(run.key) +
+      '</span><span class="vocab-group__name">' +
+      escapeHtml(run.key) +
+      '</span><span class="vocab-group__count">' +
+      label +
+      "</span></button>"
+    );
+  }
+
+  function renderGroupedWordList(visible, start, totals) {
+    var runs = [];
+    visible.forEach(function (word, index) {
+      var key = groupKey(word);
+      var open = runs[runs.length - 1];
+      if (open && open.key === key) {
+        open.words.push(word);
+        return;
+      }
+      runs.push({ key: key, words: [word], start: start + index });
+    });
+    return runs
+      .map(function (run) {
+        return (
+          '<section class="vocab-group">' +
+          groupHead(run, totals[run.key]) +
+          wordList(run.words, run.start) +
+          "</section>"
+        );
+      })
+      .join("");
+  }
+
   function renderLevelResults() {
-    var results = store.filter({
+    var grouped = groupedByCategory(store.filter({
       query: $("level-search") ? $("level-search").value : "",
       hsk: currentLevel,
       category: $("level-category") ? $("level-category").value : "all",
       status: $("level-status") ? $("level-status").value : "all",
       sort: "smart",
-    });
+    }));
+    var results = grouped.words;
     var count = $("level-result-count");
     if (count) count.textContent = results.length + " word" + (results.length === 1 ? "" : "s");
     levelPage = Math.min(Math.max(1, levelPage), pageCount(results.length));
@@ -6945,7 +7077,7 @@ window.__TONE_PAGE_DATA__ = {"meta":{"title":"Mandarin learning data: four-tone 
     if (list) {
       var visible = results.slice(start, start + PAGE_SIZE);
       list.innerHTML = results.length
-        ? wordList(visible, start)
+        ? renderGroupedWordList(visible, start, grouped.totals)
         : '<div class="empty-state"><strong>No matching words</strong><p>Try another topic or clear the search.</p></div>';
     }
     renderPagination("level-pagination", "level", levelPage, results.length);
@@ -8903,8 +9035,108 @@ window.__TONE_PAGE_DATA__ = {"meta":{"title":"Mandarin learning data: four-tone 
       }).join("");
   };
 
+  Controller.prototype.groupOf = function (word, byCategory) {
+    return (byCategory ? word.category : word.subcategory || word.category) || "Other";
+  };
+
+  /* Smart order interleaves topics, so the list is re-ordered into one block per
+     topic. A heading then covers a contiguous run and survives pagination. */
+  Controller.prototype.groupedWords = function () {
+    var byCategory = this.category === "all";
+    var self = this;
+    var buckets = {};
+    this.filteredWords().forEach(function (word) {
+      var key = self.groupOf(word, byCategory);
+      if (!buckets[key]) buckets[key] = [];
+      buckets[key].push(word);
+    });
+    /* Largest topic first, matching the order of the chips above the list. */
+    var keys = Object.keys(buckets).sort(function (a, b) {
+      return buckets[b].length - buckets[a].length || a.localeCompare(b);
+    });
+    var words = [];
+    var totals = {};
+    keys.forEach(function (key) {
+      totals[key] = buckets[key].length;
+      words = words.concat(buckets[key]);
+    });
+    return { words: words, totals: totals, byCategory: byCategory };
+  };
+
+  Controller.prototype.groupHead = function (run, total, attribute) {
+    var shown = run.words.length;
+    /* A topic split across pages says so rather than promising words that the
+       current page does not actually show. */
+    var label =
+      shown === total
+        ? total + " word" + (total === 1 ? "" : "s")
+        : shown + " of " + total + " words";
+    return (
+      '<button type="button" class="vocab-group__head" ' +
+      attribute +
+      '="' +
+      escapeHtml(run.key) +
+      '" aria-label="Show only ' +
+      escapeHtml(run.key) +
+      '"><span class="vocab-group__icon" aria-hidden="true">' +
+      categoryIcon(run.key) +
+      '</span><span class="vocab-group__name">' +
+      escapeHtml(run.key) +
+      '</span><span class="vocab-group__count">' +
+      label +
+      "</span></button>"
+    );
+  };
+
+  Controller.prototype.renderGroups = function (results, visible, start, grouped) {
+    var self = this;
+    var runs = [];
+    visible.forEach(function (word, index) {
+      var key = self.groupOf(word, grouped.byCategory);
+      var open = runs[runs.length - 1];
+      if (open && open.key === key) {
+        open.words.push(word);
+        return;
+      }
+      runs.push({ key: key, words: [word], start: start + index });
+    });
+
+    var attribute = grouped.byCategory ? "data-tocfl-category" : "data-tocfl-subcategory";
+    if (
+      this.mode === "pronunciation" &&
+      window.ChinesePronunciation &&
+      window.ChinesePronunciation.renderWords
+    ) {
+      results.textContent = "";
+      runs.forEach(function (run) {
+        var section = document.createElement("section");
+        section.className = "vocab-group";
+        section.innerHTML =
+          self.groupHead(run, grouped.totals[run.key], attribute) +
+          '<div class="vocab-group__body"></div>';
+        results.appendChild(section);
+        var body = section.querySelector(".vocab-group__body");
+        if (body) window.ChinesePronunciation.renderWords(body, run.words);
+      });
+      return;
+    }
+
+    if (!window.VocabularyUI || !window.VocabularyUI.renderWordList) return;
+    results.innerHTML = runs
+      .map(function (run) {
+        return (
+          '<section class="vocab-group">' +
+          self.groupHead(run, grouped.totals[run.key], attribute) +
+          window.VocabularyUI.renderWordList(run.words, run.start) +
+          "</section>"
+        );
+      })
+      .join("");
+  };
+
   Controller.prototype.renderResults = function () {
-    var words = this.filteredWords();
+    var grouped = this.groupedWords();
+    var words = grouped.words;
     var pages = Math.max(1, Math.ceil(words.length / PAGE_SIZE));
     this.page = Math.min(Math.max(1, this.page), pages);
     var start = (this.page - 1) * PAGE_SIZE;
@@ -8917,14 +9149,8 @@ window.__TONE_PAGE_DATA__ = {"meta":{"title":"Mandarin learning data: four-tone 
     if (results) {
       if (!words.length) {
         results.innerHTML = '<div class="empty-state"><strong>No matching words</strong><p>Try another topic or clear the search.</p></div>';
-      } else if (
-        this.mode === "pronunciation" &&
-        window.ChinesePronunciation &&
-        window.ChinesePronunciation.renderWords
-      ) {
-        window.ChinesePronunciation.renderWords(results, visible);
-      } else if (window.VocabularyUI && window.VocabularyUI.renderWordList) {
-        results.innerHTML = window.VocabularyUI.renderWordList(visible, start);
+      } else {
+        this.renderGroups(results, visible, start, grouped);
       }
     }
 

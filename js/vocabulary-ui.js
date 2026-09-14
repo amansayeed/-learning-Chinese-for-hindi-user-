@@ -601,14 +601,84 @@
     select.value = keep;
   }
 
+  function groupKey(word) {
+    return store.primaryCategory(word) || "Other / Miscellaneous";
+  }
+
+  /* Smart order interleaves topics, so the list is re-ordered into one block per
+     topic. A heading then covers a contiguous run and survives pagination. */
+  function groupedByCategory(list) {
+    var buckets = {};
+    (list || []).forEach(function (word) {
+      var key = groupKey(word);
+      if (!buckets[key]) buckets[key] = [];
+      buckets[key].push(word);
+    });
+    var keys = Object.keys(buckets).sort(function (a, b) {
+      return buckets[b].length - buckets[a].length || a.localeCompare(b);
+    });
+    var words = [];
+    var totals = {};
+    keys.forEach(function (key) {
+      totals[key] = buckets[key].length;
+      words = words.concat(buckets[key]);
+    });
+    return { words: words, totals: totals };
+  }
+
+  function groupHead(run, total) {
+    var shown = run.words.length;
+    var label =
+      shown === total
+        ? total + " word" + (total === 1 ? "" : "s")
+        : shown + " of " + total + " words";
+    return (
+      '<button type="button" class="vocab-group__head" data-open-level-category="' +
+      escapeHtml(run.key) +
+      '" aria-label="Show only ' +
+      escapeHtml(run.key) +
+      '"><span class="vocab-group__icon" aria-hidden="true">' +
+      categoryIcon(run.key) +
+      '</span><span class="vocab-group__name">' +
+      escapeHtml(run.key) +
+      '</span><span class="vocab-group__count">' +
+      label +
+      "</span></button>"
+    );
+  }
+
+  function renderGroupedWordList(visible, start, totals) {
+    var runs = [];
+    visible.forEach(function (word, index) {
+      var key = groupKey(word);
+      var open = runs[runs.length - 1];
+      if (open && open.key === key) {
+        open.words.push(word);
+        return;
+      }
+      runs.push({ key: key, words: [word], start: start + index });
+    });
+    return runs
+      .map(function (run) {
+        return (
+          '<section class="vocab-group">' +
+          groupHead(run, totals[run.key]) +
+          wordList(run.words, run.start) +
+          "</section>"
+        );
+      })
+      .join("");
+  }
+
   function renderLevelResults() {
-    var results = store.filter({
+    var grouped = groupedByCategory(store.filter({
       query: $("level-search") ? $("level-search").value : "",
       hsk: currentLevel,
       category: $("level-category") ? $("level-category").value : "all",
       status: $("level-status") ? $("level-status").value : "all",
       sort: "smart",
-    });
+    }));
+    var results = grouped.words;
     var count = $("level-result-count");
     if (count) count.textContent = results.length + " word" + (results.length === 1 ? "" : "s");
     levelPage = Math.min(Math.max(1, levelPage), pageCount(results.length));
@@ -617,7 +687,7 @@
     if (list) {
       var visible = results.slice(start, start + PAGE_SIZE);
       list.innerHTML = results.length
-        ? wordList(visible, start)
+        ? renderGroupedWordList(visible, start, grouped.totals)
         : '<div class="empty-state"><strong>No matching words</strong><p>Try another topic or clear the search.</p></div>';
     }
     renderPagination("level-pagination", "level", levelPage, results.length);

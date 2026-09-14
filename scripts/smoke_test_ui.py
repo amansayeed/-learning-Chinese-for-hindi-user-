@@ -157,6 +157,7 @@ report.tocflClickFlow = {
   level: "", category: "", countText: "",
   categoryExact: false, subcategoryExact: false, countMatches: false
 };
+report.tocflGroups = { heads: 0, counted: false, knownCategories: false, contiguous: false };
 if (window.TocflUI && window.TocflUI.mount) {
   var tocflRoles = {};
   ["title", "subtitle", "levels", "categories", "subcategories", "search", "status", "count", "results", "pagination"]
@@ -239,6 +240,29 @@ if (window.TocflUI && window.TocflUI.mount) {
           (word.subcategory || word.category) === selectedSubcategory;
       })
     };
+    tocflController.category = "all";
+    tocflController.subcategory = "all";
+    tocflController.page = 1;
+    tocflController.render();
+    var groupedHtml = tocflRoles.results.innerHTML;
+    var headKeys = [];
+    var headPattern = /data-tocfl-category="([^"]+)"/g;
+    var headMatch;
+    while ((headMatch = headPattern.exec(groupedHtml))) headKeys.push(headMatch[1]);
+    var headSeen = {};
+    var headContiguous = headKeys.length > 0;
+    headKeys.forEach(function (key) {
+      if (headSeen[key]) headContiguous = false;
+      headSeen[key] = true;
+    });
+    report.tocflGroups = {
+      heads: (groupedHtml.match(/vocab-group__head/g) || []).length,
+      counted: groupedHtml.indexOf("vocab-group__count") !== -1,
+      knownCategories: headKeys.length > 0 && headKeys.every(function (key) {
+        return key in categoryCounts;
+      }),
+      contiguous: headContiguous
+    };
     if (tocflClick) {
       tocflClick({ target: tocflChip("data-tocfl-level", "level-3") });
       var pickedLevel3Category = Object.keys(tocflController.categoryCounts())[0];
@@ -302,17 +326,31 @@ var views = ["hsk1", "hsk2", "hsk3", "hsk4", "hsk5", "hsk6", "hsk-other"];
 for (var i = 0; i < views.length; i++) {
   try {
     window.VocabularyUI.onView(views[i]);
+    var levelHtml = html("level-results");
+    var headKeys = [];
+    var headPattern = /data-open-level-category="([^"]+)"/g;
+    var headMatch;
+    while ((headMatch = headPattern.exec(levelHtml))) headKeys.push(headMatch[1]);
+    var headSeen = {};
+    var headContiguous = headKeys.length > 0;
+    headKeys.forEach(function (key) {
+      if (headSeen[key]) headContiguous = false;
+      headSeen[key] = true;
+    });
     report.levels[views[i]] = {
       title: text("level-title"),
       subtitle: text("level-subtitle"),
       count: text("level-result-count"),
-      results: html("level-results").length,
-      resultsHtml: html("level-results").slice(0, 400),
-      serials: (html("level-results").match(/vocab-list__serial/g) || []).length,
+      results: levelHtml.length,
+      resultsHtml: levelHtml.slice(0, 400),
+      serials: (levelHtml.match(/vocab-list__serial/g) || []).length,
       pagination: html("level-pagination"),
       categories: html("level-categories").length,
       categoriesHtml: html("level-categories").slice(0, 180),
-      switcher: html("level-switch").length
+      switcher: html("level-switch").length,
+      groupHeads: (levelHtml.match(/vocab-group__head/g) || []).length,
+      groupCounted: levelHtml.indexOf("vocab-group__count") !== -1,
+      groupContiguous: headContiguous
     };
   } catch (e) {
     report.errors.push(views[i] + ": " + e);
@@ -438,9 +476,16 @@ def main() -> None:
             f"{view} title '{data['title']}' — {data['subtitle']}",
         )
         check("empty-state" not in data["resultsHtml"], f"{view} shows real words, not an empty state")
+        check(data["groupHeads"] > 0, f"{view} groups words under category headings ({data['groupHeads']})")
+        check(data["groupCounted"], f"{view} category headings show a word count")
+        check(data["groupContiguous"], f"{view} each category heading appears once per page")
 
     check(report.get("tocflRouteVisible"), "Router opens the TOCFL category page")
     check(report.get("pronounceRouteVisible"), "Router opens TOCFL pronunciation")
+    check(report["tocflGroups"]["heads"] > 0, f"TOCFL groups words under category headings ({report['tocflGroups']['heads']})")
+    check(report["tocflGroups"]["knownCategories"], "each TOCFL heading names a real category of the level")
+    check(report["tocflGroups"]["contiguous"], "each TOCFL category heading appears once per page")
+    check(report["tocflGroups"]["counted"], "each TOCFL heading shows its word count")
     check(report["sandboxedNav"]["detected"], "content:// documents are detected as sandboxed")
     check(report["sandboxedNav"]["hashUntouched"], "sandboxed navigation leaves the URL alone")
     check(report["sandboxedNav"]["viewSwitched"], "sandboxed navigation still switches the view")

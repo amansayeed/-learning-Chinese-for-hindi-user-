@@ -270,8 +270,108 @@
       }).join("");
   };
 
+  Controller.prototype.groupOf = function (word, byCategory) {
+    return (byCategory ? word.category : word.subcategory || word.category) || "Other";
+  };
+
+  /* Smart order interleaves topics, so the list is re-ordered into one block per
+     topic. A heading then covers a contiguous run and survives pagination. */
+  Controller.prototype.groupedWords = function () {
+    var byCategory = this.category === "all";
+    var self = this;
+    var buckets = {};
+    this.filteredWords().forEach(function (word) {
+      var key = self.groupOf(word, byCategory);
+      if (!buckets[key]) buckets[key] = [];
+      buckets[key].push(word);
+    });
+    /* Largest topic first, matching the order of the chips above the list. */
+    var keys = Object.keys(buckets).sort(function (a, b) {
+      return buckets[b].length - buckets[a].length || a.localeCompare(b);
+    });
+    var words = [];
+    var totals = {};
+    keys.forEach(function (key) {
+      totals[key] = buckets[key].length;
+      words = words.concat(buckets[key]);
+    });
+    return { words: words, totals: totals, byCategory: byCategory };
+  };
+
+  Controller.prototype.groupHead = function (run, total, attribute) {
+    var shown = run.words.length;
+    /* A topic split across pages says so rather than promising words that the
+       current page does not actually show. */
+    var label =
+      shown === total
+        ? total + " word" + (total === 1 ? "" : "s")
+        : shown + " of " + total + " words";
+    return (
+      '<button type="button" class="vocab-group__head" ' +
+      attribute +
+      '="' +
+      escapeHtml(run.key) +
+      '" aria-label="Show only ' +
+      escapeHtml(run.key) +
+      '"><span class="vocab-group__icon" aria-hidden="true">' +
+      categoryIcon(run.key) +
+      '</span><span class="vocab-group__name">' +
+      escapeHtml(run.key) +
+      '</span><span class="vocab-group__count">' +
+      label +
+      "</span></button>"
+    );
+  };
+
+  Controller.prototype.renderGroups = function (results, visible, start, grouped) {
+    var self = this;
+    var runs = [];
+    visible.forEach(function (word, index) {
+      var key = self.groupOf(word, grouped.byCategory);
+      var open = runs[runs.length - 1];
+      if (open && open.key === key) {
+        open.words.push(word);
+        return;
+      }
+      runs.push({ key: key, words: [word], start: start + index });
+    });
+
+    var attribute = grouped.byCategory ? "data-tocfl-category" : "data-tocfl-subcategory";
+    if (
+      this.mode === "pronunciation" &&
+      window.ChinesePronunciation &&
+      window.ChinesePronunciation.renderWords
+    ) {
+      results.textContent = "";
+      runs.forEach(function (run) {
+        var section = document.createElement("section");
+        section.className = "vocab-group";
+        section.innerHTML =
+          self.groupHead(run, grouped.totals[run.key], attribute) +
+          '<div class="vocab-group__body"></div>';
+        results.appendChild(section);
+        var body = section.querySelector(".vocab-group__body");
+        if (body) window.ChinesePronunciation.renderWords(body, run.words);
+      });
+      return;
+    }
+
+    if (!window.VocabularyUI || !window.VocabularyUI.renderWordList) return;
+    results.innerHTML = runs
+      .map(function (run) {
+        return (
+          '<section class="vocab-group">' +
+          self.groupHead(run, grouped.totals[run.key], attribute) +
+          window.VocabularyUI.renderWordList(run.words, run.start) +
+          "</section>"
+        );
+      })
+      .join("");
+  };
+
   Controller.prototype.renderResults = function () {
-    var words = this.filteredWords();
+    var grouped = this.groupedWords();
+    var words = grouped.words;
     var pages = Math.max(1, Math.ceil(words.length / PAGE_SIZE));
     this.page = Math.min(Math.max(1, this.page), pages);
     var start = (this.page - 1) * PAGE_SIZE;
@@ -284,14 +384,8 @@
     if (results) {
       if (!words.length) {
         results.innerHTML = '<div class="empty-state"><strong>No matching words</strong><p>Try another topic or clear the search.</p></div>';
-      } else if (
-        this.mode === "pronunciation" &&
-        window.ChinesePronunciation &&
-        window.ChinesePronunciation.renderWords
-      ) {
-        window.ChinesePronunciation.renderWords(results, visible);
-      } else if (window.VocabularyUI && window.VocabularyUI.renderWordList) {
-        results.innerHTML = window.VocabularyUI.renderWordList(visible, start);
+      } else {
+        this.renderGroups(results, visible, start, grouped);
       }
     }
 

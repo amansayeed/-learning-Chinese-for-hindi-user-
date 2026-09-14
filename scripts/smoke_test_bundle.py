@@ -74,6 +74,10 @@ def main() -> None:
     check(report["tocflCounts"].get("A2", 0) > 300, "bundle: TOCFL A2 count is populated")
     check(report.get("tocflRouteVisible"), "bundle: TOCFL category route opens")
     check(report.get("pronounceRouteVisible"), "bundle: TOCFL pronunciation route opens")
+    check(report["tocflGroups"]["heads"] > 0, "bundle: TOCFL groups words under category headings")
+    check(report["tocflGroups"]["knownCategories"], "bundle: each TOCFL heading names a real category")
+    check(report["tocflGroups"]["contiguous"], "bundle: each TOCFL category heading appears once per page")
+    check(report["tocflGroups"]["counted"], "bundle: each TOCFL heading shows its word count")
     check(report["sandboxedNav"]["detected"], "bundle: content:// documents are detected as sandboxed")
     check(report["sandboxedNav"]["hashUntouched"], "bundle: sandboxed navigation leaves the URL alone")
     check(report["sandboxedNav"]["viewSwitched"], "bundle: sandboxed navigation still switches the view")
@@ -95,6 +99,9 @@ def main() -> None:
         check(data["results"] > 0, f"bundle: {view} renders words ({data['count']})")
         check(data["serials"] == 50, f"bundle: {view} shows 50 numbered words per page")
         check("Page 1 of" in data["pagination"], f"bundle: {view} has page navigation")
+        check(data["groupHeads"] > 0, f"bundle: {view} groups words under category headings")
+        check(data["groupCounted"], f"bundle: {view} category headings show a word count")
+        check(data["groupContiguous"], f"bundle: {view} each category heading appears once per page")
 
     for message in report.get("errors", []):
         print("FAIL:", message)

@@ -6,31 +6,6 @@
   <meta name="color-scheme" content="dark light" />
   <script>
     (function () {
-      var loc = window.location;
-      var p = loc.protocol;
-      if (p === "file:" || p === "content:") {
-        window.__OFFLINE_FILE__ = true;
-        var href = loc.href.split("#")[0].split("?")[0];
-        var root = "./";
-        if (p === "file:") {
-          var slash = Math.max(href.lastIndexOf("/"), href.lastIndexOf("\\"));
-          if (slash >= 0) root = href.slice(0, slash + 1);
-        }
-        window.__SITE_ROOT__ = root;
-        if (!document.querySelector("base[data-chinese-root]")) {
-          var base = document.createElement("base");
-          base.setAttribute("data-chinese-root", "1");
-          base.href = root;
-          var head = document.head || document.getElementsByTagName("head")[0];
-          head.insertBefore(base, head.firstChild);
-        }
-      } else {
-        window.__OFFLINE_FILE__ = false;
-      }
-    })();
-  </script>
-  <script>
-    (function () {
       try {
         var k = "chinese-vocab-theme";
         var t = localStorage.getItem(k);
@@ -2246,6 +2221,68 @@ progress {
 
 .vocab-results--list {
   display: block;
+}
+
+/* A tinted caption band names the topic each block of words belongs to, and
+   doubles as a shortcut that filters the list down to that topic. */
+.vocab-group + .vocab-group {
+  margin-top: 1.15rem;
+}
+
+.vocab-group__head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--accent-border);
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.vocab-group__head:hover {
+  border-color: var(--accent);
+}
+
+.vocab-group__icon {
+  flex: none;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.vocab-group__name {
+  flex: 1;
+  min-width: 0;
+  color: var(--accent-hover);
+  font-size: 1rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.vocab-group__count {
+  flex: none;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .vocab-group__head {
+    padding: 0.55rem 0.7rem;
+  }
+
+  .vocab-group__name {
+    font-size: 0.95rem;
+  }
+
+  .vocab-group__count {
+    font-size: 0.78rem;
+  }
 }
 
 .vocab-list-wrap {

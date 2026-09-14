@@ -2200,6 +2200,68 @@ progress {
   display: block;
 }
 
+/* A tinted caption band names the topic each block of words belongs to, and
+   doubles as a shortcut that filters the list down to that topic. */
+.vocab-group + .vocab-group {
+  margin-top: 1.15rem;
+}
+
+.vocab-group__head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--accent-border);
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.vocab-group__head:hover {
+  border-color: var(--accent);
+}
+
+.vocab-group__icon {
+  flex: none;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.vocab-group__name {
+  flex: 1;
+  min-width: 0;
+  color: var(--accent-hover);
+  font-size: 1rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.vocab-group__count {
+  flex: none;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .vocab-group__head {
+    padding: 0.55rem 0.7rem;
+  }
+
+  .vocab-group__name {
+    font-size: 0.95rem;
+  }
+
+  .vocab-group__count {
+    font-size: 0.78rem;
+  }
+}
+
 .vocab-list-wrap {
   overflow-x: auto;
   border: 1px solid var(--border);

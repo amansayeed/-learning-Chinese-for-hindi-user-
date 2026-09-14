@@ -9,7 +9,6 @@ const path = require("path");
 
 const root = path.join(__dirname, "..");
 const tonePath = path.join(root, "data", "tone-quartets.json");
-const toneBundlePath = path.join(root, "data", "tone-quartets.data.js");
 const tonePageBundlePath = path.join(root, "data", "tone-page.data.js");
 const nhmPath = path.join(root, "data", "nhm-1000-common.json");
 const tocflPath = path.join(root, "data", "vocabulary.json");
@@ -388,15 +387,6 @@ const out = {
 
 fs.writeFileSync(tonePath, JSON.stringify(out, null, 2), "utf8");
 console.log("Wrote", tonePath, "— words:", words.length, "quartets:", mergedQuartets.length);
-
-const bundle =
-  "// Auto-generated from data/tone-quartets.json\n" +
-  "// Used as a fallback so tones.html works on file:// (where fetch for JSON is blocked).\n" +
-  "window.__TONE_DATA__ = " +
-  JSON.stringify(out) +
-  ";\n";
-fs.writeFileSync(toneBundlePath, bundle, "utf8");
-console.log("Wrote", toneBundlePath);
 
 const pagePayload = {
   meta: {

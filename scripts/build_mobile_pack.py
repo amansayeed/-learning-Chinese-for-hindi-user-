@@ -92,9 +92,11 @@ def strip_assets(html: str) -> str:
         html,
         flags=re.I,
     )
+    # A bundled page inlines every asset, so the <base> that this snippet installs
+    # has nothing left to resolve and only breaks links on content:// documents.
     return re.sub(
-        r'<script>\s*\(function \(\) \{\s*var loc = window\.location;'
-        r'[\s\S]*?window\.__OFFLINE_FILE__ = false;\s*\}\)\(\);\s*</script>\s*',
+        r"<script>\s*\(function \(\) \{\s*var loc = window\.location;"
+        r"[\s\S]*?</script>\s*",
         "",
         html,
         count=1,
