@@ -12,16 +12,16 @@ ROOT = Path(__file__).resolve().parents[1]
 PAGES = ROOT / "pages"
 
 SOURCE_PAGES = [
-    "app.html", "index.html", "tocfl.html", "pronunciation.html", "tones.html",
+    "app.html", "index.html", "tocfl.html", "characters.html", "pronunciation.html", "tones.html",
     "hsk.html", "hsk2.html", "hsk3.html", "hsk4.html", "hsk5.html", "hsk6.html",
 ]
 ROOT_PAGES = [
-    "START.html", "chinese.html", "index.html", "tocfl.html", "pronunciation.html", "tones.html",
+    "START.html", "chinese.html", "index.html", "tocfl.html", "characters.html", "pronunciation.html", "tones.html",
     "hsk.html", "hsk2.html", "hsk3.html", "hsk4.html", "hsk5.html", "hsk6.html",
 ]
 MOBILE_PAGES = [
     "START.html", "index.html", "chinese.html", "words.html",
-    "tocfl.html", "pronunciation.html", "tones.html", "hsk.html", "hsk2.html", "hsk3.html",
+    "tocfl.html", "characters.html", "pronunciation.html", "tones.html", "hsk.html", "hsk2.html", "hsk3.html",
     "hsk4.html", "hsk5.html", "hsk6.html",
 ]
 
@@ -83,7 +83,13 @@ def audit_generated(path: Path) -> None:
             continue
         target = (path.parent / clean).resolve()
         check(target.is_file(), f"{path.relative_to(ROOT)}: link target exists {clean}")
-    if path.name not in {"START.html"}:
+    if path.name == "START.html":
+        # The launcher carries its own guard: it has no bundled scripts.
+        check(
+            'id="sandbox-note"' in html and "content://" not in html.split("<script>")[0],
+            f"{path.relative_to(ROOT)}: launcher explains one-file sharing",
+        )
+    else:
         check(
             "#categories" in html or "chinese.html#categories" in html or "#browse" in html,
             f"{path.relative_to(ROOT)}: browse navigation is available",
@@ -92,9 +98,56 @@ def audit_generated(path: Path) -> None:
             "window.__CHINESE_STORAGE_PATCHED__" in html,
             f"{path.relative_to(ROOT)}: safe storage is bundled",
         )
+        # Without this guard a tap on any link ends on ERR_FILE_NOT_FOUND when the
+        # page was shared with the browser as a lone content:// document.
+        check(
+            "sandboxed-nav-notice" in html,
+            f"{path.relative_to(ROOT)}: content:// navigation guard is bundled",
+        )
 
 
 def main() -> None:
+    characters = json.loads((ROOT / "data" / "characters.json").read_text(encoding="utf-8"))
+    entries = characters["characters"]
+    check(len(entries) == 3000, "character database contains exactly the top 3,000 characters")
+    check(
+        sorted(entry["rank"] for entry in entries) == list(range(1, 3001)),
+        "MOE frequency ranks are unique, contiguous, and complete",
+    )
+    check(
+        [entry["learningRank"] for entry in entries] == list(range(1, 3001)),
+        "beginner learning ranks are unique and contiguous",
+    )
+    check(
+        len({entry["traditional"] for entry in entries}) == 3000
+        and all(len(entry["traditional"]) == 1 for entry in entries),
+        "every character record is one unique character, never a word",
+    )
+    check(all(entry["pinyin"] and entry["english"] for entry in entries), "every character has pinyin and English")
+    check(
+        all(re.search(r"[\u0900-\u097f]", entry["hindi"]) for entry in entries),
+        "every character has a Devanagari Hindi meaning",
+    )
+    check(all(entry["examples"] for entry in entries), "every character detail has an example word or expression")
+    check(
+        [level["limit"] for level in characters["levels"]] == [1000, 2000, 3000],
+        "character learning levels use the requested 1,000/2,000/3,000 limits",
+    )
+    level_sets = [
+        {entry["traditional"] for entry in entries[:limit]}
+        for limit in (1000, 2000, 3000)
+    ]
+    check(
+        [len(values) for values in level_sets] == [1000, 2000, 3000]
+        and level_sets[0] < level_sets[1] < level_sets[2],
+        "character levels contain exact, unique, strictly cumulative sets",
+    )
+    check(
+        characters["meta"]["audit"]["duplicateCharacters"] == 0
+        and characters["meta"]["audit"]["missingCharacters"] == 0,
+        "generated character audit reports no duplicates or missing source characters",
+    )
+
     cccc = json.loads((ROOT / "data" / "tocfl-cccc.json").read_text(encoding="utf-8"))
     check(cccc["meta"]["wordCount"] == 1197, "CCCC extraction contains all 1,197 workbook rows")
     check(
@@ -136,6 +189,16 @@ def main() -> None:
     mobile_unified = (ROOT / "mobile" / "index.html").read_text(encoding="utf-8")
     check("window.__VOCAB_MASTER__" in desktop_unified, "desktop unified app includes canonical categories")
     check("window.__VOCAB_MASTER__" in mobile_unified, "mobile default page is the unified category app")
+    for label, html in (("desktop", desktop_unified), ("mobile", mobile_unified)):
+        # A page can mention a dataset and still ship without it, and the all-in-one
+        # file is the only one a phone can open from a content:// share.
+        for global_name in (
+            "__VOCAB_MASTER__", "__TOCFL_8000__", "__TOCFL_CCCC__", "__CHARACTERS__",
+        ):
+            check(
+                re.search(rf"window\.{global_name}\s*=\s*\{{", html) is not None,
+                f"{label} unified app embeds the {global_name} dataset",
+            )
     for label, html in (("desktop", desktop_unified), ("mobile", mobile_unified)):
         check('data-content-tab="sentences"' in html, f"{label} unified app includes sentence browsing")
         check(

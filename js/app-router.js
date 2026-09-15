@@ -29,6 +29,7 @@
     "favorites",
     "progress",
     "tocfl",
+    "characters",
     "words",
     "pronounce",
     "tones",
@@ -51,6 +52,7 @@
     if (view === "favorites") return "app-view-favorites";
     if (view === "progress") return "app-view-progress";
     if (view === "tocfl") return "app-view-tocfl";
+    if (view === "characters") return "app-view-characters";
     if (view === "words" || HSK_NAV[view]) return "app-view-words";
     if (view === "pronounce") return "app-view-pronounce";
     if (view === "tones") return "app-view-tones";
@@ -73,6 +75,7 @@
       favorites: ["Favorites", "Your saved vocabulary"],
       progress: ["Progress", "HSK completion and XP"],
       tocfl: ["TOCFL 8,000", "Seven official levels grouped by category"],
+      characters: ["Chinese Characters", "Learn 1,000–3,000 characters by frequency"],
       words: ["All words", "Table and study modes"],
       pronounce: ["Pronunciation", "Hear and practise each word"],
       tones: ["Four tones", "Mandarin tone practice"],
@@ -187,6 +190,9 @@
     if (window.TocflUI && (view === "tocfl" || view === "pronounce")) {
       window.TocflUI.refresh(view === "pronounce" ? "pronunciation" : "browser");
     }
+    if (view === "characters" && window.CharactersUI) {
+      window.CharactersUI.refresh();
+    }
     if (window.VocabularyUI && typeof window.VocabularyUI.onView === "function") {
       window.VocabularyUI.onView(view);
     }
@@ -216,9 +222,11 @@
         el.addEventListener("click", function (e) {
           var v = el.getAttribute("data-app-view");
           if (!v) return;
-          go(v, false);
-          if (window.__closeSidebarDrawer) window.__closeSidebarDrawer();
+          /* Blocked first: a content:// document loses its access grant on any
+             navigation, so the browser must not act even if routing throws. */
           if (isSandboxed() || !isHashOnlyNav()) e.preventDefault();
+          if (window.__closeSidebarDrawer) window.__closeSidebarDrawer();
+          go(v, false);
         });
       });
 

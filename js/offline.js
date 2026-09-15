@@ -29,7 +29,7 @@
 
   function offlineFetchHint(jsonPath, jsPath) {
     if (isMobilePack()) {
-      return "Mobile pack failed to load embedded data. Re-copy the mobile/ folder from git or rebuild with: node scripts/build-mobile-pack.js";
+      return "Mobile pack failed to load embedded data. Re-copy the mobile/ folder from git or rebuild with: python scripts/build_mobile_pack.py";
     }
     return (
       "Offline mode (" +
@@ -39,7 +39,7 @@
       ". On your phone, open the mobile/ folder: use mobile/START.html (one file per page, no separate css/js). " +
       "Or copy the full project and ensure " +
       jsPath +
-      " exists (run node scripts/build-offline-bundles.js on a PC)."
+      " exists (run python scripts/build_mobile_pack.py on a PC)."
     );
   }
 
@@ -93,7 +93,7 @@
     toneLoadError: function () {
       return (
         "Could not load tone data offline. Keep the full folder (css/, js/, data/) and ensure " +
-        "data/tone-page.data.js exists (run node scripts/build-offline-bundles.js on a PC, then copy data/ to your phone)."
+        "data/tone-page.data.js exists (run node scripts/build-tone-data.js on a PC, then copy data/ to your phone)."
       );
     },
     showSetupBanner: function (issues) {
@@ -114,7 +114,7 @@
         "</ul><p style=\"margin:0.65rem 0 0;font-size:0.9rem\">" +
         (isMobilePack()
           ? window.__UNIFIED_APP__
-            ? "Re-copy <code>chinese.html</code> from git or rebuild: node scripts/build-offline-app.js"
+            ? "Re-copy <code>chinese.html</code> from git or rebuild: python scripts/build_offline_app.py"
             : "Re-copy the <code>mobile/</code> folder from git or rebuild on a PC."
           : "On phone, copy <code>mobile/chinese.html</code> and open it in Chrome—not separate page links from Drive.") +
         "</p>";

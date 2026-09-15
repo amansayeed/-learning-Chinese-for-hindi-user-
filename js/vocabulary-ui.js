@@ -18,6 +18,8 @@
   var learnAnswered = 0;
   var currentQuiz = null;
   var quizLocked = false;
+  var wordDetailOverlay = null;
+  var wordDetailLastFocus = null;
   var DISPLAY_KEY = "chinese-vocab-display-v1";
   var displayOptions = readDisplayOptions();
   var audioElement = null;
@@ -38,6 +40,10 @@
      nowhere to wrap them. Offer a break after each separator instead. */
   function escapeWrappable(value) {
     return escapeHtml(value).replace(/([\/｜|])/g, "$1<wbr>");
+  }
+
+  function shortPinyin(value) {
+    return String(value || "").split("/")[0].replace(/\s+/g, "");
   }
 
   function readDisplayOptions() {
@@ -77,6 +83,14 @@
     var utterance = new SpeechSynthesisUtterance(text.split("/")[0]);
     utterance.lang = "zh-TW";
     utterance.rate = 0.86;
+    var voices =
+      typeof window.speechSynthesis.getVoices === "function"
+        ? window.speechSynthesis.getVoices()
+        : [];
+    var taiwanVoice = voices.filter(function (voice) {
+      return /^zh[-_]TW$/i.test(voice.lang || "");
+    })[0];
+    if (taiwanVoice) utterance.voice = taiwanVoice;
     window.speechSynthesis.speak(utterance);
   }
 
@@ -103,6 +117,9 @@
   /* hideLabel drops the 繁體/简体 caption where the colour coding and the
      column legend already say which script is which. */
   function scriptBlock(label, value, modifier, wordId, largeClass, hideLabel) {
+    var isTraditional = modifier === "traditional";
+    var action = isTraditional ? "listen" : "details";
+    var actionLabel = isTraditional ? "Listen to " : "Open details for ";
     return (
       '<div class="script-block script-block--' +
       modifier +
@@ -117,11 +134,15 @@
       largeClass +
       "--" +
       modifier +
-      '" data-word-action="listen" data-word-id="' +
+      '" data-word-action="' +
+      action +
+      '" data-word-id="' +
       escapeHtml(wordId) +
+      (isTraditional ? '" data-speak-text="' + escapeHtml(value) : "") +
       '" title="' +
-      escapeHtml(label) +
-      '" aria-label="Listen to ' +
+      escapeHtml(label + (isTraditional ? " · play Taiwan Mandarin" : " · open details")) +
+      '" aria-label="' +
+      actionLabel +
       escapeHtml(label + " " + value) +
       '">' +
       escapeWrappable(value) +
@@ -172,11 +193,17 @@
         .join("") +
       "</div>" +
       (!compact && exTrad
-        ? '<div class="vocab-card__example"><span>Example sentence</span><div class="example-script example-script--traditional"><strong>繁體中文</strong><p class="example-zh">' +
+        ? '<div class="vocab-card__example"><span>Example sentence</span><div class="example-script example-script--traditional"><strong>繁體中文</strong><button type="button" class="example-zh" data-word-action="listen" data-word-id="' +
+          escapeHtml(word.id) +
+          '" data-speak-text="' +
           escapeHtml(exTrad) +
-          '</p></div><div class="example-script example-script--simplified"><strong>简体中文</strong><p class="example-zh">' +
+          '">' +
+          escapeHtml(exTrad) +
+          '</button></div><div class="example-script example-script--simplified"><strong>简体中文</strong><button type="button" class="example-zh" data-word-action="details" data-word-id="' +
+          escapeHtml(word.id) +
+          '">' +
           escapeHtml(exSimp || exTrad) +
-          "</p></div>" +
+          "</button></div>" +
           (exPy ? "<p>" + escapeHtml(exPy) + "</p>" : "") +
           (exEn ? "<p>" + escapeHtml(exEn) + "</p>" : "") +
           (exHi ? '<p lang="hi">' + escapeHtml(exHi) + "</p>" : "") +
@@ -189,6 +216,118 @@
       actionButton("difficult", word.id, learning.isDifficult(word.id), "?", "Difficult") +
       "</div></article>"
     );
+  }
+
+  function ensureWordDetail() {
+    if (wordDetailOverlay) return wordDetailOverlay;
+    wordDetailOverlay = document.createElement("div");
+    wordDetailOverlay.className = "word-detail-overlay hidden";
+    wordDetailOverlay.setAttribute("aria-hidden", "true");
+    wordDetailOverlay.innerHTML =
+      '<section class="word-detail" role="dialog" aria-modal="true" aria-labelledby="word-detail-title">' +
+      '<button type="button" class="word-detail__close" data-word-detail-close aria-label="Close word details">×</button>' +
+      '<div data-word-detail-content></div></section>';
+    document.body.appendChild(wordDetailOverlay);
+    return wordDetailOverlay;
+  }
+
+  function wordDetailHtml(word) {
+    var sentence = store.sentence(word);
+    var secondaries = store.secondaryCategories(word);
+    var tocfl = store.tocflLevels(word);
+    return (
+      '<div class="word-detail__heading"><p class="eyebrow">Vocabulary details</p>' +
+      '<h2 id="word-detail-title">' +
+      escapeHtml(word.pinyin) +
+      "</h2></div>" +
+      '<div class="word-detail__scripts">' +
+      '<button type="button" class="word-detail__script word-detail__script--traditional" data-word-action="listen" data-word-id="' +
+      escapeHtml(word.id) +
+      '" data-speak-text="' +
+      escapeHtml(word.traditional) +
+      '" aria-label="Play Taiwan Mandarin for ' +
+      escapeHtml(word.traditional) +
+      '"><small>Traditional · tap to listen</small><strong lang="zh-Hant">' +
+      escapeWrappable(word.traditional) +
+      "</strong></button>" +
+      '<div class="word-detail__script word-detail__script--simplified"><small>Simplified</small><strong lang="zh-Hans">' +
+      escapeWrappable(word.simplified) +
+      "</strong></div></div>" +
+      '<button type="button" class="primary-button word-detail__listen" data-word-action="listen" data-word-id="' +
+      escapeHtml(word.id) +
+      '" data-speak-text="' +
+      escapeHtml(word.traditional) +
+      '">🔊 Play Taiwan Mandarin pronunciation</button>' +
+      '<dl class="word-detail__facts"><div><dt>Pinyin</dt><dd>' +
+      escapeHtml(word.pinyin) +
+      "</dd></div><div><dt>English</dt><dd>" +
+      escapeHtml(word.english) +
+      '</dd></div><div><dt>हिन्दी</dt><dd lang="hi">' +
+      escapeHtml(word.hindi) +
+      "</dd></div><div><dt>Learning information</dt><dd>" +
+      escapeHtml(hskLabel(word)) +
+      (tocfl.length ? " · TOCFL " + escapeHtml(tocfl.join(", ")) : "") +
+      " · " +
+      escapeHtml(store.difficulty(word)) +
+      "</dd></div></dl>" +
+      '<div class="word-detail__categories"><span class="tag tag--category">' +
+      escapeHtml(store.primaryCategory(word)) +
+      "</span>" +
+      secondaries
+        .map(function (category) {
+          return '<span class="tag tag--secondary">' + escapeHtml(category) + "</span>";
+        })
+        .join("") +
+      "</div>" +
+      (sentence
+        ? '<section class="word-detail__example"><h3>Example sentence</h3>' +
+          '<button type="button" data-word-action="listen" data-word-id="' +
+          escapeHtml(word.id) +
+          '" data-speak-text="' +
+          escapeHtml(sentence.traditional) +
+          '" class="word-detail__example-traditional" aria-label="Play example pronunciation">' +
+          escapeHtml(sentence.traditional) +
+          '</button><p lang="zh-Hans">' +
+          escapeHtml(sentence.simplified) +
+          '</p><p class="word-detail__example-pinyin">' +
+          escapeHtml(sentence.pinyin) +
+          "</p><p>" +
+          escapeHtml(sentence.english) +
+          '</p><p lang="hi">' +
+          escapeHtml(sentence.hindi) +
+          "</p></section>"
+        : "") +
+      '<div class="word-detail__actions">' +
+      actionButton("favorite", word.id, learning.isFavorite(word.id), "★", "Favorite") +
+      actionButton("learned", word.id, learning.isLearned(word.id), "✓", "Learned") +
+      actionButton("difficult", word.id, learning.isDifficult(word.id), "?", "Difficult") +
+      "</div>"
+    );
+  }
+
+  function openWordDetails(word, trigger) {
+    if (!word) return;
+    var overlay = ensureWordDetail();
+    var content = overlay.querySelector("[data-word-detail-content]");
+    if (!content) return;
+    wordDetailLastFocus = trigger || document.activeElement;
+    content.innerHTML = wordDetailHtml(word);
+    overlay.classList.remove("hidden");
+    overlay.setAttribute("aria-hidden", "false");
+    document.body.classList.add("word-detail-open");
+    var close = overlay.querySelector("[data-word-detail-close]");
+    if (close) close.focus();
+  }
+
+  function closeWordDetails() {
+    if (!wordDetailOverlay) return;
+    wordDetailOverlay.classList.add("hidden");
+    wordDetailOverlay.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("word-detail-open");
+    if (wordDetailLastFocus && typeof wordDetailLastFocus.focus === "function") {
+      wordDetailLastFocus.focus();
+    }
+    wordDetailLastFocus = null;
   }
 
   function statCard(label, value, note) {
@@ -250,7 +389,7 @@
       "</div>" +
       "</td>" +
       '<td class="vocab-list__pinyin" data-label="Pinyin">' +
-      escapeWrappable(word.pinyin) +
+      escapeHtml(shortPinyin(word.pinyin)) +
       "</td>" +
       '<td data-label="Meaning"><strong>' +
       escapeHtml(word.english) +
@@ -303,12 +442,16 @@
       "</span></div>" +
       '<div class="sentence-card__script sentence-card__script--traditional"><span>繁體中文</span><button type="button" data-word-action="listen" data-word-id="' +
       escapeHtml(item.wordId) +
+      '" data-speak-text="' +
+      escapeHtml(item.traditional) +
       '">' +
       escapeHtml(item.traditional) +
       "</button></div>" +
-      '<div class="sentence-card__script sentence-card__script--simplified"><span>简体中文</span><p>' +
+      '<div class="sentence-card__script sentence-card__script--simplified"><span>简体中文</span><button type="button" data-word-action="details" data-word-id="' +
+      escapeHtml(item.wordId) +
+      '">' +
       escapeHtml(simplified) +
-      "</p></div>" +
+      "</button></div>" +
       (item.pinyin ? '<p class="sentence-card__pinyin">' + escapeHtml(item.pinyin) + "</p>" : "") +
       '<div class="sentence-card__translations"><p><span>English</span>' +
       escapeHtml(item.english) +
@@ -391,7 +534,7 @@
       hsk: $("browse-hsk") ? $("browse-hsk").value : "all",
       category: $("browse-category") ? $("browse-category").value : "all",
       status: $("browse-status") ? $("browse-status").value : "all",
-      sort: $("browse-sort") ? $("browse-sort").value : "smart",
+      sort: $("browse-sort") ? $("browse-sort").value : "pinyin",
     };
   }
 
@@ -515,7 +658,7 @@
   }
 
   function levelWords(level) {
-    return store.filter({ hsk: level, sort: "smart" });
+    return store.filter({ hsk: level, sort: "pinyin" });
   }
 
   /* Categories are scoped to one level so each page only shows its own topics. */
@@ -671,14 +814,13 @@
   }
 
   function renderLevelResults() {
-    var grouped = groupedByCategory(store.filter({
+    var results = store.filter({
       query: $("level-search") ? $("level-search").value : "",
       hsk: currentLevel,
       category: $("level-category") ? $("level-category").value : "all",
       status: $("level-status") ? $("level-status").value : "all",
-      sort: "smart",
-    }));
-    var results = grouped.words;
+      sort: "pinyin",
+    });
     var count = $("level-result-count");
     if (count) count.textContent = results.length + " word" + (results.length === 1 ? "" : "s");
     levelPage = Math.min(Math.max(1, levelPage), pageCount(results.length));
@@ -687,7 +829,7 @@
     if (list) {
       var visible = results.slice(start, start + PAGE_SIZE);
       list.innerHTML = results.length
-        ? renderGroupedWordList(visible, start, grouped.totals)
+        ? wordList(visible, start)
         : '<div class="empty-state"><strong>No matching words</strong><p>Try another topic or clear the search.</p></div>';
     }
     renderPagination("level-pagination", "level", levelPage, results.length);
@@ -854,10 +996,26 @@
     }
     wrap.innerHTML =
       '<article class="learn-card">' +
-      '<p class="learn-card__main">' + escapeHtml(word.traditional) + "</p>" +
+      '<button type="button" class="learn-card__main" data-word-action="listen" data-word-id="' +
+      escapeHtml(word.id) +
+      '" data-speak-text="' +
+      escapeHtml(word.traditional) +
+      '">' +
+      escapeHtml(word.traditional) +
+      "</button>" +
       '<div class="script-pair script-pair--learn">' +
-      '<div class="script-block script-block--traditional' + shown("traditional") + '"><span class="script-block__label">繁體 Traditional</span><p class="learn-card__han">' + escapeHtml(word.traditional) + "</p></div>" +
-      '<div class="script-block script-block--simplified' + shown("simplified") + '"><span class="script-block__label">简体 Simplified</span><p class="learn-card__han">' + escapeHtml(word.simplified) + "</p></div></div>" +
+      '<div class="script-block script-block--traditional' + shown("traditional") + '"><span class="script-block__label">繁體 Traditional</span><button type="button" class="learn-card__han" data-word-action="listen" data-word-id="' +
+      escapeHtml(word.id) +
+      '" data-speak-text="' +
+      escapeHtml(word.traditional) +
+      '">' +
+      escapeHtml(word.traditional) +
+      "</button></div>" +
+      '<div class="script-block script-block--simplified' + shown("simplified") + '"><span class="script-block__label">简体 Simplified</span><button type="button" class="learn-card__han" data-word-action="details" data-word-id="' +
+      escapeHtml(word.id) +
+      '">' +
+      escapeHtml(word.simplified) +
+      "</button></div></div>" +
       '<p class="learn-card__pinyin">' +
       escapeHtml(word.pinyin) +
       "</p>" +
@@ -943,7 +1101,11 @@
     var word = store.byId(id);
     if (!word) return;
     if (action === "listen") {
-      speak(word.traditional, word);
+      speak(button.getAttribute("data-speak-text") || word.traditional, word);
+      return;
+    }
+    if (action === "details") {
+      openWordDetails(word, button);
       return;
     }
     if (action === "favorite") learning.toggleFavorite(id);
@@ -953,6 +1115,14 @@
 
   function bind() {
     document.addEventListener("click", function (event) {
+      if (event.target.closest("[data-word-detail-close]")) {
+        closeWordDetails();
+        return;
+      }
+      if (event.target === wordDetailOverlay) {
+        closeWordDetails();
+        return;
+      }
       var action = event.target.closest("[data-word-action]");
       if (action) {
         handleAction(action);
@@ -1087,6 +1257,11 @@
         renderBrowse();
       }
     });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && wordDetailOverlay && !wordDetailOverlay.classList.contains("hidden")) {
+        closeWordDetails();
+      }
+    });
 
     ["browse-search", "browse-hsk", "browse-category", "browse-status", "browse-sort"].forEach(function (id) {
       var element = $(id);
@@ -1161,6 +1336,11 @@
     openLevel: openLevel,
     renderWordList: wordList,
     categoryIcon: categoryIcon,
+    detailsMarkup: function (id) {
+      var word = store.byId(id);
+      return word ? wordDetailHtml(word) : "";
+    },
+    speak: speak,
   };
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

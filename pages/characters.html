@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark light" />
-  <title>TOCFL and CCCC vocabulary by level and category</title>
+  <title>Chinese Characters by Frequency</title>
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
 <body class="page-shell">
@@ -50,39 +50,39 @@
         <span class="mobile-bar__menu-icon" aria-hidden="true"></span>
       </button>
       <div class="mobile-bar__text">
-        <span class="mobile-bar__title">TOCFL + CCCC</span>
-        <span class="mobile-bar__hint">Seven official vocabulary levels</span>
+        <span class="mobile-bar__title">Chinese Characters</span>
+        <span class="mobile-bar__hint">Learn individual characters by frequency</span>
       </div>
     </header>
 
-    <div data-tocfl-browser data-tocfl-level="novice-1">
+    <div data-character-browser data-character-level="1000">
       <header class="header app-header">
         <div>
-          <p class="eyebrow">Official TOCFL vocabulary</p>
-          <h1 data-tocfl-role="title">準備級一級 · Novice 1</h1>
-          <p class="subtitle" data-tocfl-role="subtitle">Words grouped by topic for this level.</p>
+          <p class="eyebrow">Character frequency learning</p>
+          <h1 data-character-role="title">1,000 Characters · Basic Reading</h1>
+          <p class="subtitle" data-character-role="subtitle">Characters ranked by frequency.</p>
         </div>
       </header>
       <main class="main">
-        <nav class="level-switch" data-tocfl-role="levels" aria-label="Switch TOCFL level"></nav>
-        <nav class="topic-chip-row" data-tocfl-role="categories" aria-label="Topics in this TOCFL level"></nav>
-        <nav class="topic-chip-row hidden" data-tocfl-role="subcategories" aria-label="Subcategories in the selected topic"></nav>
-        <section class="filter-panel filter-panel--compact" aria-label="TOCFL filters">
-          <label class="filter-search">Search in this level
-            <input data-tocfl-role="search" type="search" placeholder="水, shuǐ, water, पानी…" autocomplete="off" />
-          </label>
-          <label>Learning status
-            <select data-tocfl-role="status">
-              <option value="all">All words</option><option value="unlearned">Not learned</option>
-              <option value="learned">Learned</option><option value="favorite">Favorites</option>
-              <option value="difficult">Difficult</option>
-            </select>
-          </label>
-        </section>
-        <div class="result-heading"><strong data-tocfl-role="count">0 words</strong><span>繁體中文 · 简体中文 · Pinyin · English · हिन्दी</span></div>
-        <div class="vocab-results--list" data-tocfl-role="results" aria-live="polite"></div>
-        <nav class="words-pager words-pager--bottom hidden" data-tocfl-role="pagination" aria-label="TOCFL word pages"></nav>
+        <nav class="character-levels" data-character-role="levels" aria-label="Character learning levels"></nav>
+        <label class="filter-search character-search">Search this level
+          <input data-character-role="search" type="search" placeholder="字, zì, character, अक्षर…" autocomplete="off" />
+        </label>
+        <div class="result-heading">
+          <strong data-character-role="count">1,000 individual characters</strong>
+          <span>Tap a character for Traditional · Simplified · Pinyin · English · हिन्दी</span>
+        </div>
+        <div class="character-grid" data-character-role="grid" aria-live="polite"></div>
+        <nav class="words-pager words-pager--bottom" data-character-role="pagination" aria-label="Character pages"></nav>
+        <p class="hint">Source: Taiwan Ministry of Education character-frequency statistics. Each row is one Unicode Chinese character—not a word.</p>
       </main>
+
+      <div class="character-detail-overlay hidden" data-character-role="details" aria-hidden="true">
+        <section class="character-detail" role="dialog" aria-modal="true" aria-labelledby="character-detail-title">
+          <button type="button" class="character-detail__close" data-character-role="details-close" data-character-close aria-label="Close character details">×</button>
+          <div data-character-role="details-content"></div>
+        </section>
+      </div>
     </div>
   </div>
 
@@ -98,14 +98,8 @@
 
   <script src="./js/storage-safe.js"></script>
   <script src="./js/offline.js"></script>
-  <script src="./data/tocfl-8000.js"></script>
-  <script src="./data/tocfl-cccc.js"></script>
-  <script src="./data/vocabulary-master.js"></script>
+  <script src="./data/characters.js"></script>
   <script src="./js/sidebar.js" defer></script>
-  <script src="./js/learning-state.js" defer></script>
-  <script src="./js/vocab-store.js" defer></script>
-  <script src="./js/vocabulary-ui.js" defer></script>
-  <script src="./js/pronunciation.js" defer></script>
-  <script src="./js/tocfl-ui.js" defer></script>
+  <script src="./js/characters-ui.js" defer></script>
 </body>
 </html>

@@ -23,21 +23,29 @@ h1{margin:0;font-size:clamp(2rem,7vw,4rem);line-height:1.08;background:linear-gr
 <a href="hsk6.html" class="card"><span class="icon" aria-hidden="true">6️⃣</span><strong>HSK 6 · 1140 words</strong><small>Master high-level vocabulary</small></a>
 <a href="pronunciation.html" class="card"><span class="icon" aria-hidden="true">🗣️</span><strong>Pronunciation</strong><small>Practice Chinese sounds and clusters</small></a>
 <a href="tocfl.html" class="card"><span class="icon" aria-hidden="true">📘</span><strong>TOCFL 8,000</strong><small>Browse all seven official vocabulary levels</small></a>
+<a href="characters.html" class="card"><span class="icon" aria-hidden="true">字</span><strong>Chinese Characters</strong><small>Learn 1,000–3,000 characters by frequency</small></a>
 <a href="tones.html" class="card"><span class="icon" aria-hidden="true">🎵</span><strong>Four tones</strong><small>Train Mandarin tone recognition</small></a></section></main>
 <script>
 (function(){
   /* A file manager can share this launcher with the browser as a one-file
-     content:// grant, which cannot reach the pages stored beside it. */
+     content:// grant, which cannot reach the pages stored beside it. Saying so
+     up front beats letting every tap end on ERR_FILE_NOT_FOUND. */
   var protocol=location.protocol;
   if(protocol==="http:"||protocol==="https:"||protocol==="file:")return;
   var note=document.getElementById("sandbox-note");
+  if(note){
+    note.hidden=false;
+    note.innerHTML="<strong>Your file manager shared only this launcher with the browser.</strong> It cannot open the pages stored beside it. Open <code>chinese.html</code> from the same folder instead — that single file holds every page.";
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("a.card"),function(card){
+    card.setAttribute("aria-disabled","true");
+    card.style.opacity=".55";
+  });
   document.addEventListener("click",function(event){
     var link=event.target&&event.target.closest?event.target.closest("a[href]"):null;
     if(!link)return;
     event.preventDefault();
-    note.hidden=false;
-    note.innerHTML="<strong>Your file manager shared only this launcher with the browser.</strong> It cannot open the pages stored beside it. Open <code>chinese.html</code> from the same folder instead — that single file holds every page.";
-    note.scrollIntoView({block:"nearest"});
+    if(note&&note.scrollIntoView)note.scrollIntoView({block:"nearest"});
   },true);
 })();
 </script>

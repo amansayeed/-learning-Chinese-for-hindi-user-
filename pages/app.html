@@ -46,6 +46,7 @@
       <a href="#learn" class="sidebar-link" data-app-view="learn"><span class="nav-icon" aria-hidden="true">📚</span>Learn</a>
       <a href="#browse" class="sidebar-link" data-app-view="browse"><span class="nav-icon" aria-hidden="true">🔎</span>Browse</a>
       <a href="#tocfl" class="sidebar-link" data-app-view="tocfl"><span class="nav-icon" aria-hidden="true">📘</span>TOCFL + CCCC</a>
+      <a href="#characters" class="sidebar-link" data-app-view="characters"><span class="nav-icon" aria-hidden="true">字</span>Chinese Characters</a>
       <a href="#pronounce" class="sidebar-link" data-app-view="pronounce"><span class="nav-icon" aria-hidden="true">🗣️</span>Pronunciation</a>
       <a href="#progress" class="sidebar-link" data-app-view="progress"><span class="nav-icon" aria-hidden="true">📊</span>Progress</a>
       <details class="sidebar-dropdown" id="sidebar-hsk-menu">
@@ -235,7 +236,7 @@
           </label>
           <label>Sort
             <select id="browse-sort">
-              <option value="smart">Root &amp; related words</option><option value="pinyin">Pinyin A–Z</option><option value="hsk">HSK level</option>
+              <option value="pinyin">Pinyin A–Z</option><option value="smart">Root &amp; related words</option><option value="hsk">HSK level</option>
               <option value="difficulty">Difficulty</option>
             </select>
           </label>
@@ -307,6 +308,37 @@
           <div class="vocab-results--list" data-tocfl-role="results" aria-live="polite"></div>
           <nav class="words-pager words-pager--bottom hidden" data-tocfl-role="pagination" aria-label="TOCFL word pages"></nav>
         </main>
+      </div>
+    </div>
+
+    <div id="app-view-characters" class="app-view hidden">
+      <div data-character-browser data-character-level="1000">
+        <header class="header app-header">
+          <div>
+            <p class="eyebrow">Character frequency learning</p>
+            <h1 data-character-role="title">1,000 Characters · Basic Reading</h1>
+            <p class="subtitle" data-character-role="subtitle">Characters ranked by frequency.</p>
+          </div>
+        </header>
+        <main class="main">
+          <nav class="character-levels" data-character-role="levels" aria-label="Character learning levels"></nav>
+          <label class="filter-search character-search">Search this level
+            <input data-character-role="search" type="search" placeholder="字, zì, character, अक्षर…" autocomplete="off" />
+          </label>
+          <div class="result-heading">
+            <strong data-character-role="count">1,000 individual characters</strong>
+            <span>Tap a character for Traditional · Simplified · Pinyin · English · हिन्दी</span>
+          </div>
+          <div class="character-grid" data-character-role="grid" aria-live="polite"></div>
+          <nav class="words-pager words-pager--bottom" data-character-role="pagination" aria-label="Character pages"></nav>
+          <p class="hint">Source: Taiwan Ministry of Education character-frequency statistics. Each row is one Unicode Chinese character—not a word.</p>
+        </main>
+        <div class="character-detail-overlay hidden" data-character-role="details" aria-hidden="true">
+          <section class="character-detail" role="dialog" aria-modal="true" aria-labelledby="character-detail-title">
+            <button type="button" class="character-detail__close" data-character-role="details-close" data-character-close aria-label="Close character details">×</button>
+            <div data-character-role="details-content"></div>
+          </section>
+        </div>
       </div>
     </div>
 
@@ -506,6 +538,7 @@
     <a href="#browse" data-app-view="browse"><span aria-hidden="true">🔎</span>Browse</a>
     <a href="#progress" data-app-view="progress"><span aria-hidden="true">📊</span>Progress</a>
     <a href="#tocfl" data-app-view="tocfl"><span aria-hidden="true">📘</span>TOCFL</a>
+    <a href="#characters" data-app-view="characters"><span aria-hidden="true">字</span>Characters</a>
     <a href="#pronounce" data-app-view="pronounce"><span aria-hidden="true">🗣️</span>Speak</a>
   </nav>
   <button type="button" id="theme-float-toggle" class="theme-float-toggle" aria-label="Switch color theme" aria-pressed="false">🌙</button>
@@ -523,6 +556,7 @@
   <script src="../data/tocfl-8000.js"></script>
   <script src="../data/tocfl-cccc.js"></script>
   <script src="../data/vocabulary-master.js"></script>
+  <script src="../data/characters.js"></script>
   <script src="../data/tone-page.data.js"></script>
   <script src="../js/sidebar.js" defer></script>
   <script src="../js/learning-state.js" defer></script>
@@ -531,6 +565,7 @@
   <script src="../js/app.js" defer></script>
   <script src="../js/pronunciation.js" defer></script>
   <script src="../js/tocfl-ui.js" defer></script>
+  <script src="../js/characters-ui.js" defer></script>
   <script src="../js/tones.js" defer></script>
   <script src="../js/app-router.js" defer></script>
 </body>

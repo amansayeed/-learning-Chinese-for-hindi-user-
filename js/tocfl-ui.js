@@ -101,7 +101,7 @@
   }
 
   Controller.prototype.wordsForLevel = function () {
-    return store.smartOrder(sourceWords.filter(function (word) {
+    return store.pinyinOrder(sourceWords.filter(function (word) {
       return word.level === this.level;
     }, this));
   };
@@ -134,7 +134,7 @@
     var selectedSubcategory = this.subcategory;
     var selectedStatus = status ? status.value : "all";
     var learning = window.LearningState;
-    return store.smartOrder(this.wordsForLevel().filter(function (word) {
+    return store.pinyinOrder(this.wordsForLevel().filter(function (word) {
       if (selectedCategory !== "all" && word.category !== selectedCategory) return false;
       if (
         selectedSubcategory !== "all" &&
@@ -370,8 +370,7 @@
   };
 
   Controller.prototype.renderResults = function () {
-    var grouped = this.groupedWords();
-    var words = grouped.words;
+    var words = this.filteredWords();
     var pages = Math.max(1, Math.ceil(words.length / PAGE_SIZE));
     this.page = Math.min(Math.max(1, this.page), pages);
     var start = (this.page - 1) * PAGE_SIZE;
@@ -384,8 +383,17 @@
     if (results) {
       if (!words.length) {
         results.innerHTML = '<div class="empty-state"><strong>No matching words</strong><p>Try another topic or clear the search.</p></div>';
+      } else if (
+        this.mode === "pronunciation" &&
+        window.ChinesePronunciation &&
+        window.ChinesePronunciation.renderWords
+      ) {
+        results.textContent = "";
+        window.ChinesePronunciation.renderWords(results, visible);
       } else {
-        this.renderGroups(results, visible, start, grouped);
+        results.innerHTML = window.VocabularyUI && window.VocabularyUI.renderWordList
+          ? window.VocabularyUI.renderWordList(visible, start)
+          : "";
       }
     }
 

@@ -25,6 +25,9 @@ PAGE_CONFIG = [
         "js/learning-state.js", "js/vocab-store.js", "js/vocabulary-ui.js",
         "js/pronunciation.js", "js/tocfl-ui.js",
     ]),
+    ("characters.html", ["characters.html", "mobile/characters.html"], [
+        "js/offline.js", "data/characters.js", "js/sidebar.js", "js/characters-ui.js",
+    ]),
     *[
         (
             "hsk.html" if level == 1 else f"hsk{level}.html",
@@ -52,6 +55,7 @@ UNIFIED_SCRIPTS = [
     "data/tocfl-8000.js",
     "data/tocfl-cccc.js",
     "data/vocabulary-master.js",
+    "data/characters.js",
     "data/tone-page.data.js",
     "js/sidebar.js",
     "js/learning-state.js",
@@ -60,6 +64,7 @@ UNIFIED_SCRIPTS = [
     "js/app.js",
     "js/pronunciation.js",
     "js/tocfl-ui.js",
+    "js/characters-ui.js",
     "js/tones.js",
     "js/app-router.js",
 ]
@@ -188,6 +193,7 @@ def write_launchers() -> None:
         ("hsk6.html", "6️⃣", "HSK 6 · 1140 words", "Master high-level vocabulary"),
         ("pronunciation.html", "🗣️", "Pronunciation", "Practice Chinese sounds and clusters"),
         ("tocfl.html", "📘", "TOCFL 8,000", "Browse all seven official vocabulary levels"),
+        ("characters.html", "字", "Chinese Characters", "Learn 1,000–3,000 characters by frequency"),
         ("tones.html", "🎵", "Four tones", "Train Mandarin tone recognition"),
     ]
     body = "\n".join(
@@ -217,17 +223,24 @@ h1{{margin:0;font-size:clamp(2rem,7vw,4rem);line-height:1.08;background:linear-g
 <script>
 (function(){{
   /* A file manager can share this launcher with the browser as a one-file
-     content:// grant, which cannot reach the pages stored beside it. */
+     content:// grant, which cannot reach the pages stored beside it. Saying so
+     up front beats letting every tap end on ERR_FILE_NOT_FOUND. */
   var protocol=location.protocol;
   if(protocol==="http:"||protocol==="https:"||protocol==="file:")return;
   var note=document.getElementById("sandbox-note");
+  if(note){{
+    note.hidden=false;
+    note.innerHTML="<strong>Your file manager shared only this launcher with the browser.</strong> It cannot open the pages stored beside it. Open <code>{all_in_one}</code> from the same folder instead \u2014 that single file holds every page.";
+  }}
+  Array.prototype.forEach.call(document.querySelectorAll("a.card"),function(card){{
+    card.setAttribute("aria-disabled","true");
+    card.style.opacity=".55";
+  }});
   document.addEventListener("click",function(event){{
     var link=event.target&&event.target.closest?event.target.closest("a[href]"):null;
     if(!link)return;
     event.preventDefault();
-    note.hidden=false;
-    note.innerHTML="<strong>Your file manager shared only this launcher with the browser.</strong> It cannot open the pages stored beside it. Open <code>{all_in_one}</code> from the same folder instead \u2014 that single file holds every page.";
-    note.scrollIntoView({{block:"nearest"}});
+    if(note&&note.scrollIntoView)note.scrollIntoView({{block:"nearest"}});
   }},true);
 }})();
 </script>

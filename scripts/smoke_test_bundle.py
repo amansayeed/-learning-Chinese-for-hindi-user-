@@ -49,6 +49,32 @@ def main() -> None:
 
     check(report["storeLoaded"], "bundle: VocabStore initialised")
     check(report["tocflUiLoaded"], "bundle: TocflUI initialised")
+    check(report["charactersUiLoaded"], "bundle: CharactersUI initialised")
+    check(report["characterCount"] == 3000, "bundle: exactly 3,000 individual characters loaded")
+    check(report["characterRender"]["levels"] == 3, "bundle: all three character levels render")
+    check(report["characterRender"]["tiles"] == 50, "bundle: character table renders 50 rows per page")
+    check(report["characterRender"]["count"] == "1,000 individual characters", "bundle: Basic Reading has 1,000 characters")
+    check(report["characterRender"]["details"] > 0, "bundle: character details render")
+    check(report["characterRender"]["traditionalAudio"], "bundle: Traditional characters are audio controls")
+    check(report["characterRender"]["simplifiedDetails"], "bundle: Simplified characters open details")
+    check(report["characterRender"]["exactSpeech"], "bundle: speech receives the exact clicked character")
+    check(report["characterRender"]["taiwanVoice"], "bundle: character speech selects zh-TW")
+    check(report["characterRender"]["levelCounts"] == [1000, 2000, 3000], "bundle: character levels filter to 1,000/2,000/3,000")
+    check(
+        report["characterRender"]["clickCounts"] == ["2,000 individual characters", "3,000 individual characters"],
+        "bundle: clicking character levels changes the rendered set",
+    )
+    check(
+        report["characterRender"]["pinyinLevelSorted"] == [True, True, True],
+        "bundle: all character categories are alphabetical by pinyin",
+    )
+    check(
+        report["characterRender"]["renderedPinyinSorted"],
+        "bundle: rendered character rows are alphabetical by pinyin",
+    )
+    check(report.get("browseTraditionalAudio"), "bundle: Traditional words play exact displayed text")
+    check(report.get("browseSimplifiedDetails"), "bundle: Simplified words open details")
+    check(report.get("wordDetailsComplete"), "bundle: word details include meanings, example, and pronunciation")
     check(report["mobilePack"], "bundle: mobile pack mode is enabled")
     check(report["localStoragePersists"], "bundle: learning state persists in localStorage")
     check(report["tocfl8000Words"] == 7517, "bundle: all 7,517 TOCFL workbook rows loaded")
@@ -59,6 +85,12 @@ def main() -> None:
     check(report["tocflLevelSizes"]["level-1"] == 345, "bundle: Level 1 drops later repeats of the same word")
     check(report["tocflUniqueDuplicates"] == 0, "bundle: no unique Chinese+pinyin word is shown twice")
     check(report["tocflUniqueTotal"] == 7477, "bundle: TOCFL+CCCC display 7,477 unique words")
+    check(report["tocflAllLevelsSorted"], "bundle: every TOCFL and CCCC level is alphabetical by pinyin")
+    check(report["tocflLevelAssignmentCorrect"], "bundle: every TOCFL and CCCC word keeps its level")
+    check(
+        sum(report["tocflLevelSizes"].values()) == report["tocflUniqueTotal"],
+        "bundle: level counts account for every deduplicated TOCFL/CCCC word",
+    )
     check(report["tocflRender"]["levelWordCount"] == 160, "bundle: Novice 1 stays at exactly 160 words")
     check(report["tocflRender"]["categoryCountMatches"], "bundle: category count matches exact filtered words")
     check(report["tocflRender"]["categoryExact"], "bundle: category filter cannot leak levels or categories")
@@ -74,15 +106,22 @@ def main() -> None:
     check(report["tocflCounts"].get("A2", 0) > 300, "bundle: TOCFL A2 count is populated")
     check(report.get("tocflRouteVisible"), "bundle: TOCFL category route opens")
     check(report.get("pronounceRouteVisible"), "bundle: TOCFL pronunciation route opens")
-    check(report["tocflGroups"]["heads"] > 0, "bundle: TOCFL groups words under category headings")
-    check(report["tocflGroups"]["knownCategories"], "bundle: each TOCFL heading names a real category")
-    check(report["tocflGroups"]["contiguous"], "bundle: each TOCFL category heading appears once per page")
-    check(report["tocflGroups"]["counted"], "bundle: each TOCFL heading shows its word count")
+    check(report.get("charactersRouteVisible"), "bundle: Chinese Characters route opens")
+    check(report["tocflGroups"]["heads"] == 0, "bundle: TOCFL/CCCC is one level-wide list")
+    check(report["tocflGroups"]["pinyinSorted"], "bundle: TOCFL/CCCC level is alphabetical by pinyin")
+    check(report["tocflGroups"]["numberingContinuous"], "bundle: TOCFL/CCCC numbering is continuous")
+    check(
+        report["toneOrder"] == ["bā", "bá", "bǎ", "bà", "ba"],
+        "bundle: pinyin sorting keeps tone order 1→4 before the neutral tone",
+    )
+    check(report.get("browsePinyinSorted"), "bundle: Browse lists words alphabetically by pinyin")
     check(report["sandboxedNav"]["detected"], "bundle: content:// documents are detected as sandboxed")
     check(report["sandboxedNav"]["hashUntouched"], "bundle: sandboxed navigation leaves the URL alone")
     check(report["sandboxedNav"]["viewSwitched"], "bundle: sandboxed navigation still switches the view")
     check(report["duplicatesRemoved"] > 0, f"bundle: removed {report['duplicatesRemoved']} duplicate HSK entries")
     check(report["hskDuplicateExtras"] == 0, "bundle: no duplicate entries remain across HSK 1–6")
+    check(report["hskAllLevelsSorted"], "bundle: every HSK level is alphabetical by pinyin")
+    check(report["hskLevelAssignmentCorrect"], "bundle: every HSK word keeps its assigned level")
     hai = [str(value).lower() for value in report["haiFamily"]]
     try:
         root = hai.index("hái")
@@ -99,9 +138,9 @@ def main() -> None:
         check(data["results"] > 0, f"bundle: {view} renders words ({data['count']})")
         check(data["serials"] == 50, f"bundle: {view} shows 50 numbered words per page")
         check("Page 1 of" in data["pagination"], f"bundle: {view} has page navigation")
-        check(data["groupHeads"] > 0, f"bundle: {view} groups words under category headings")
-        check(data["groupCounted"], f"bundle: {view} category headings show a word count")
-        check(data["groupContiguous"], f"bundle: {view} each category heading appears once per page")
+        check(data["groupHeads"] == 0, f"bundle: {view} remains one level-wide list")
+        check(data["pinyinSorted"], f"bundle: {view} is globally alphabetical by pinyin")
+        check(data["numberingContinuous"], f"bundle: {view} numbering is continuous")
 
     for message in report.get("errors", []):
         print("FAIL:", message)

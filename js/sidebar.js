@@ -1,9 +1,10 @@
 (function () {
   "use strict";
 
-  /* Standalone pages link to their siblings by filename. When Chrome opened this
-     document from a one-file content:// grant those files are unreachable, so the
-     link is answered with an explanation rather than a browser error page. */
+  /* An Android file manager hands Chrome a content:// URI that grants access to
+     the opened file alone. Re-requesting that URI fails, and Chrome re-requests it
+     for every navigation — even a bare "#fragment" — so the page has to answer
+     every internal link itself instead of letting the browser leave. */
   function sandboxed() {
     return !!(
       window.ChineseOffline &&
@@ -17,7 +18,19 @@
   var NOTICE_ID = "sandboxed-nav-notice";
   var ALL_IN_ONE = window.__MOBILE_PACK__ ? "index.html" : "chinese.html";
 
-  function explain(label) {
+  /* http(s), mailto and tel leave the document on purpose and still work. */
+  function kind(href) {
+    if (!href) return "dead";
+    if (href.charAt(0) === "#") return "fragment";
+    if (/^[a-z][a-z0-9+.-]*:/i.test(href)) return "external";
+    return "file";
+  }
+
+  function label(link) {
+    return (link.textContent || "").replace(/\s+/g, " ").trim();
+  }
+
+  function banner(className, role, html) {
     var host = document.querySelector(".layout-main") || document.body;
     if (!host) return;
     var previous = document.getElementById(NOTICE_ID);
@@ -25,19 +38,55 @@
 
     var notice = document.createElement("div");
     notice.id = NOTICE_ID;
-    notice.className = "banner banner--error";
-    notice.setAttribute("role", "alert");
-    notice.innerHTML =
-      "<strong>" +
-      (label ? "“" + label + "” cannot open from here." : "That page cannot open from here.") +
-      "</strong> Your file manager shared this single file with the browser, so it " +
-      "cannot reach the other pages stored beside it. Open <code>" +
+    notice.className = className;
+    notice.setAttribute("role", role);
+    notice.innerHTML = html;
+    host.insertBefore(notice, host.firstChild);
+    return notice;
+  }
+
+  function sharedFileHelp() {
+    return (
+      " Your file manager shared this single file with the browser, so it cannot " +
+      "reach the other pages stored beside it. Open <code>" +
       ALL_IN_ONE +
       "</code> instead — every page lives inside that one file — or open the folder " +
-      "from device storage so the address starts with <code>file://</code>.";
-    host.insertBefore(notice, host.firstChild);
-    if (typeof notice.scrollIntoView === "function") {
+      "from device storage so the address starts with <code>file://</code>."
+    );
+  }
+
+  function explain(name) {
+    var notice = banner(
+      "banner banner--error",
+      "alert",
+      "<strong>" +
+        (name ? "“" + name + "” cannot open from here." : "That page cannot open from here.") +
+        "</strong>" +
+        sharedFileHelp()
+    );
+    if (notice && typeof notice.scrollIntoView === "function") {
       notice.scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  /* Fragments are resolved in memory: scrolling to the target is the whole job a
+     browser would do, minus the navigation that would kill the access grant. */
+  function jumpTo(href) {
+    var id = href.slice(1);
+    if (!id) return;
+    var target = null;
+    try {
+      target = document.getElementById(id);
+    } catch (e) {
+      target = null;
+    }
+    if (!target) return;
+    if (typeof target.scrollIntoView === "function") target.scrollIntoView({ block: "start" });
+    if (typeof target.focus === "function") {
+      if (!target.hasAttribute || !target.hasAttribute("tabindex")) {
+        if (target.setAttribute) target.setAttribute("tabindex", "-1");
+      }
+      target.focus();
     }
   }
 
@@ -48,14 +97,50 @@
       var link = target && target.closest ? target.closest("a[href]") : null;
       if (!link) return;
       var href = link.getAttribute("href") || "";
-      /* Same-document fragments still work; absolute schemes are the browser's job. */
-      if (!href || href.charAt(0) === "#" || /^[a-z][a-z0-9+.-]*:/i.test(href)) return;
+      var type = kind(href);
+      if (type === "external") return;
+
+      /* Nothing below may reach the browser: every remaining href would re-request
+         the content:// URI and land on ERR_FILE_NOT_FOUND. Listeners bound to the
+         link itself still run, so in-app routing keeps working. */
       event.preventDefault();
+
+      if (type === "fragment") {
+        jumpTo(href);
+        return;
+      }
       if (window.__closeSidebarDrawer) window.__closeSidebarDrawer();
-      explain((link.textContent || "").replace(/\s+/g, " ").trim());
+      explain(label(link));
     },
     true
   );
+
+  /* Say it before the tap, not after: links to sibling files are marked as
+     unavailable as soon as the page loads. */
+  function markUnavailable() {
+    var links = document.querySelectorAll("a[href]");
+    var dead = 0;
+    Array.prototype.forEach.call(links, function (link) {
+      if (kind(link.getAttribute("href")) !== "file") return;
+      dead += 1;
+      link.classList.add("is-unavailable");
+      link.setAttribute("data-sandboxed-unavailable", "");
+      link.setAttribute("aria-disabled", "true");
+      link.setAttribute("title", "Not available — this file was shared on its own");
+    });
+    if (!dead) return;
+    banner(
+      "banner banner--warning",
+      "status",
+      "<strong>Single-file mode.</strong>" + sharedFileHelp()
+    );
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", markUnavailable);
+  } else {
+    markUnavailable();
+  }
 })();
 
 (function () {

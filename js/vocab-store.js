@@ -178,6 +178,39 @@
     return word.__searchText;
   }
 
+  /* Dictionary order: letters first, then tone 1–4 before the neutral tone, so
+     bā → bá → bǎ → bà → ba stay in the order a learner expects. */
+  function syllableTone(syllable) {
+    var decomposed = text(syllable).normalize("NFD");
+    if (decomposed.indexOf("\u0304") >= 0) return "1";
+    if (decomposed.indexOf("\u0301") >= 0) return "2";
+    if (decomposed.indexOf("\u030c") >= 0) return "3";
+    if (decomposed.indexOf("\u0300") >= 0) return "4";
+    var numbered = decomposed.match(/[1-5]/);
+    return numbered ? numbered[0] : "5";
+  }
+
+  function pinyinKey(word) {
+    if (word.__pinyinKey) return word.__pinyinKey;
+    var raw = text(word.pinyin).split("/")[0];
+    var han = text(word.traditional || word.simplified).split("/")[0];
+    word.__pinyinKey = {
+      letters: fold(raw).replace(/[^a-z]/g, "") || fold(han),
+      tones: raw.split(/\s+/).filter(Boolean).map(syllableTone).join(""),
+      han: han,
+    };
+    return word.__pinyinKey;
+  }
+
+  function comparePinyin(a, b) {
+    var ka = pinyinKey(a);
+    var kb = pinyinKey(b);
+    if (ka.letters !== kb.letters) return ka.letters < kb.letters ? -1 : 1;
+    if (ka.tones !== kb.tones) return ka.tones < kb.tones ? -1 : 1;
+    if (ka.han !== kb.han) return ka.han < kb.han ? -1 : 1;
+    return 0;
+  }
+
   function compareWords(a, b, sort) {
     if (sort === "difficulty") {
       var order = { Beginner: 1, Intermediate: 2, Advanced: 3 };
@@ -206,11 +239,7 @@
       if (pinyinDiff) return pinyinDiff;
       return aWord.localeCompare(bWord);
     }
-    return text(a.pinyin || a.traditional).localeCompare(
-      text(b.pinyin || b.traditional),
-      undefined,
-      { sensitivity: "base" }
-    );
+    return comparePinyin(a, b);
   }
 
   function filter(options) {
@@ -336,5 +365,9 @@
         return compareWords(a, b, "smart");
       });
     },
+    pinyinOrder: function (list) {
+      return (list || words).slice().sort(comparePinyin);
+    },
+    comparePinyin: comparePinyin,
   };
 })();

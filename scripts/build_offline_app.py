@@ -5,30 +5,13 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from build_mobile_pack import UNIFIED_SCRIPTS
+
 ROOT = Path(__file__).resolve().parents[1]
 MOBILE = ROOT / "mobile"
 
-SCRIPTS = [
-    "js/offline.js",
-    "data/vocabulary.js",
-    "data/nhm-1000-common.js",
-    "data/hsk-1.js",
-    "data/hsk-2.js",
-    "data/hsk-3.js",
-    "data/hsk-4.js",
-    "data/hsk-5.js",
-    "data/hsk-6.js",
-    "data/vocabulary-master.js",
-    "data/tone-page.data.js",
-    "js/sidebar.js",
-    "js/learning-state.js",
-    "js/vocab-store.js",
-    "js/vocabulary-ui.js",
-    "js/app.js",
-    "js/pronunciation.js",
-    "js/tones.js",
-    "js/app-router.js",
-]
+# The mobile pack owns the script list so both builders ship the same datasets.
+SCRIPTS = UNIFIED_SCRIPTS
 
 
 def read(relative: str) -> str:

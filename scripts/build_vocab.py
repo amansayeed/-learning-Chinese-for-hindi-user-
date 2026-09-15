@@ -13,7 +13,7 @@ from opencc import OpenCC
 from deep_translator import GoogleTranslator
 
 ROOT = Path(__file__).resolve().parents[1]
-XLSX = ROOT / "TOCFL_14425_word_list.xlsx"
+XLSX = ROOT / "data" / "source" / "TOCFL_14425_word_list.xlsx"
 OUT = ROOT / "data" / "vocabulary.json"
 OUT_JS = ROOT / "data" / "vocabulary.js"
 

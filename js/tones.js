@@ -326,7 +326,7 @@
       })
       .catch(function () {
         showLoadError(
-          "Could not load tone data. Run node scripts/build-offline-bundles.js and copy the full folder to your device, or use a local web server."
+          "Could not load tone data. Run node scripts/build-tone-data.js and copy the full folder to your device, or use a local web server."
         );
       });
   }

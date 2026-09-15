@@ -150,17 +150,30 @@
     ].join("\u001f");
   }
 
-  function relatedWordSort(a, b) {
+  function syllableTone(syllable) {
+    var decomposed = String(syllable || "").normalize("NFD");
+    if (decomposed.indexOf("\u0304") >= 0) return "1";
+    if (decomposed.indexOf("\u0301") >= 0) return "2";
+    if (decomposed.indexOf("\u030c") >= 0) return "3";
+    if (decomposed.indexOf("\u0300") >= 0) return "4";
+    var numbered = decomposed.match(/[1-5]/);
+    return numbered ? numbered[0] : "5";
+  }
+
+  /* Alphabetical by pinyin letters, then tone 1–4 before the neutral tone. */
+  function pinyinWordSort(a, b) {
     var aWord = String(a.traditional || a.simplified || "").split("/")[0];
     var bWord = String(b.traditional || b.simplified || "").split("/")[0];
-    var aPinyin = normalizedPinyin(a.pinyin);
-    var bPinyin = normalizedPinyin(b.pinyin);
-    var groupDiff = aPinyin.split(" ")[0].localeCompare(bPinyin.split(" ")[0]);
-    if (groupDiff) return groupDiff;
-    var characterDiff = aWord.charAt(0).localeCompare(bWord.charAt(0));
-    if (characterDiff) return characterDiff;
-    if (aWord.length !== bWord.length) return aWord.length - bWord.length;
-    return aPinyin.localeCompare(bPinyin) || aWord.localeCompare(bWord);
+    var aRaw = String(a.pinyin || "").split("/")[0];
+    var bRaw = String(b.pinyin || "").split("/")[0];
+    var aLetters = normalizedPinyin(aRaw).replace(/[^a-z]/g, "");
+    var bLetters = normalizedPinyin(bRaw).replace(/[^a-z]/g, "");
+    if (aLetters !== bLetters) return aLetters < bLetters ? -1 : 1;
+    var aTones = aRaw.split(/\s+/).filter(Boolean).map(syllableTone).join("");
+    var bTones = bRaw.split(/\s+/).filter(Boolean).map(syllableTone).join("");
+    if (aTones !== bTones) return aTones < bTones ? -1 : 1;
+    if (aWord !== bWord) return aWord < bWord ? -1 : 1;
+    return 0;
   }
 
   function prepareHskPayload(payload) {
@@ -179,7 +192,7 @@
             seen[key] = true;
             return true;
           })
-          .sort(relatedWordSort);
+          .sort(pinyinWordSort);
         lesson.wordCount = lesson.words.length;
         levelWords += lesson.words.length;
       });

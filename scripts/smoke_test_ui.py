@@ -16,6 +16,7 @@ MODULES = [
     "js/app-router.js",
     "js/vocabulary-ui.js",
     "js/tocfl-ui.js",
+    "js/characters-ui.js",
 ]
 SAMPLE_PER_LEVEL = 40
 
@@ -112,8 +113,13 @@ window.addEventListener = function () {};
 window.setTimeout = function (fn) { if (typeof fn === "function") fn(); return 0; };
 window.clearTimeout = function () {};
 window.__UNIFIED_APP__ = true;
-window.speechSynthesis = { cancel: function () {}, speak: function () {} };
-function SpeechSynthesisUtterance() {}
+window.__spokenUtterances = [];
+window.speechSynthesis = {
+  cancel: function () {},
+  getVoices: function () { return [{ lang: "zh-TW", name: "Taiwan Mandarin" }]; },
+  speak: function (utterance) { window.__spokenUtterances.push(utterance); }
+};
+function SpeechSynthesisUtterance(text) { this.text = text; }
 function Audio() { return { play: function () { return { catch: function () {} }; } }; }
 window.SpeechSynthesisUtterance = SpeechSynthesisUtterance;
 window.Audio = Audio;
@@ -127,6 +133,8 @@ function text(id) { return document.getElementById(id).textContent || ""; }
 report.storeLoaded = !!(window.VocabStore && window.VocabStore.all);
 report.uiLoaded = !!window.VocabularyUI;
 report.tocflUiLoaded = !!window.TocflUI;
+report.charactersUiLoaded = !!window.CharactersUI;
+report.characterCount = window.CharactersUI ? window.CharactersUI.count : 0;
 report.mobilePack = !!window.__MOBILE_PACK__;
 report.localStoragePersists = false;
 if (window.LearningState && window.LearningState.toggleFavorite) {
@@ -144,6 +152,8 @@ report.tocflCombinedLevels =
 report.tocflLevelSizes = {};
 report.tocflUniqueTotal = 0;
 report.tocflUniqueDuplicates = 0;
+report.tocflAllLevelsSorted = true;
+report.tocflLevelAssignmentCorrect = true;
 report.totalWords = report.storeLoaded ? window.VocabStore.all().length : 0;
 report.duplicatesRemoved = report.storeLoaded ? window.VocabStore.duplicateCount : 0;
 report.tocflCounts = report.storeLoaded ? window.VocabStore.tocflCounts() : {};
@@ -157,7 +167,84 @@ report.tocflClickFlow = {
   level: "", category: "", countText: "",
   categoryExact: false, subcategoryExact: false, countMatches: false
 };
-report.tocflGroups = { heads: 0, counted: false, knownCategories: false, contiguous: false };
+report.tocflGroups = {
+  heads: 0, pinyinSorted: false, numberingContinuous: false
+};
+report.characterRender = {
+  levels: 0, tiles: 0, count: "", details: 0,
+  traditionalAudio: false, simplifiedDetails: false, exactSpeech: false, taiwanVoice: false,
+  levelCounts: [], clickCounts: [], pinyinLevelSorted: [], renderedPinyinSorted: false
+};
+if (window.CharactersUI && window.CharactersUI.mount) {
+  var characterRoles = {};
+  ["title", "subtitle", "levels", "search", "count", "grid", "pagination", "details", "details-content", "details-close"]
+    .forEach(function (role) { characterRoles[role] = makeEl("character-" + role); });
+  characterRoles.details.classList.add("hidden");
+  var characterRoot = makeEl("character-smoke-root");
+  characterRoot.getAttribute = function (name) { return name === "data-character-level" ? "1000" : null; };
+  characterRoot.querySelector = function (selector) {
+    var match = selector.match(/data-character-role="([^"]+)"/);
+    return match ? characterRoles[match[1]] : null;
+  };
+  var characterClick = null;
+  characterRoot.addEventListener = function (type, handler) {
+    if (type === "click") characterClick = handler;
+  };
+  try {
+    var characterController = window.CharactersUI.mount(characterRoot);
+    characterController.openDetails(window.__CHARACTERS__.characters[0]);
+    var initialCharacterCount = characterRoles.count.textContent;
+    var initialCharacterGrid = characterRoles.grid.innerHTML;
+    window.CharactersUI.speak(window.__CHARACTERS__.characters[0].traditional);
+    var spokenCharacter = window.__spokenUtterances[window.__spokenUtterances.length - 1] || {};
+    var characterPinyinSorted = [];
+    var characterLevelCounts = ["1000", "2000", "3000"].map(function (level) {
+      characterController.level = level;
+      var levelCharacters = characterController.filtered();
+      characterPinyinSorted.push(pinyinAscending(levelCharacters.map(function (item) {
+        return item.pinyin;
+      })));
+      return levelCharacters.length;
+    });
+    var renderedCharacterPinyin = [];
+    var characterPinyinPattern = /class="character-list__pinyin"[^>]*>([\s\S]*?)<\/td>/g;
+    var characterPinyinMatch;
+    while ((characterPinyinMatch = characterPinyinPattern.exec(initialCharacterGrid))) {
+      renderedCharacterPinyin.push(characterPinyinMatch[1].replace(/<[^>]*>/g, "").trim());
+    }
+    characterController.level = "1000";
+    var characterClickCounts = [];
+    ["2000", "3000"].forEach(function (levelId) {
+      var chip = {
+        getAttribute: function (name) { return name === "data-character-level" ? levelId : null; },
+        closest: function (selector) { return selector === "[data-character-level]" ? this : null; }
+      };
+      characterClick({ target: chip });
+      characterClickCounts.push(characterRoles.count.textContent);
+    });
+    report.characterRender = {
+      levels: (characterRoles.levels.innerHTML.match(/data-character-level=/g) || []).length,
+      tiles: (characterRoles.grid.innerHTML.match(/character-list__rank/g) || []).length,
+      count: initialCharacterCount,
+      details: characterRoles["details-content"].innerHTML.length,
+      traditionalAudio: characterRoles.grid.innerHTML.indexOf("character-list__han--traditional") !== -1 &&
+        characterRoles.grid.innerHTML.indexOf("data-character-speak=") !== -1,
+      simplifiedDetails: characterRoles.grid.innerHTML.indexOf("character-list__han--simplified") !== -1 &&
+        characterRoles.grid.innerHTML.indexOf("data-character-details=") !== -1,
+      exactSpeech: spokenCharacter.text === window.__CHARACTERS__.characters[0].traditional,
+      taiwanVoice: spokenCharacter.lang === "zh-TW" && spokenCharacter.voice &&
+        spokenCharacter.voice.lang === "zh-TW",
+      levelCounts: characterLevelCounts,
+      clickCounts: characterClickCounts,
+      pinyinLevelSorted: characterPinyinSorted,
+      renderedPinyinSorted: renderedCharacterPinyin.length === 50 &&
+        pinyinAscending(renderedCharacterPinyin) &&
+        /character-list__rank"[^>]*>1</.test(initialCharacterGrid)
+    };
+  } catch (e) {
+    report.errors.push("character renderer: " + e);
+  }
+}
 if (window.TocflUI && window.TocflUI.mount) {
   var tocflRoles = {};
   ["title", "subtitle", "levels", "categories", "subcategories", "search", "status", "count", "results", "pagination"]
@@ -190,7 +277,14 @@ if (window.TocflUI && window.TocflUI.mount) {
     var tocflController = window.TocflUI.mount(tocflRoot);
     ["novice-1", "novice-2", "level-1", "level-2", "level-3", "level-4", "level-5", "sprouting", "growing", "thriving"].forEach(function (level) {
       tocflController.level = level;
-      report.tocflLevelSizes[level] = tocflController.wordsForLevel().length;
+      var levelWords = tocflController.wordsForLevel();
+      report.tocflLevelSizes[level] = levelWords.length;
+      if (!pinyinAscending(levelWords.map(function (word) { return word.pinyin; }))) {
+        report.tocflAllLevelsSorted = false;
+      }
+      if (!levelWords.every(function (word) { return word.level === level; })) {
+        report.tocflLevelAssignmentCorrect = false;
+      }
     });
     var uniqueSeen = {};
     report.tocflUniqueTotal = 0;
@@ -257,11 +351,8 @@ if (window.TocflUI && window.TocflUI.mount) {
     });
     report.tocflGroups = {
       heads: (groupedHtml.match(/vocab-group__head/g) || []).length,
-      counted: groupedHtml.indexOf("vocab-group__count") !== -1,
-      knownCategories: headKeys.length > 0 && headKeys.every(function (key) {
-        return key in categoryCounts;
-      }),
-      contiguous: headContiguous
+      pinyinSorted: pinyinAscending(renderedPinyin(groupedHtml)),
+      numberingContinuous: serialsContinuous(groupedHtml)
     };
     if (tocflClick) {
       tocflClick({ target: tocflChip("data-tocfl-level", "level-3") });
@@ -292,6 +383,8 @@ if (window.TocflUI && window.TocflUI.mount) {
   }
 }
 report.hskDuplicateExtras = 0;
+report.hskAllLevelsSorted = true;
+report.hskLevelAssignmentCorrect = true;
 report.haiFamily = [];
 if (report.storeLoaded) {
   var seenWords = {};
@@ -303,6 +396,17 @@ if (report.storeLoaded) {
       window.VocabStore.fold(word.pinyin).replace(/\s+/g, "");
     if (seenWords[key]) report.hskDuplicateExtras += 1;
     else seenWords[key] = true;
+  });
+  ["1", "2", "3", "4", "5", "6", "outside-hsk"].forEach(function (level) {
+    var levelWords = window.VocabStore.filter({ hsk: level, sort: "pinyin" });
+    if (!pinyinAscending(levelWords.map(function (word) { return word.pinyin; }))) {
+      report.hskAllLevelsSorted = false;
+    }
+    if (!levelWords.every(function (word) {
+      return window.VocabStore.hskValue(word) === level;
+    })) {
+      report.hskLevelAssignmentCorrect = false;
+    }
   });
   report.haiFamily = window.VocabStore.filter({ hsk: "1", sort: "smart" })
     .filter(function (word) {
@@ -320,6 +424,82 @@ report.browseHasLevelCol = html("browse-results").indexOf("Level & category") !=
 report.browseHasScriptCaption = html("browse-results").indexOf("script-block__label") !== -1;
 report.browseHasActionsCol = html("browse-results").indexOf("vocab-list__actions") !== -1;
 report.browseWordButtons = (html("browse-results").match(/vocab-list__word /g) || []).length;
+report.browseTraditionalAudio =
+  html("browse-results").indexOf('data-word-action="listen"') !== -1 &&
+  html("browse-results").indexOf("data-speak-text=") !== -1;
+report.browseSimplifiedDetails = html("browse-results").indexOf('data-word-action="details"') !== -1;
+var detailWord = window.VocabStore.all().filter(function (word) {
+  return !!window.VocabStore.sentence(word);
+})[0] || window.VocabStore.all()[0];
+var detailMarkup = detailWord ? window.VocabularyUI.detailsMarkup(detailWord.id) : "";
+report.wordDetailsComplete =
+  detailMarkup.indexOf("Traditional") !== -1 &&
+  detailMarkup.indexOf("Simplified") !== -1 &&
+  detailMarkup.indexOf("Pinyin") !== -1 &&
+  detailMarkup.indexOf("English") !== -1 &&
+  detailMarkup.indexOf("हिन्दी") !== -1 &&
+  detailMarkup.indexOf("Play Taiwan Mandarin") !== -1 &&
+  detailMarkup.indexOf("Example sentence") !== -1;
+
+/* Pinyin order is verified on the rendered markup, so a renderer that ignores
+   the store's ordering cannot pass. */
+function renderedPinyin(markup) {
+  var cells = [];
+  var pattern = /class="vocab-list__pinyin"[^>]*>([\s\S]*?)<\/td>/g;
+  var match;
+  while ((match = pattern.exec(markup))) {
+    cells.push(match[1].replace(/<[^>]*>/g, "").trim());
+  }
+  return cells;
+}
+function pinyinSortKey(value) {
+  /* Variant entries such as bàba/bà are filed under the first reading. */
+  var primary = value.split("/")[0];
+  var letters = window.VocabStore.fold(primary).replace(/[^a-z]/g, "");
+  var tones = primary.split(/\s+/).filter(function (part) { return !!part; })
+    .map(function (syllable) {
+      var decomposed = syllable.normalize("NFD");
+      if (decomposed.indexOf("\u0304") >= 0) return "1";
+      if (decomposed.indexOf("\u0301") >= 0) return "2";
+      if (decomposed.indexOf("\u030c") >= 0) return "3";
+      if (decomposed.indexOf("\u0300") >= 0) return "4";
+      return "5";
+    }).join("");
+  return letters + "\u001f" + tones;
+}
+function pinyinAscending(values) {
+  for (var index = 1; index < values.length; index += 1) {
+    if (pinyinSortKey(values[index - 1]) > pinyinSortKey(values[index])) return false;
+  }
+  return true;
+}
+/* Each category band restarts the alphabet, so bands are checked separately. */
+function groupedPinyinAscending(markup) {
+  var segments = markup.split("vocab-group__head");
+  var checked = 0;
+  for (var index = 0; index < segments.length; index += 1) {
+    var cells = renderedPinyin(segments[index]);
+    if (cells.length < 2) continue;
+    checked += 1;
+    if (!pinyinAscending(cells)) return { sorted: false, checked: checked };
+  }
+  return { sorted: checked > 0, checked: checked };
+}
+function serialsContinuous(markup) {
+  var values = [];
+  var pattern = /class="vocab-list__serial"[^>]*>\s*(\d+)\s*<\/td>/g;
+  var match;
+  while ((match = pattern.exec(markup))) values.push(Number(match[1]));
+  if (!values.length) return false;
+  for (var index = 0; index < values.length; index += 1) {
+    if (values[index] !== index + 1) return false;
+  }
+  return true;
+}
+report.browsePinyinSorted = pinyinAscending(renderedPinyin(html("browse-results")));
+report.browsePinyinCells = renderedPinyin(html("browse-results")).length;
+var toneProbe = [{ pinyin: "ba" }, { pinyin: "bà" }, { pinyin: "bā" }, { pinyin: "bǎ" }, { pinyin: "bá" }];
+report.toneOrder = window.VocabStore.pinyinOrder(toneProbe).map(function (word) { return word.pinyin; });
 
 report.levels = {};
 var views = ["hsk1", "hsk2", "hsk3", "hsk4", "hsk5", "hsk6", "hsk-other"];
@@ -349,8 +529,8 @@ for (var i = 0; i < views.length; i++) {
       categoriesHtml: html("level-categories").slice(0, 180),
       switcher: html("level-switch").length,
       groupHeads: (levelHtml.match(/vocab-group__head/g) || []).length,
-      groupCounted: levelHtml.indexOf("vocab-group__count") !== -1,
-      groupContiguous: headContiguous
+      pinyinSorted: pinyinAscending(renderedPinyin(levelHtml)),
+      numberingContinuous: serialsContinuous(levelHtml)
     };
   } catch (e) {
     report.errors.push(views[i] + ": " + e);
@@ -362,6 +542,8 @@ try {
   report.tocflRouteVisible = !document.getElementById("app-view-tocfl").classList.contains("hidden");
   window.AppRouter.go("pronounce", true);
   report.pronounceRouteVisible = !document.getElementById("app-view-pronounce").classList.contains("hidden");
+  window.AppRouter.go("characters", true);
+  report.charactersRouteVisible = !document.getElementById("app-view-characters").classList.contains("hidden");
 } catch (e) {
   report.errors.push("TOCFL routes: " + e);
 }
@@ -410,6 +592,7 @@ def main() -> None:
         "window.__VOCAB_MASTER__ = " + json.dumps(payload, ensure_ascii=False) + ";",
         (ROOT / "data" / "tocfl-8000.js").read_text(encoding="utf-8"),
         (ROOT / "data" / "tocfl-cccc.js").read_text(encoding="utf-8"),
+        (ROOT / "data" / "characters.js").read_text(encoding="utf-8"),
     ]
     for module in MODULES:
         source.append(f"/* {module} */\n" + (ROOT / module).read_text(encoding="utf-8"))
@@ -429,6 +612,29 @@ def main() -> None:
     check(report["storeLoaded"], "VocabStore initialised")
     check(report["uiLoaded"], "VocabularyUI initialised")
     check(report["tocflUiLoaded"], "TocflUI initialised")
+    check(report["charactersUiLoaded"], "CharactersUI initialised")
+    check(report["characterCount"] == 3000, "CharactersUI exposes exactly 3,000 individual characters")
+    check(report["characterRender"]["levels"] == 3, "CharactersUI renders all three learning levels")
+    check(report["characterRender"]["tiles"] == 50, "CharactersUI renders 50 individual character rows per page")
+    check(report["characterRender"]["count"] == "1,000 individual characters", "Basic Reading contains exactly 1,000 characters")
+    check(report["characterRender"]["details"] > 0, "clicking a character renders its multilingual details")
+    check(report["characterRender"]["traditionalAudio"], "Traditional character buttons are audio-only controls")
+    check(report["characterRender"]["simplifiedDetails"], "Simplified character buttons open details")
+    check(report["characterRender"]["exactSpeech"], "character speech receives the exact clicked character")
+    check(report["characterRender"]["taiwanVoice"], "character speech selects a zh-TW voice")
+    check(report["characterRender"]["levelCounts"] == [1000, 2000, 3000], "UI filtering returns exact cumulative character counts")
+    check(
+        report["characterRender"]["clickCounts"] == ["2,000 individual characters", "3,000 individual characters"],
+        "clicking each character level changes the rendered set and count",
+    )
+    check(
+        report["characterRender"]["pinyinLevelSorted"] == [True, True, True],
+        "all 1,000/2,000/3,000 character sets are sorted alphabetically by pinyin",
+    )
+    check(
+        report["characterRender"]["renderedPinyinSorted"],
+        "rendered character rows are sorted alphabetically by pinyin",
+    )
     check(report["localStoragePersists"], "learning state persists in localStorage")
     check(report["totalWords"] > 0, f"store exposes words ({report['totalWords']})")
     check(report["tocflA1Words"] > 0, f"store filters TOCFL A1 words ({report['tocflA1Words']})")
@@ -442,6 +648,12 @@ def main() -> None:
     check(report["tocflUniqueDuplicates"] == 0, "no unique Chinese+pinyin word is shown twice")
     check(report["tocflUniqueTotal"] == 7477, f"deduplicated TOCFL+CCCC list has 7,477 unique words ({report['tocflUniqueTotal']})")
     check(len(report["tocflLevelSizes"]) == 10, "all ten levels still have unique words")
+    check(report["tocflAllLevelsSorted"], "all TOCFL and CCCC levels are alphabetically sorted by pinyin")
+    check(report["tocflLevelAssignmentCorrect"], "every TOCFL and CCCC word remains in its assigned level")
+    check(
+        sum(report["tocflLevelSizes"].values()) == report["tocflUniqueTotal"],
+        "TOCFL and CCCC level counts account for every deduplicated word exactly once",
+    )
     check(report["tocflRender"]["levelWordCount"] == 160, "selected Novice 1 remains limited to 160 words")
     check(report["tocflRender"]["categoryCountMatches"], "selected category count matches its actual words")
     check(report["tocflRender"]["categoryExact"], "selected category contains no other level or category")
@@ -456,6 +668,8 @@ def main() -> None:
     check(report["tocflRender"]["categories"] > 0, "TOCFL renders category chips")
     check(report["tocflRender"]["results"] > 0, f"TOCFL renders words ({report['tocflRender']['count']})")
     check(report["hskDuplicateExtras"] == 0, "HSK 1–6 contains no duplicate Chinese+pinyin entries")
+    check(report["hskAllLevelsSorted"], "all HSK levels are alphabetically sorted by pinyin")
+    check(report["hskLevelAssignmentCorrect"], "every HSK word remains in its assigned level")
     check(report["browseHtml"] > 0, f"Browse renders markup ({report['browseHtml']} chars)")
     check(not report["browseCount"].startswith("0 "), f"Browse word count: {report['browseCount']}")
     check(report["browseSerials"] <= 50, f"Browse limits each page to 50 words ({report['browseSerials']})")
@@ -464,6 +678,15 @@ def main() -> None:
     check(not report.get("browseHasScriptCaption"), "word list drops the 繁體/简体 captions")
     check(not report.get("browseHasActionsCol"), "word list does not include an Actions column")
     check(report.get("browseWordButtons", 0) > 0, "word list still renders tappable script buttons")
+    check(report.get("browseTraditionalAudio"), "Traditional word buttons play their exact displayed text")
+    check(report.get("browseSimplifiedDetails"), "Simplified word buttons open details")
+    check(report.get("wordDetailsComplete"), "word details include scripts, meanings, example, and pronunciation")
+    check(
+        report["toneOrder"] == ["bā", "bá", "bǎ", "bà", "ba"],
+        f"pinyin sorting keeps tone order 1→4 before the neutral tone ({' '.join(report['toneOrder'])})",
+    )
+    check(report.get("browsePinyinCells", 0) > 0, "Browse renders a pinyin column to sort on")
+    check(report.get("browsePinyinSorted"), "Browse lists words alphabetically by pinyin")
 
     for view, data in report["levels"].items():
         check(data["results"] > 0, f"{view} renders words ({data['count']})")
@@ -476,16 +699,16 @@ def main() -> None:
             f"{view} title '{data['title']}' — {data['subtitle']}",
         )
         check("empty-state" not in data["resultsHtml"], f"{view} shows real words, not an empty state")
-        check(data["groupHeads"] > 0, f"{view} groups words under category headings ({data['groupHeads']})")
-        check(data["groupCounted"], f"{view} category headings show a word count")
-        check(data["groupContiguous"], f"{view} each category heading appears once per page")
+        check(data["groupHeads"] == 0, f"{view} remains one level-wide list")
+        check(data["pinyinSorted"], f"{view} is globally alphabetical by pinyin")
+        check(data["numberingContinuous"], f"{view} numbering is continuous")
 
     check(report.get("tocflRouteVisible"), "Router opens the TOCFL category page")
     check(report.get("pronounceRouteVisible"), "Router opens TOCFL pronunciation")
-    check(report["tocflGroups"]["heads"] > 0, f"TOCFL groups words under category headings ({report['tocflGroups']['heads']})")
-    check(report["tocflGroups"]["knownCategories"], "each TOCFL heading names a real category of the level")
-    check(report["tocflGroups"]["contiguous"], "each TOCFL category heading appears once per page")
-    check(report["tocflGroups"]["counted"], "each TOCFL heading shows its word count")
+    check(report.get("charactersRouteVisible"), "Router opens the Chinese Characters page")
+    check(report["tocflGroups"]["heads"] == 0, "TOCFL/CCCC remains one level-wide list")
+    check(report["tocflGroups"]["pinyinSorted"], "TOCFL/CCCC level is globally alphabetical by pinyin")
+    check(report["tocflGroups"]["numberingContinuous"], "TOCFL/CCCC numbering is continuous")
     check(report["sandboxedNav"]["detected"], "content:// documents are detected as sandboxed")
     check(report["sandboxedNav"]["hashUntouched"], "sandboxed navigation leaves the URL alone")
     check(report["sandboxedNav"]["viewSwitched"], "sandboxed navigation still switches the view")
