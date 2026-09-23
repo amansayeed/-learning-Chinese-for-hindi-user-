@@ -85,8 +85,13 @@
     window.speechSynthesis.speak(utterance);
   }
 
+  function formsDiffer(item) {
+    return String(item.traditional || "") !== String(item.simplified || "");
+  }
+
   function Controller(root) {
     this.root = root;
+    this.diff = !!(root.hasAttribute && root.hasAttribute("data-character-diff"));
     this.level = root.getAttribute("data-character-level") || "1000";
     this.page = 1;
     this.selected = null;
@@ -105,8 +110,10 @@
     var search = one(this.root, "search");
     var query = fold(search ? search.value : "");
     var limit = this.levelInfo().limit;
-    return payload.characters
-      .slice(0, limit)
+    var pool = this.diff
+      ? payload.characters.filter(formsDiffer)
+      : payload.characters.slice(0, limit);
+    return pool
       .filter(function (item) {
         if (!query) return true;
         return fold([
@@ -311,17 +318,32 @@
   };
 
   Controller.prototype.render = function () {
-    var level = this.levelInfo();
     var title = one(this.root, "title");
     var subtitle = one(this.root, "subtitle");
-    if (title) title.textContent = level.label + " · " + level.description;
-    if (subtitle) {
-      subtitle.textContent =
-        "The first " +
-        formatNumber(level.limit) +
-        " characters in the cumulative learning set, sorted A–Z by Pinyin. Each row represents one character, never a word.";
+    if (this.diff) {
+      var different = payload.characters.filter(formsDiffer).length;
+      if (title) title.textContent = "Traditional and Simplified difference";
+      if (subtitle) {
+        subtitle.textContent =
+          formatNumber(different) +
+          " characters from the 3,000 list whose Traditional and Simplified forms are different, sorted A–Z by Pinyin.";
+      }
+      var levels = one(this.root, "levels");
+      if (levels) {
+        levels.innerHTML = "";
+        levels.classList.add("hidden");
+      }
+    } else {
+      var level = this.levelInfo();
+      if (title) title.textContent = level.label + " · " + level.description;
+      if (subtitle) {
+        subtitle.textContent =
+          "The first " +
+          formatNumber(level.limit) +
+          " characters in the cumulative learning set, sorted A–Z by Pinyin. Each row represents one character, never a word.";
+      }
+      this.renderLevels();
     }
-    this.renderLevels();
     this.renderGrid();
   };
 
@@ -330,7 +352,7 @@
     this.root.addEventListener("click", function (event) {
       var target = event.target;
       var level = target.closest("[data-character-level]");
-      if (level && level !== self.root) {
+      if (level && level !== self.root && !self.diff) {
         self.level = level.getAttribute("data-character-level");
         self.page = 1;
         var search = one(self.root, "search");
@@ -382,7 +404,7 @@
   };
 
   function init() {
-    document.querySelectorAll("[data-character-browser]").forEach(function (root) {
+    document.querySelectorAll("[data-character-browser], [data-character-diff]").forEach(function (root) {
       controllers.push(new Controller(root));
     });
   }

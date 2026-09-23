@@ -13,8 +13,8 @@ from opencc import OpenCC
 
 ROOT = Path(__file__).resolve().parents[1]
 MD = ROOT / "data" / "source" / "1000-common-chinese-words.md"
+# JSON only: this list feeds the canonical master build, never a browser page.
 OUT_JSON = ROOT / "data" / "nhm-1000-common.json"
-OUT_JS = ROOT / "data" / "nhm-1000-common.js"
 
 LESSON_SIZE = 50
 HI_DELAY = 0.1
@@ -132,11 +132,7 @@ def main() -> None:
 
     OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
     OUT_JSON.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    OUT_JS.write_text(
-        "window.__VOCAB_NHM__ = " + json.dumps(payload, ensure_ascii=False) + ";\n",
-        encoding="utf-8",
-    )
-    print(f"Wrote {len(words)} words, {len(lessons)} lessons -> {OUT_JSON} and {OUT_JS}")
+    print(f"Wrote {len(words)} words, {len(lessons)} lessons -> {OUT_JSON}")
 
 
 if __name__ == "__main__":

@@ -21,7 +21,11 @@
   var wordDetailOverlay = null;
   var wordDetailLastFocus = null;
   var DISPLAY_KEY = "chinese-vocab-display-v1";
+  var TABLE_COLUMNS_KEY = "chinese-vocab-table-columns-v1";
   var displayOptions = readDisplayOptions();
+  var tableColumns = readTableColumns();
+  var collapsedRows = {};
+  var revealedRows = {};
   var audioElement = null;
 
   function $(id) {
@@ -59,6 +63,115 @@
 
   function saveDisplayOptions() {
     try { localStorage.setItem(DISPLAY_KEY, JSON.stringify(displayOptions)); } catch (e) {}
+  }
+
+  function readTableColumns() {
+    var defaults = { word: true, pinyin: true, meaning: true };
+    try {
+      var saved = JSON.parse(localStorage.getItem(TABLE_COLUMNS_KEY) || "null");
+      Object.keys(defaults).forEach(function (key) {
+        if (saved && saved[key] === false) defaults[key] = false;
+      });
+    } catch (e) {}
+    return defaults;
+  }
+
+  function saveTableColumns() {
+    try { localStorage.setItem(TABLE_COLUMNS_KEY, JSON.stringify(tableColumns)); } catch (e) {}
+  }
+
+  function tableColumnClasses() {
+    return Object.keys(tableColumns).map(function (key) {
+      return tableColumns[key] ? "" : " is-col-" + key + "-hidden";
+    }).join("");
+  }
+
+  /* One bar for the whole list. A visible column offers Hide; once it is
+     hidden the same button becomes Show, so the headers stay plain labels. */
+  function columnControls() {
+    var labels = { word: "Word", pinyin: "Pinyin", meaning: "Meaning" };
+    return '<span class="vocab-list-column-controls__label">Columns</span>' +
+      Object.keys(labels).map(function (key) {
+      var hidden = !tableColumns[key];
+      return (
+        '<button type="button" data-vocab-column-toggle="' +
+        key +
+        '" aria-pressed="' +
+        (hidden ? "true" : "false") +
+        '" aria-label="' +
+        (hidden ? "Show " : "Hide ") +
+        labels[key] +
+        ' column">' +
+        (hidden ? "Show " : "Hide ") +
+        labels[key] +
+        "</button>"
+      );
+    }).join("");
+  }
+
+  function applyTableColumns() {
+    Object.keys(tableColumns).forEach(function (key) {
+      document.querySelectorAll(".vocab-list").forEach(function (table) {
+        table.classList.toggle("is-col-" + key + "-hidden", !tableColumns[key]);
+      });
+    });
+    var markup = columnControls();
+    document.querySelectorAll(".vocab-list-column-controls").forEach(function (wrap) {
+      wrap.innerHTML = markup;
+    });
+    document.querySelectorAll("[data-vocab-row]").forEach(function (row) {
+      var id = row.getAttribute("data-vocab-row");
+      var revealed = revealedRows[id] || {};
+      ["word", "pinyin", "meaning"].forEach(function (key) {
+        row.classList.toggle("is-showing-" + key, !tableColumns[key] && !!revealed[key]);
+      });
+      var slot = row.querySelector(".vocab-list__row-shows");
+      if (slot) slot.innerHTML = rowShowButtons(id);
+    });
+  }
+
+  function rowShowButtons(id) {
+    var labels = { word: "Word", pinyin: "Pinyin", meaning: "Meaning" };
+    var revealed = revealedRows[id] || {};
+    return Object.keys(labels).filter(function (key) {
+      return !tableColumns[key] && !revealed[key];
+    }).map(function (key) {
+      return (
+        '<button type="button" data-vocab-row-show="' +
+        key +
+        '" data-word-id="' +
+        escapeHtml(id) +
+        '">Show ' +
+        labels[key] +
+        "</button>"
+      );
+    }).join("");
+  }
+
+  function showRowColumn(id, key) {
+    if (!id || !(key in tableColumns) || tableColumns[key]) return;
+    if (!revealedRows[id]) revealedRows[id] = {};
+    revealedRows[id][key] = true;
+    applyTableColumns();
+  }
+
+  function setRowCollapsed(id, collapsed) {
+    if (!id) return;
+    if (collapsed) collapsedRows[id] = true;
+    else delete collapsedRows[id];
+    document.querySelectorAll('[data-vocab-row="' + id + '"]').forEach(function (row) {
+      row.classList.toggle("is-row-collapsed", collapsed);
+    });
+  }
+
+  function setTableColumn(key, visible) {
+    if (!(key in tableColumns)) return;
+    tableColumns[key] = visible;
+    Object.keys(revealedRows).forEach(function (id) {
+      if (revealedRows[id]) delete revealedRows[id][key];
+    });
+    saveTableColumns();
+    applyTableColumns();
   }
 
   function shown(key) {
@@ -235,6 +348,12 @@
     var sentence = store.sentence(word);
     var secondaries = store.secondaryCategories(word);
     var tocfl = store.tocflLevels(word);
+    var source = word.sourceLabel || (word.sources || []).join(" + ");
+    var officialLevels = [];
+    (word.sourceRecords || []).forEach(function (record) {
+      var label = record.levelLabel || record.levelCode || record.level;
+      if (label && officialLevels.indexOf(label) < 0) officialLevels.push(label);
+    });
     return (
       '<div class="word-detail__heading"><p class="eyebrow">Vocabulary details</p>' +
       '<h2 id="word-detail-title">' +
@@ -269,7 +388,14 @@
       (tocfl.length ? " · TOCFL " + escapeHtml(tocfl.join(", ")) : "") +
       " · " +
       escapeHtml(store.difficulty(word)) +
-      "</dd></div></dl>" +
+      "</dd></div>" +
+      (source
+        ? "<div><dt>Source</dt><dd>" +
+          escapeHtml(source) +
+          (officialLevels.length ? " · " + escapeHtml(officialLevels.join(" · ")) : "") +
+          "</dd></div>"
+        : "") +
+      "</dl>" +
       '<div class="word-detail__categories"><span class="tag tag--category">' +
       escapeHtml(store.primaryCategory(word)) +
       "</span>" +
@@ -357,6 +483,13 @@
   }
 
   function categoryIcon(category) {
+    var taxonomy =
+      window.__CATEGORY_TAXONOMY__ && window.__CATEGORY_TAXONOMY__.categories
+        ? window.__CATEGORY_TAXONOMY__.categories
+        : [];
+    for (var index = 0; index < taxonomy.length; index += 1) {
+      if (taxonomy[index].label === category) return taxonomy[index].icon;
+    }
     var value = String(category || "").toLowerCase();
     if (/food|cook|restaurant/.test(value)) return "🍜";
     if (/drink/.test(value)) return "🥤";
@@ -377,35 +510,89 @@
     return "💬";
   }
 
-  function wordListRow(word, index) {
+  function wordMetadata(word, options) {
+    if (!options || !options.showMetadata) return "";
+    var source = word.sourceLabel || (word.sources || []).join(" + ");
+    var levels = [];
+    (word.sourceRecords || []).forEach(function (record) {
+      var label = record.levelLabel || record.levelCode || record.level;
+      if (label && levels.indexOf(label) < 0) levels.push(label);
+    });
     return (
-      "<tr>" +
-      '<td class="vocab-list__serial" data-label="No.">' +
-      (index + 1) +
-      "</td>" +
-      '<td data-label="Word"><div class="script-pair script-pair--list">' +
-      scriptBlock("繁體", word.traditional, "traditional", word.id, "vocab-list__word", true) +
-      scriptBlock("简体", word.simplified, "simplified", word.id, "vocab-list__word", true) +
-      "</div>" +
-      "</td>" +
-      '<td class="vocab-list__pinyin" data-label="Pinyin">' +
-      escapeHtml(shortPinyin(word.pinyin)) +
-      "</td>" +
-      '<td data-label="Meaning"><strong>' +
-      escapeHtml(word.english) +
-      '</strong><small lang="hi">' +
-      escapeHtml(word.hindi) +
-      "</small></td></tr>"
+      '<span class="vocab-list__metadata">' +
+      (source
+        ? '<span class="source-badge source-badge--' +
+          escapeHtml(source.toLowerCase().replace(/[^a-z]+/g, "-")) +
+          '">' +
+          escapeHtml(source) +
+          "</span>"
+        : "") +
+      levels.slice(0, 3).map(function (level) {
+        return '<span class="level-badge">' + escapeHtml(level) + "</span>";
+      }).join("") +
+      "</span>"
     );
   }
 
-  function wordList(words, startIndex) {
+  /* Per-row self-testing: collapse one row to its Chinese word, recall the rest,
+     then reveal it again. Kept in memory so paging back keeps the quiz state. */
+  function rowCollapsed(id) {
+    return !!collapsedRows[id];
+  }
+
+  function wordListRow(word, index, options) {
+    var revealed = revealedRows[word.id] || {};
+    return (
+      '<tr class="vocab-list__row' +
+      (rowCollapsed(word.id) ? " is-row-collapsed" : "") +
+      (revealed.word ? " is-showing-word" : "") +
+      (revealed.pinyin ? " is-showing-pinyin" : "") +
+      (revealed.meaning ? " is-showing-meaning" : "") +
+      '" data-vocab-row="' +
+      escapeHtml(word.id) +
+      '">' +
+      '<td class="vocab-list__serial" data-label="No."><span class="vocab-list__serial-num">' +
+      (index + 1) +
+      "</span></td>" +
+      '<td data-label="Word" data-vocab-col="word"><div class="vocab-list__word-cell">' +
+      '<div class="script-pair script-pair--list">' +
+      scriptBlock("繁體", word.traditional, "traditional", word.id, "vocab-list__word", true) +
+      scriptBlock("简体", word.simplified, "simplified", word.id, "vocab-list__word", true) +
+      "</div></div></td>" +
+      '<td class="vocab-list__pinyin" data-label="Pinyin" data-vocab-col="pinyin">' +
+      '<span class="vocab-list__cell">' +
+      escapeHtml(shortPinyin(word.pinyin)) +
+      "</span></td>" +
+      '<td data-label="Meaning" data-vocab-col="meaning">' +
+      '<span class="vocab-list__cell"><strong>' +
+      escapeHtml(word.english) +
+      '</strong><small lang="hi">' +
+      escapeHtml(word.hindi) +
+      "</small>" +
+      wordMetadata(word, options) +
+      '</span></td><td class="vocab-list__row-actions"><span class="vocab-list__row-shows">' +
+      rowShowButtons(word.id) +
+      "</span></td></tr>"
+    );
+  }
+
+  function wordList(words, startIndex, options) {
     startIndex = Number(startIndex) || 0;
     return (
-      '<div class="vocab-list-wrap"><table class="vocab-list"><thead><tr>' +
-      '<th scope="col">#</th><th scope="col">Word</th><th scope="col">Pinyin</th><th scope="col">Meaning</th>' +
+      '<div class="vocab-list-column-controls" aria-label="Choose visible word-list columns">' +
+      columnControls() +
+      '</div><div class="vocab-list-wrap"><table class="vocab-list' +
+      tableColumnClasses() +
+      '"><thead><tr>' +
+      '<th scope="col">#</th>' +
+      '<th scope="col" data-vocab-col="word">Word</th>' +
+      '<th scope="col" data-vocab-col="pinyin">Pinyin</th>' +
+      '<th scope="col" data-vocab-col="meaning">Meaning</th>' +
+      '<th scope="col" class="vocab-list__row-actions"></th>' +
       "</tr></thead><tbody>" +
-      words.map(function (word, index) { return wordListRow(word, startIndex + index); }).join("") +
+      words.map(function (word, index) {
+        return wordListRow(word, startIndex + index, options);
+      }).join("") +
       "</tbody></table></div>"
     );
   }
@@ -1115,6 +1302,27 @@
 
   function bind() {
     document.addEventListener("click", function (event) {
+      var rowShow = event.target.closest("[data-vocab-row-show]");
+      if (rowShow) {
+        showRowColumn(rowShow.getAttribute("data-word-id"), rowShow.getAttribute("data-vocab-row-show"));
+        return;
+      }
+      var toggleColumn = event.target.closest("[data-vocab-column-toggle]");
+      if (toggleColumn) {
+        var toggleKey = toggleColumn.getAttribute("data-vocab-column-toggle");
+        setTableColumn(toggleKey, !tableColumns[toggleKey]);
+        return;
+      }
+      var hideColumn = event.target.closest("[data-vocab-column-hide]");
+      if (hideColumn) {
+        setTableColumn(hideColumn.getAttribute("data-vocab-column-hide"), false);
+        return;
+      }
+      var showColumn = event.target.closest("[data-vocab-column-show]");
+      if (showColumn) {
+        setTableColumn(showColumn.getAttribute("data-vocab-column-show"), true);
+        return;
+      }
       if (event.target.closest("[data-word-detail-close]")) {
         closeWordDetails();
         return;
@@ -1335,6 +1543,17 @@
     setBrowseMode: setBrowseMode,
     openLevel: openLevel,
     renderWordList: wordList,
+    setTableColumn: setTableColumn,
+    setRowCollapsed: setRowCollapsed,
+    isRowCollapsed: rowCollapsed,
+    showRowColumn: showRowColumn,
+    tableColumnOptions: function () {
+      return {
+        word: tableColumns.word,
+        pinyin: tableColumns.pinyin,
+        meaning: tableColumns.meaning,
+      };
+    },
     categoryIcon: categoryIcon,
     detailsMarkup: function (id) {
       var word = store.byId(id);

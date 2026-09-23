@@ -315,3 +315,64 @@
   var sidebar = document.getElementById("sidebar");
   if (sidebar) sidebar.setAttribute("aria-hidden", window.innerWidth < 1024 ? "true" : "false");
 })();
+
+/* The theme button lives in the sidebar (and a floating control on smaller
+   screens). It used to be wired by the retired table page, so clicks did nothing. */
+(function () {
+  "use strict";
+
+  var THEME_KEY = "chinese-vocab-theme";
+
+  function currentTheme() {
+    return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  }
+
+  function paintTheme() {
+    var dark = currentTheme() === "dark";
+    var toggle = document.getElementById("theme-toggle");
+    if (toggle) {
+      toggle.textContent = dark ? "Light mode" : "Dark mode";
+      toggle.setAttribute("aria-pressed", dark ? "true" : "false");
+      toggle.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+    }
+    var floating = document.getElementById("theme-float-toggle");
+    if (floating) {
+      floating.textContent = dark ? "☀️" : "🌙";
+      floating.setAttribute("aria-pressed", dark ? "true" : "false");
+      floating.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+    }
+  }
+
+  function setTheme(mode) {
+    if (mode !== "light" && mode !== "dark") return;
+    document.documentElement.setAttribute("data-theme", mode);
+    try {
+      localStorage.setItem(THEME_KEY, mode);
+    } catch (e) {}
+    paintTheme();
+  }
+
+  function ensureFloatingToggle() {
+    if (document.getElementById("theme-float-toggle") || !document.body) return;
+    var button = document.createElement("button");
+    button.type = "button";
+    button.id = "theme-float-toggle";
+    button.className = "theme-float-toggle";
+    document.body.appendChild(button);
+  }
+
+  function bindTheme() {
+    ensureFloatingToggle();
+    paintTheme();
+    document.addEventListener("click", function (event) {
+      var hit = event.target && event.target.closest
+        ? event.target.closest("#theme-toggle, #theme-float-toggle")
+        : null;
+      if (!hit) return;
+      setTheme(currentTheme() === "dark" ? "light" : "dark");
+    });
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bindTheme);
+  else bindTheme();
+})();

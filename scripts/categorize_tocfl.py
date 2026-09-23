@@ -9,7 +9,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 JSON_PATH = ROOT / "data" / "vocabulary.json"
-JS_PATH = ROOT / "data" / "vocabulary.js"
 REPORT_PATH = ROOT / "data" / "tocfl-category-report.json"
 
 # Display order for lessons (skip empty). Taiwan daily-life first.
@@ -1142,7 +1141,6 @@ def main() -> None:
     )
 
     JSON_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    JS_PATH.write_text("window.__VOCAB__ = " + json.dumps(data, ensure_ascii=False) + ";\n", encoding="utf-8")
 
     dups = detect_duplicates(all_words)
     # Input vs categorized

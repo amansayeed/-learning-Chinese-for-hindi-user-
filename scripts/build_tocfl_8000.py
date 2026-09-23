@@ -12,7 +12,8 @@ import pandas as pd
 from deep_translator import GoogleTranslator
 from deep_translator import constants as translator_constants
 from opencc import OpenCC
-from build_vocabulary_master import classify, load_category_seeds
+from category_taxonomy import apply_taxonomy_to_payload, write_taxonomy_js
+from tocfl_quality import head_candidates, polish_entry
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKBOOK = (
@@ -73,11 +74,7 @@ def clean_pinyin(value: object) -> str:
 
 
 def candidates(value: str) -> list[str]:
-    values = [value, *re.split(r"[/／]", value)]
-    values += [re.sub(r"[()（）]", "", item) for item in list(values)]
-    values += [re.sub(r"[(（][^)）]*[)）]", "", item) for item in list(values)]
-    values += re.findall(r"[\u3400-\u9fff]+", value)
-    return list(dict.fromkeys(item.strip() for item in values if item.strip()))
+    return head_candidates(value)
 
 
 def load_master() -> dict[str, dict]:
@@ -118,23 +115,6 @@ def first_match(index: dict[str, dict], traditional: str) -> dict:
     return {}
 
 
-def category_from_pos(pos: str) -> str:
-    upper = pos.upper()
-    if "ADV" in upper:
-        return "常用副詞 · Common Adverbs"
-    if "CONJ" in upper or "PREP" in upper or "PTC" in upper or "DET" in upper:
-        return "功能詞 · Function Words"
-    if "VS" in upper:
-        return "狀態與形容 · States & Adjectives"
-    if "V" in upper:
-        return "常用動詞 · Common Verbs"
-    if "M" in upper:
-        return "數量與量詞 · Numbers & Measure Words"
-    if "N" in upper:
-        return "名詞 · Nouns"
-    return "其他 · Other"
-
-
 def read_cache(path: Path) -> dict[str, str]:
     return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {}
 
@@ -171,7 +151,6 @@ def main() -> None:
         raise FileNotFoundError(WORKBOOK)
     master = load_master()
     cedict = load_cedict()
-    exact_form, exact_reading = load_category_seeds()
     en_cache = read_cache(EN_CACHE)
     hi_cache = read_cache(HI_CACHE)
     translator_constants.BASE_URLS["GOOGLE_TRANSLATE"] = "https://translate.google.co.uk/m"
@@ -227,27 +206,7 @@ def main() -> None:
                 hindi = "हिन्दी अनुवाद उपलब्ध नहीं"
                 missing_hindi += 1
             context = clean(row[context_col]) if context_col is not None else ""
-            if master_word:
-                category = clean(master_word.get("primaryCategory")) or category_from_pos(pos)
-                secondary = [clean(item) for item in master_word.get("secondaryCategories", []) if clean(item)]
-                category_basis = "existing reviewed vocabulary category"
-            else:
-                category, secondary, category_basis = classify(
-                    simplified,
-                    traditional,
-                    pinyin,
-                    english,
-                    [],
-                    exact_form,
-                    exact_reading,
-                    [item.strip().lower() for item in re.split(r"[/,; ]+", pos) if item.strip()],
-                )
-            if context:
-                context_label = CONTEXT_LABELS.get(context, context)
-                if context_label != category and context_label not in secondary:
-                    secondary.append(context_label)
-            category = category or category_from_pos(pos)
-            words.append({
+            words.append(polish_entry({
                 "id": f"tocfl8k-{level_id}-{len(words) + 1:05d}",
                 "level": level_id,
                 "levelCode": sheet_name.split("(")[0],
@@ -257,13 +216,14 @@ def main() -> None:
                 "english": english,
                 "hindi": hindi,
                 "partOfSpeech": pos,
-                "category": category,
-                "secondaryCategories": secondary[:3],
-                "categoryBasis": category_basis,
-                "subcategory": context or category,
+                "category": "",
+                "secondaryCategories": [],
+                "categoryBasis": "",
+                "sourceCategory": CONTEXT_LABELS.get(context, "") if context else "",
+                "subcategory": context,
                 "sourceSheet": sheet_name,
                 "sourceRow": int(index) + 2,
-            })
+            }))
         print(f"{label}: {len(frame)} words")
         write_cache(EN_CACHE, en_cache)
         write_cache(HI_CACHE, hi_cache)
@@ -289,7 +249,7 @@ def main() -> None:
     if missing_regional_terms:
         raise ValueError(f"Regional reference terms absent from level sheets: {missing_regional_terms}")
 
-    payload = {
+    payload = apply_taxonomy_to_payload({
         "meta": {
             "title": "華語八千詞表 2024",
             "source": WORKBOOK.name,
@@ -307,12 +267,13 @@ def main() -> None:
         },
         "levels": levels,
         "words": words,
-    }
+    }, 7517)
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     OUT_JS.write_text(
         "window.__TOCFL_8000__ = " + json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + ";\n",
         encoding="utf-8",
     )
+    write_taxonomy_js(ROOT / "js" / "category-taxonomy.js")
     write_cache(EN_CACHE, en_cache)
     write_cache(HI_CACHE, hi_cache)
     print(

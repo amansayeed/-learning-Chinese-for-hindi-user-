@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark light" />
-  <title>TOCFL and CCCC pronunciation by category</title>
+  <title>Traditional and Simplified difference</title>
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
 <body class="page-shell">
@@ -52,33 +52,39 @@
         <span class="mobile-bar__menu-icon" aria-hidden="true"></span>
       </button>
       <div class="mobile-bar__text">
-        <span class="mobile-bar__title">Pronunciation</span>
-        <span class="mobile-bar__hint">TOCFL levels by topic</span>
+        <span class="mobile-bar__title">Traditional and Simplified difference</span>
+        <span class="mobile-bar__hint">Characters from the 3,000 list that differ</span>
       </div>
     </header>
 
-    <div data-tocfl-pronunciation data-tocfl-level="novice-1">
+    <div data-character-diff>
       <header class="header app-header">
         <div>
-          <p class="eyebrow">TOCFL pronunciation practice</p>
-          <h1 data-tocfl-role="title">準備級一級 · Novice 1</h1>
-          <p class="subtitle" data-tocfl-role="subtitle">Hear Chinese and English, grouped by useful topic.</p>
+          <p class="eyebrow">From the 3,000 characters</p>
+          <h1 data-character-role="title">Traditional and Simplified difference</h1>
+          <p class="subtitle" data-character-role="subtitle">Characters whose Traditional and Simplified forms are different.</p>
         </div>
       </header>
-      <main class="main pronounce-main">
-        <nav class="level-switch" data-tocfl-role="levels" aria-label="Switch pronunciation level"></nav>
-        <nav class="topic-chip-row" data-tocfl-role="categories" aria-label="Pronunciation topics"></nav>
-        <nav class="topic-chip-row hidden" data-tocfl-role="subcategories" aria-label="Pronunciation subcategories"></nav>
-        <section class="filter-panel filter-panel--compact" aria-label="Pronunciation filters">
-          <label class="filter-search">Search in this level
-            <input data-tocfl-role="search" type="search" placeholder="水, shuǐ, water, पानी…" autocomplete="off" />
-          </label>
-        </section>
-        <div class="result-heading"><strong data-tocfl-role="count">0 words</strong><span>Tap Chinese characters or an English play button</span></div>
-        <div class="pronounce-list" data-tocfl-role="results" aria-live="polite"></div>
-        <nav class="words-pager words-pager--bottom hidden" data-tocfl-role="pagination" aria-label="Pronunciation pages"></nav>
-        <p class="hint pronounce-footnote">English pronunciation is approximate machine speech, not dictionary IPA.</p>
+      <main class="main">
+        <nav class="character-levels hidden" data-character-role="levels" aria-label="Character learning levels" hidden></nav>
+        <label class="filter-search character-search">Search
+          <input data-character-role="search" type="search" placeholder="字, zì, character, अक्षर…" autocomplete="off" />
+        </label>
+        <div class="result-heading">
+          <strong data-character-role="count">Different characters</strong>
+          <span>Tap Traditional to hear it. Tap Simplified for details.</span>
+        </div>
+        <div class="character-grid" data-character-role="grid" aria-live="polite"></div>
+        <nav class="words-pager words-pager--bottom" data-character-role="pagination" aria-label="Character pages"></nav>
+        <p class="hint">Only characters from the 3,000-character list whose Traditional and Simplified forms are not the same.</p>
       </main>
+
+      <div class="character-detail-overlay hidden" data-character-role="details" aria-hidden="true">
+        <section class="character-detail" role="dialog" aria-modal="true" aria-labelledby="character-diff-detail-title">
+          <button type="button" class="character-detail__close" data-character-role="details-close" data-character-close aria-label="Close character details">×</button>
+          <div data-character-role="details-content"></div>
+        </section>
+      </div>
     </div>
   </div>
 
@@ -94,15 +100,8 @@
 
   <script src="./js/storage-safe.js"></script>
   <script src="./js/offline.js"></script>
-  <script src="./data/tocfl-8000.js"></script>
-  <script src="./data/tocfl-cccc.js"></script>
-  <script src="./data/vocabulary-master.js"></script>
-  <script src="./js/category-taxonomy.js"></script>
+  <script src="./data/characters.js"></script>
   <script src="./js/sidebar.js" defer></script>
-  <script src="./js/learning-state.js" defer></script>
-  <script src="./js/vocab-store.js" defer></script>
-  <script src="./js/tocfl-store.js" defer></script>
-  <script src="./js/vocabulary-ui.js" defer></script>
-  <script src="./js/tocfl-ui.js" defer></script>
+  <script src="./js/characters-ui.js" defer></script>
 </body>
 </html>

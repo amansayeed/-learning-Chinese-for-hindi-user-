@@ -3,8 +3,8 @@
 ## Quick start (phone)
 
 1. Copy the **`mobile/`** folder from git to your phone (or copy **`mobile/index.html`** alone).
-2. Open **`index.html`** in Chrome — **not** hsk.html, START menu links, or the small root index.
-3. Tap **☰** in the top bar — Words, HSK 1–6, pronunciation, and tones switch **inside** that file.
+2. Open **`index.html`** in Chrome — **not** the START menu links.
+3. Tap **☰** in the top bar — Browse, Categories, HSK 1–6, TOCFL, characters, pronunciation and tones switch **inside** that file.
 
 **File size check:** `mobile/index.html` should be about **17–18 MB** with the canonical vocabulary, the TOCFL/CCCC levels and the character database embedded. If it is only ~400 KB, you have the old broken copy — pull latest git or rebuild (below).
 
@@ -16,8 +16,8 @@ Opening one HTML file from Google Drive or a file manager uses a `content://` UR
 
 The pages handle this themselves:
 
-- The all-in-one **`mobile/index.html`** keeps every page inside one file and switches views in memory, so nothing navigates.
-- A single page opened on its own (`hsk2.html`, `characters.html`, …) says so at the top and dims the links to its sibling files instead of letting a tap end on a browser error.
+- The all-in-one **`index.html`** keeps every page inside one file and switches views in memory, so nothing navigates.
+- A single page opened on its own (`characters.html`, `tocfl.html`, …) says so at the top and dims the links to its sibling files instead of letting a tap end on a browser error.
 
 `python scripts/smoke_test_sandbox_nav.py` clicks each kind of link in a simulated `content://` document and fails the build if one can still escape.
 
@@ -29,9 +29,9 @@ python scripts/build_mobile_pack.py
 python scripts/build_offline_app.py
 ```
 
-That writes **`mobile/index.html`** (all-in-one). Commit and push so phones get the updated file from git.
+That writes **`index.html`** and **`mobile/index.html`** (both the all-in-one app). Commit and push so phones get the updated file from git.
 
-Each data builder (`build_hsk.py`, `build_tocfl_8000.py`, `build_characters.py`, …) writes its own `data/*.js` bundle, so no separate bundling step is needed. The tone quartets are the one exception and still need Node:
+The app reads the canonical `data/vocabulary-master.js`, `data/tocfl-*.js` and `data/characters.js`; the source list builders (`build_hsk.py`, `build_vocab.py`, `build_nhm_1000.py`) only write JSON that feeds the master. The tone quartets still need Node:
 
 ```bash
 node scripts/build-tone-data.js
@@ -49,4 +49,4 @@ python scripts/smoke_test_sandbox_nav.py  # no link escapes a content:// documen
 
 ## PC / full folder
 
-If you copy the **whole project** and open via **`file://`**, separate pages at the repo root still work.
+If you copy the **whole project** and open via **`file://`**, the topic pages at the repo root (`tocfl.html`, `categories.html`, `characters.html`, `pronunciation.html`, `tones.html`) still work alongside the all-in-one `index.html`.

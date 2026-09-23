@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark light" />
-  <title>TOCFL and CCCC pronunciation by category</title>
+  <title>Official TOCFL vocabulary</title>
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
 <body class="page-shell">
@@ -52,32 +52,38 @@
         <span class="mobile-bar__menu-icon" aria-hidden="true"></span>
       </button>
       <div class="mobile-bar__text">
-        <span class="mobile-bar__title">Pronunciation</span>
-        <span class="mobile-bar__hint">TOCFL levels by topic</span>
+        <span class="mobile-bar__title">Official TOCFL vocabulary</span>
+        <span class="mobile-bar__hint">TOCFL 8000 · arranged by pinyin</span>
       </div>
     </header>
 
-    <div data-tocfl-pronunciation data-tocfl-level="novice-1">
+    <div data-tocfl-8000>
       <header class="header app-header">
         <div>
-          <p class="eyebrow">TOCFL pronunciation practice</p>
-          <h1 data-tocfl-role="title">準備級一級 · Novice 1</h1>
-          <p class="subtitle" data-tocfl-role="subtitle">Hear Chinese and English, grouped by useful topic.</p>
+          <p class="eyebrow">Official TOCFL vocabulary</p>
+          <h1 data-tocfl-role="title">TOCFL 8000</h1>
+          <p class="subtitle" data-tocfl-role="subtitle">arranged by pinyin</p>
         </div>
       </header>
-      <main class="main pronounce-main">
-        <nav class="level-switch" data-tocfl-role="levels" aria-label="Switch pronunciation level"></nav>
-        <nav class="topic-chip-row" data-tocfl-role="categories" aria-label="Pronunciation topics"></nav>
-        <nav class="topic-chip-row hidden" data-tocfl-role="subcategories" aria-label="Pronunciation subcategories"></nav>
-        <section class="filter-panel filter-panel--compact" aria-label="Pronunciation filters">
-          <label class="filter-search">Search in this level
+      <main class="main">
+        <nav class="level-switch hidden" data-tocfl-role="levels" aria-label="Switch TOCFL level"></nav>
+        <nav class="topic-chip-row" data-tocfl-role="categories" aria-label="Topics"></nav>
+        <nav class="topic-chip-row hidden" data-tocfl-role="subcategories" aria-label="Subcategories in the selected topic"></nav>
+        <section class="filter-panel filter-panel--compact" aria-label="TOCFL filters">
+          <label class="filter-search">Search
             <input data-tocfl-role="search" type="search" placeholder="水, shuǐ, water, पानी…" autocomplete="off" />
           </label>
+          <label>Learning status
+            <select data-tocfl-role="status">
+              <option value="all">All words</option><option value="unlearned">Not learned</option>
+              <option value="learned">Learned</option><option value="favorite">Favorites</option>
+              <option value="difficult">Difficult</option>
+            </select>
+          </label>
         </section>
-        <div class="result-heading"><strong data-tocfl-role="count">0 words</strong><span>Tap Chinese characters or an English play button</span></div>
-        <div class="pronounce-list" data-tocfl-role="results" aria-live="polite"></div>
-        <nav class="words-pager words-pager--bottom hidden" data-tocfl-role="pagination" aria-label="Pronunciation pages"></nav>
-        <p class="hint pronounce-footnote">English pronunciation is approximate machine speech, not dictionary IPA.</p>
+        <div class="result-heading"><strong data-tocfl-role="count">0 words</strong><span>繁體中文 · 简体中文 · Pinyin · English · हिन्दी</span></div>
+        <div class="vocab-results--list" data-tocfl-role="results" aria-live="polite"></div>
+        <nav class="words-pager words-pager--bottom hidden" data-tocfl-role="pagination" aria-label="TOCFL word pages"></nav>
       </main>
     </div>
   </div>

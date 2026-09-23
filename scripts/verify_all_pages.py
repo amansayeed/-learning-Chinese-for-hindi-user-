@@ -12,17 +12,19 @@ ROOT = Path(__file__).resolve().parents[1]
 PAGES = ROOT / "pages"
 
 SOURCE_PAGES = [
-    "app.html", "index.html", "tocfl.html", "characters.html", "pronunciation.html", "tones.html",
-    "hsk.html", "hsk2.html", "hsk3.html", "hsk4.html", "hsk5.html", "hsk6.html",
+    "app.html", "tocfl.html", "tocfl-8000.html", "categories.html", "characters.html", "character-diff.html", "pronunciation.html", "tones.html",
 ]
 ROOT_PAGES = [
-    "START.html", "chinese.html", "index.html", "tocfl.html", "characters.html", "pronunciation.html", "tones.html",
-    "hsk.html", "hsk2.html", "hsk3.html", "hsk4.html", "hsk5.html", "hsk6.html",
+    "START.html", "index.html", "chinese.html", "tocfl.html", "tocfl-8000.html", "categories.html", "characters.html",
+    "character-diff.html", "pronunciation.html", "tones.html",
 ]
 MOBILE_PAGES = [
-    "START.html", "index.html", "chinese.html", "words.html",
-    "tocfl.html", "characters.html", "pronunciation.html", "tones.html", "hsk.html", "hsk2.html", "hsk3.html",
-    "hsk4.html", "hsk5.html", "hsk6.html",
+    "START.html", "index.html", "chinese.html",
+    "tocfl.html", "tocfl-8000.html", "categories.html", "characters.html", "character-diff.html", "pronunciation.html", "tones.html",
+]
+# The retired table/study pages must stay gone so no link can reach them again.
+REMOVED_PAGES = [
+    "index.html", "hsk.html", "hsk2.html", "hsk3.html", "hsk4.html", "hsk5.html", "hsk6.html",
 ]
 
 
@@ -178,12 +180,54 @@ def main() -> None:
     check(tocfl["meta"]["missingEnglish"] == 0, "every TOCFL word has an English meaning")
     check(tocfl["meta"]["missingHindi"] == 0, "every TOCFL word has a Hindi meaning")
     check(all(re.search(r"[\u0900-\u097f]", word["hindi"]) for word in tocfl["words"]), "every TOCFL Hindi meaning uses Devanagari")
+    requested_taxonomy = tocfl["meta"]["taxonomy"]
+    check(requested_taxonomy["count"] == 48, "TOCFL/CCCC taxonomy contains exactly 48 categories")
+    labels = [item["label"] for item in requested_taxonomy["categories"]]
+    check(len(labels) == len(set(labels)) == 48, "TOCFL/CCCC category labels are unique")
+    check(
+        cccc["meta"]["taxonomy"] == requested_taxonomy,
+        "TOCFL and CCCC use the same ordered category taxonomy",
+    )
+    allowed_categories = set(labels)
+    combined_source_words = tocfl["words"] + cccc["words"]
+    check(
+        all(
+            word["category"] in allowed_categories
+            and all(item in allowed_categories for item in word.get("secondaryCategories", []))
+            for word in combined_source_words
+        ),
+        "every TOCFL and CCCC row uses only the requested category system",
+    )
+    check(
+        {word["category"] for word in combined_source_words} == allowed_categories,
+        "all 48 requested categories contain source vocabulary",
+    )
+    check(
+        all(word["id"].startswith("tocfl8k-") for word in tocfl["words"])
+        and all(word["id"].startswith("cccc-") for word in cccc["words"]),
+        "Categories data contains only TOCFL and CCCC source rows",
+    )
     for name in SOURCE_PAGES:
         audit_source(PAGES / name)
     for name in ROOT_PAGES:
         audit_generated(ROOT / name)
     for name in MOBILE_PAGES:
         audit_generated(ROOT / "mobile" / name)
+    for name in REMOVED_PAGES:
+        check(not (PAGES / name).exists(), f"retired source page is gone: pages/{name}")
+    for name in REMOVED_PAGES[1:]:
+        check(not (ROOT / name).exists(), f"retired desktop page is gone: {name}")
+        check(not (ROOT / "mobile" / name).exists(), f"retired mobile page is gone: mobile/{name}")
+    check(not (ROOT / "mobile" / "words.html").exists(), "retired mobile words table is gone")
+    for name in ("js/app.js", "js/pronunciation.js", "data/vocabulary.js", "data/nhm-1000-common.js"):
+        check(not (ROOT / name).exists(), f"retired script is gone: {name}")
+    for label, page in (("desktop", ROOT / "index.html"), ("mobile", ROOT / "mobile" / "index.html")):
+        html = page.read_text(encoding="utf-8")
+        check("window.__UNIFIED_APP__" in html, f"{label} entry page is the unified app")
+        check(
+            "word-table" not in html and 'id="study-panel"' not in html,
+            f"{label} entry page ships no legacy table or study view",
+        )
 
     desktop_unified = (ROOT / "chinese.html").read_text(encoding="utf-8")
     mobile_unified = (ROOT / "mobile" / "index.html").read_text(encoding="utf-8")
@@ -207,6 +251,9 @@ def main() -> None:
         )
         check("script-block--traditional" in html, f"{label} unified app includes Traditional display")
         check("script-block--simplified" in html, f"{label} unified app includes Simplified display")
+        check('id="app-view-categories"' in html, f"{label} unified app includes Categories view")
+        check("window.CategoriesUI" in html, f"{label} unified app includes Categories controller")
+        check("window.TocflStore" in html, f"{label} unified app includes shared TOCFL/CCCC index")
     print(
         f"Verified {len(SOURCE_PAGES)} source pages, {len(ROOT_PAGES)} desktop outputs, "
         f"and {len(MOBILE_PAGES)} mobile outputs."

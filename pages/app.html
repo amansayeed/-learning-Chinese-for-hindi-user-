@@ -45,8 +45,11 @@
       <a href="#home" class="sidebar-link" data-app-view="home"><span class="nav-icon" aria-hidden="true">🏠</span>Home</a>
       <a href="#learn" class="sidebar-link" data-app-view="learn"><span class="nav-icon" aria-hidden="true">📚</span>Learn</a>
       <a href="#browse" class="sidebar-link" data-app-view="browse"><span class="nav-icon" aria-hidden="true">🔎</span>Browse</a>
+      <a href="#categories" class="sidebar-link" data-app-view="categories"><span class="nav-icon" aria-hidden="true">🗂️</span>Categories</a>
       <a href="#tocfl" class="sidebar-link" data-app-view="tocfl"><span class="nav-icon" aria-hidden="true">📘</span>TOCFL + CCCC</a>
+      <a href="#tocfl8000" class="sidebar-link" data-app-view="tocfl8000"><span class="nav-icon" aria-hidden="true">📗</span>Official TOCFL vocabulary</a>
       <a href="#characters" class="sidebar-link" data-app-view="characters"><span class="nav-icon" aria-hidden="true">字</span>Chinese Characters</a>
+      <a href="#script-diff" class="sidebar-link" data-app-view="script-diff"><span class="nav-icon" aria-hidden="true">繁</span>Traditional and Simplified difference</a>
       <a href="#pronounce" class="sidebar-link" data-app-view="pronounce"><span class="nav-icon" aria-hidden="true">🗣️</span>Pronunciation</a>
       <a href="#progress" class="sidebar-link" data-app-view="progress"><span class="nav-icon" aria-hidden="true">📊</span>Progress</a>
       <details class="sidebar-dropdown" id="sidebar-hsk-menu">
@@ -65,50 +68,9 @@
         <summary class="sidebar-dropdown__toggle"><span class="nav-icon" aria-hidden="true">⭐</span>My words &amp; tools</summary>
         <div class="sidebar-dropdown__panel">
           <a href="#favorites" class="sidebar-link sidebar-link--sub" data-app-view="favorites">Favorite words</a>
-          <a href="#words" class="sidebar-link sidebar-link--sub" data-app-view="words">All words table</a>
           <a href="#tones" class="sidebar-link sidebar-link--sub" data-app-view="tones">Four tones</a>
         </div>
       </details>
-      <details class="sidebar-dropdown">
-        <summary class="sidebar-dropdown__toggle"><span class="nav-icon" aria-hidden="true">📋</span>Lesson tables</summary>
-        <div class="sidebar-dropdown__panel">
-          <a href="#lessons1" class="sidebar-link sidebar-link--sub" data-app-view="lessons1">HSK 1 lessons</a>
-          <a href="#lessons2" class="sidebar-link sidebar-link--sub" data-app-view="lessons2">HSK 2 lessons</a>
-          <a href="#lessons3" class="sidebar-link sidebar-link--sub" data-app-view="lessons3">HSK 3 lessons</a>
-          <a href="#lessons4" class="sidebar-link sidebar-link--sub" data-app-view="lessons4">HSK 4 lessons</a>
-          <a href="#lessons5" class="sidebar-link sidebar-link--sub" data-app-view="lessons5">HSK 5 lessons</a>
-          <a href="#lessons6" class="sidebar-link sidebar-link--sub" data-app-view="lessons6">HSK 6 lessons</a>
-        </div>
-      </details>
-    </nav>
-
-    <nav id="toolbar-words" class="toolbar sidebar-toolbar" aria-label="Word list and lesson">
-      <div class="field">
-        <label for="dataset-select">Word list</label>
-        <select id="dataset-select">
-          <option value="tocfl">TOCFL (Levels 1–2)</option>
-          <option value="nhm">Ni Hao Ma — 1000 common words</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="view-mode">View</label>
-        <select id="view-mode" title="Table scans many words; Study focuses on one word at a time">
-          <option value="table">Table (all rows)</option>
-          <option value="study">Study (one word, flashcard)</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="level-select">Level</label>
-        <select id="level-select"></select>
-      </div>
-      <div class="field">
-        <label for="lesson-select">Lesson</label>
-        <select id="lesson-select"></select>
-      </div>
-      <div class="field field--grow">
-        <label for="search">Search</label>
-        <input type="search" id="search" placeholder="Filter by pinyin, English, Hindi, 汉字…" autocomplete="off" />
-      </div>
     </nav>
 
     <div class="sidebar-meta">
@@ -247,6 +209,61 @@
       </main>
     </div>
 
+    <div id="app-view-categories" class="app-view hidden">
+      <div data-categories-browser>
+        <header class="header app-header">
+          <div>
+            <p class="eyebrow">Official vocabulary by topic</p>
+            <h1 data-categories-role="title">Categories</h1>
+            <p class="subtitle" data-categories-role="subtitle">TOCFL and CCCC vocabulary only.</p>
+          </div>
+        </header>
+        <main class="main">
+          <section data-categories-role="landing" aria-labelledby="categories-landing-title">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Choose a learning topic</p>
+                <h2 id="categories-landing-title">48 unified categories</h2>
+              </div>
+            </div>
+            <div class="category-grid categories-grid" data-categories-role="grid"></div>
+          </section>
+          <section class="hidden" data-categories-role="detail" aria-labelledby="category-detail-title">
+            <button type="button" class="category-back" data-category-back>← All categories</button>
+            <div class="category-detail-heading">
+              <span data-categories-role="detail-icon" aria-hidden="true"></span>
+              <div>
+                <p class="eyebrow">Category detail</p>
+                <h2 id="category-detail-title" data-categories-role="detail-title"></h2>
+              </div>
+            </div>
+            <section class="filter-panel categories-filter-panel" aria-label="Category word filters">
+              <label class="filter-search">Search this category
+                <input data-categories-role="search" type="search" placeholder="繁體中文, Pinyin, English…" autocomplete="off" />
+              </label>
+              <label>Source
+                <select data-categories-role="source">
+                  <option value="all">TOCFL + CCCC</option>
+                  <option value="TOCFL">TOCFL</option>
+                  <option value="CCCC">CCCC</option>
+                  <option value="both">In both sources</option>
+                </select>
+              </label>
+              <label>Official level
+                <select data-categories-role="level"></select>
+              </label>
+            </section>
+            <div class="result-heading">
+              <strong data-categories-role="count">0 unique words</strong>
+              <span>Traditional · Simplified · Pinyin · English · Source</span>
+            </div>
+            <div class="vocab-results--list" data-categories-role="results" aria-live="polite"></div>
+            <nav class="words-pager words-pager--bottom hidden" data-categories-role="pagination" aria-label="Category word pages"></nav>
+          </section>
+        </main>
+      </div>
+    </div>
+
     <div id="app-view-level" class="app-view hidden">
       <header class="header app-header">
         <div>
@@ -283,7 +300,7 @@
       <div data-tocfl-browser data-tocfl-level="novice-1">
         <header class="header app-header">
           <div>
-            <p class="eyebrow">Official TOCFL vocabulary</p>
+            <p class="eyebrow">TOCFL + CCCC</p>
             <h1 data-tocfl-role="title">準備級一級 · Novice 1</h1>
             <p class="subtitle" data-tocfl-role="subtitle">Words grouped by topic for this level.</p>
           </div>
@@ -307,6 +324,38 @@
           <div class="result-heading"><strong data-tocfl-role="count">0 words</strong><span>繁體中文 · 简体中文 · Pinyin · English · हिन्दी</span></div>
           <div class="vocab-results--list" data-tocfl-role="results" aria-live="polite"></div>
           <nav class="words-pager words-pager--bottom hidden" data-tocfl-role="pagination" aria-label="TOCFL word pages"></nav>
+        </main>
+      </div>
+    </div>
+
+    <div id="app-view-tocfl8000" class="app-view hidden">
+      <div data-tocfl-8000>
+        <header class="header app-header">
+          <div>
+            <p class="eyebrow">Official TOCFL vocabulary</p>
+            <h1 data-tocfl-role="title">TOCFL 8000</h1>
+            <p class="subtitle" data-tocfl-role="subtitle">arranged by pinyin</p>
+          </div>
+        </header>
+        <main class="main">
+          <nav class="level-switch hidden" data-tocfl-role="levels" aria-label="Switch TOCFL level"></nav>
+          <nav class="topic-chip-row" data-tocfl-role="categories" aria-label="Topics"></nav>
+          <nav class="topic-chip-row hidden" data-tocfl-role="subcategories" aria-label="Subcategories in the selected topic"></nav>
+          <section class="filter-panel filter-panel--compact" aria-label="TOCFL 8000 filters">
+            <label class="filter-search">Search
+              <input data-tocfl-role="search" type="search" placeholder="水, shuǐ, water, पानी…" autocomplete="off" />
+            </label>
+            <label>Learning status
+              <select data-tocfl-role="status">
+                <option value="all">All words</option><option value="unlearned">Not learned</option>
+                <option value="learned">Learned</option><option value="favorite">Favorites</option>
+                <option value="difficult">Difficult</option>
+              </select>
+            </label>
+          </section>
+          <div class="result-heading"><strong data-tocfl-role="count">0 words</strong><span>繁體中文 · 简体中文 · Pinyin · English · हिन्दी</span></div>
+          <div class="vocab-results--list" data-tocfl-role="results" aria-live="polite"></div>
+          <nav class="words-pager words-pager--bottom hidden" data-tocfl-role="pagination" aria-label="TOCFL 8000 word pages"></nav>
         </main>
       </div>
     </div>
@@ -335,6 +384,37 @@
         </main>
         <div class="character-detail-overlay hidden" data-character-role="details" aria-hidden="true">
           <section class="character-detail" role="dialog" aria-modal="true" aria-labelledby="character-detail-title">
+            <button type="button" class="character-detail__close" data-character-role="details-close" data-character-close aria-label="Close character details">×</button>
+            <div data-character-role="details-content"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div id="app-view-script-diff" class="app-view hidden">
+      <div data-character-diff>
+        <header class="header app-header">
+          <div>
+            <p class="eyebrow">From the 3,000 characters</p>
+            <h1 data-character-role="title">Traditional and Simplified difference</h1>
+            <p class="subtitle" data-character-role="subtitle">Characters whose Traditional and Simplified forms are different.</p>
+          </div>
+        </header>
+        <main class="main">
+          <nav class="character-levels hidden" data-character-role="levels" aria-label="Character learning levels" hidden></nav>
+          <label class="filter-search character-search">Search
+            <input data-character-role="search" type="search" placeholder="字, zì, character, अक्षर…" autocomplete="off" />
+          </label>
+          <div class="result-heading">
+            <strong data-character-role="count">Different characters</strong>
+            <span>Tap Traditional to hear it. Tap Simplified for details.</span>
+          </div>
+          <div class="character-grid" data-character-role="grid" aria-live="polite"></div>
+          <nav class="words-pager words-pager--bottom" data-character-role="pagination" aria-label="Character pages"></nav>
+          <p class="hint">Only characters from the 3,000-character list whose Traditional and Simplified forms are not the same.</p>
+        </main>
+        <div class="character-detail-overlay hidden" data-character-role="details" aria-hidden="true">
+          <section class="character-detail" role="dialog" aria-modal="true" aria-labelledby="character-diff-detail-title">
             <button type="button" class="character-detail__close" data-character-role="details-close" data-character-close aria-label="Close character details">×</button>
             <div data-character-role="details-content"></div>
           </section>
@@ -390,63 +470,6 @@
           <div id="progress-hsk"></div>
         </section>
       </main>
-    </div>
-
-    <div id="app-view-words" class="app-view hidden">
-      <header class="header">
-        <h1>Chinese Vocabulary</h1>
-        <p class="subtitle">Bilingual meanings (English + Hindi) · Tap Chinese to hear it · Table or study mode</p>
-      </header>
-
-      <div id="load-error" class="banner banner--error hidden" role="alert"></div>
-
-      <main class="main">
-        <div id="table-panel" class="table-panel">
-          <div class="table-wrap">
-            <table class="word-table">
-              <thead>
-                <tr>
-                  <th scope="col" class="col-num">#</th>
-                  <th scope="col">Traditional</th>
-                  <th scope="col">Simplified</th>
-                  <th scope="col">Pinyin</th>
-                  <th scope="col">English</th>
-                  <th scope="col">Hindi</th>
-                </tr>
-              </thead>
-              <tbody id="word-body"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <section id="study-panel" class="study-panel hidden" aria-label="Study mode — one word at a time">
-          <div class="study-progress-outer" aria-hidden="true">
-            <div class="study-progress-inner" id="study-progress"></div>
-          </div>
-          <p class="study-meta" id="study-meta"></p>
-          <div class="study-card" id="study-card">
-            <button type="button" class="study-han" id="study-han" title="Play pronunciation"></button>
-            <p class="study-py" id="study-py"></p>
-            <div id="study-meaning-wrap" class="study-meaning-wrap is-hidden">
-              <p class="study-en" id="study-en"></p>
-              <p class="study-hi" id="study-hi"></p>
-            </div>
-            <button type="button" class="study-reveal-btn" id="study-reveal">Show English &amp; Hindi</button>
-          </div>
-          <div class="study-nav">
-            <button type="button" class="btn-nav" id="study-prev">← Previous</button>
-            <button type="button" class="btn-nav btn-nav--ghost" id="study-rand">Random</button>
-            <button type="button" class="btn-nav" id="study-next">Next →</button>
-          </div>
-          <p class="study-kbd-hint">Shortcuts: <kbd>←</kbd> <kbd>→</kbd> move · <kbd>Space</kbd> reveal · <kbd>P</kbd> play audio</p>
-        </section>
-
-        <p class="hint">Source for the 1000-word list: <a href="https://nihaoma-mandarin.com/pedagogy-corner/1000-common-chinese-words/" target="_blank" rel="noopener">Ni Hao Ma</a>. Audio uses your browser’s Mandarin (zh-TW) voice.</p>
-      </main>
-
-      <footer class="footer">
-        <span id="meta-line"></span>
-      </footer>
     </div>
 
     <div id="app-view-pronounce" class="app-view hidden">
@@ -545,25 +568,18 @@
 
   <script>window.__UNIFIED_APP__ = true;</script>
   <script src="../js/offline.js"></script>
-  <script src="../data/vocabulary.js"></script>
-  <script src="../data/nhm-1000-common.js"></script>
-  <script src="../data/hsk-1.js"></script>
-  <script src="../data/hsk-2.js"></script>
-  <script src="../data/hsk-3.js"></script>
-  <script src="../data/hsk-4.js"></script>
-  <script src="../data/hsk-5.js"></script>
-  <script src="../data/hsk-6.js"></script>
   <script src="../data/tocfl-8000.js"></script>
   <script src="../data/tocfl-cccc.js"></script>
   <script src="../data/vocabulary-master.js"></script>
   <script src="../data/characters.js"></script>
   <script src="../data/tone-page.data.js"></script>
+  <script src="../js/category-taxonomy.js"></script>
   <script src="../js/sidebar.js" defer></script>
   <script src="../js/learning-state.js" defer></script>
   <script src="../js/vocab-store.js" defer></script>
+  <script src="../js/tocfl-store.js" defer></script>
   <script src="../js/vocabulary-ui.js" defer></script>
-  <script src="../js/app.js" defer></script>
-  <script src="../js/pronunciation.js" defer></script>
+  <script src="../js/categories-ui.js" defer></script>
   <script src="../js/tocfl-ui.js" defer></script>
   <script src="../js/characters-ui.js" defer></script>
   <script src="../js/tones.js" defer></script>

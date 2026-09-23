@@ -65,7 +65,7 @@ def main() -> None:
     html = html.replace("</body>", f"{blocks}\n</body>", 1)
 
     MOBILE.mkdir(parents=True, exist_ok=True)
-    for relative in ("chinese.html", "mobile/chinese.html", "mobile/index.html"):
+    for relative in ("index.html", "chinese.html", "mobile/chinese.html", "mobile/index.html"):
         output = ROOT / relative
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(html, encoding="utf-8")

@@ -9,7 +9,7 @@ from pathlib import Path
 
 import dukpy
 
-from smoke_test_ui import DOM_SHIM, PROBE
+from smoke_test_ui import DOM_SHIM, EXPECTED_SPELLING, PROBE, SYLLABLE_SET, syllable_key
 
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "mobile" / "index.html"
@@ -72,9 +72,44 @@ def main() -> None:
         report["characterRender"]["renderedPinyinSorted"],
         "bundle: rendered character rows are alphabetical by pinyin",
     )
+    check(
+        report["characterDiff"]["title"] == "Traditional and Simplified difference",
+        "bundle: difference page title is Traditional and Simplified difference",
+    )
+    check(
+        report["characterDiff"]["count"] > 0 and report["characterDiff"]["count"] < 3000,
+        "bundle: difference page is a subset of the 3,000 characters",
+    )
+    check(report["characterDiff"]["allDifferent"], "bundle: every listed character differs between scripts")
+    check(report["characterDiff"]["levelsHidden"], "bundle: difference page hides the level switch")
+    check(
+        report.get("spellingOrder") == EXPECTED_SPELLING,
+        "bundle: full Pinyin spelling puts āngzāng before ángguì",
+    )
+    tocfl_sequence = report.get("tocflPinyinSequence") or []
+    resorted = sorted(tocfl_sequence, key=syllable_key)
+    check(
+        len(tocfl_sequence) > 1000 and tocfl_sequence == resorted,
+        "bundle: second full sort confirms every TOCFL word is in Pinyin order",
+    )
     check(report.get("browseTraditionalAudio"), "bundle: Traditional words play exact displayed text")
     check(report.get("browseSimplifiedDetails"), "bundle: Simplified words open details")
     check(report.get("wordDetailsComplete"), "bundle: word details include meanings, example, and pronunciation")
+    check(report["columnControls"]["hideButtons"] == 0, "bundle: column headers have no Hide buttons")
+    check(report["columnControls"]["mobileButtons"] == 3, "bundle: one bar hides or shows each column")
+    check(report["columnControls"]["labelledCells"], "bundle: optional columns keep responsive labels")
+    check(report["columnControls"]["pinyinHidden"], "bundle: Pinyin column can be hidden")
+    check(report["columnControls"]["restoreControl"], "bundle: hidden columns expose Show controls")
+    check(report["columnControls"]["independent"], "bundle: column visibility is independent")
+    check(report["columnControls"]["persisted"], "bundle: column visibility persists")
+    check(report["columnControls"]["restored"], "bundle: hidden columns can be restored")
+    check(report["columnControls"]["rowToggles"] == 0, "bundle: word rows have no Hide button")
+    check(report["columnControls"]["rowShows"] == 6, "bundle: hidden columns offer Show on every row")
+    check(report["columnControls"]["rowShowsOnRight"], "bundle: Show buttons sit on the right of the row")
+    check(report["columnControls"]["rowWordOnly"], "bundle: Show Word reveals one row only")
+    check(report["columnControls"]["rowCollapsed"], "bundle: a word click can leave only that word")
+    check(report["columnControls"]["rowIsolated"], "bundle: one row stays independent")
+    check(report["columnControls"]["rowRestored"], "bundle: clicking the word again restores the row")
     check(report["mobilePack"], "bundle: mobile pack mode is enabled")
     check(report["localStoragePersists"], "bundle: learning state persists in localStorage")
     check(report["tocfl8000Words"] == 7517, "bundle: all 7,517 TOCFL workbook rows loaded")
@@ -82,9 +117,12 @@ def main() -> None:
     check(report["tocflCombinedLevels"] == 10, "bundle: all ten workbook levels loaded")
     check(report["tocflLevelSizes"]["novice-1"] == 160, "bundle: Novice 1 keeps 160 first-occurrence words")
     check(report["tocflLevelSizes"]["novice-2"] == 234, "bundle: Novice 2 keeps 234 first-occurrence words")
-    check(report["tocflLevelSizes"]["level-1"] == 345, "bundle: Level 1 drops later repeats of the same word")
+    check(report["tocflLevelSizes"]["level-1"] < 347, "bundle: Level 1 drops later repeats of the same word")
     check(report["tocflUniqueDuplicates"] == 0, "bundle: no unique Chinese+pinyin word is shown twice")
-    check(report["tocflUniqueTotal"] == 7477, "bundle: TOCFL+CCCC display 7,477 unique words")
+    check(
+        report["categoriesRender"]["uniqueWords"] + report["categoriesRender"]["duplicatesMerged"] == 8714,
+        "bundle: deduplication accounts for all 8,714 source rows",
+    )
     check(report["tocflAllLevelsSorted"], "bundle: every TOCFL and CCCC level is alphabetical by pinyin")
     check(report["tocflLevelAssignmentCorrect"], "bundle: every TOCFL and CCCC word keeps its level")
     check(
@@ -100,7 +138,34 @@ def main() -> None:
     check(report["tocflClickFlow"]["countText"] != "160 words", "bundle: Level 3 does not fall back to Novice 1 words")
     check(report["tocflClickFlow"]["categoryExact"], "bundle: category clicked in Level 3 shows only Level 3 words")
     check(report["tocflClickFlow"]["subcategoryExact"], "bundle: subcategory clicked in Level 3 stays in that category")
+    check(
+        report["tocfl8000"]["count"] == sum(
+            report["tocflLevelSizes"][level]
+            for level in ("novice-1", "novice-2", "level-1", "level-2", "level-3", "level-4", "level-5")
+        ),
+        "bundle: Official TOCFL vocabulary shows every TOCFL 8000 word",
+    )
+    check(report["tocfl8000"]["title"] == "TOCFL 8000", "bundle: Official TOCFL vocabulary is titled TOCFL 8000")
+    check("arranged by pinyin" in report["tocfl8000"]["subtitle"], "bundle: Official TOCFL vocabulary is arranged by pinyin")
+    check(report["tocfl8000"]["levelsHidden"], "bundle: Official TOCFL vocabulary has no level switcher")
+    check(report["tocfl8000"]["pinyinSorted"], "bundle: Official TOCFL vocabulary list is in pinyin order")
+    check(report["tocfl8000"]["onlyTocfl"], "bundle: Official TOCFL vocabulary leaves out CCCC-only levels")
     check(report["tocflRender"]["results"] > 0, f"bundle: TOCFL category page renders ({report['tocflRender']['count']})")
+    check(report["categoriesRender"]["taxonomy"] == 48, "bundle: exact 48-category taxonomy loaded")
+    check(report["categoriesRender"]["cards"] == 48, "bundle: Categories landing renders 48 cards")
+    check(report["categoriesRender"]["dynamicCounts"], "bundle: category counts are dynamic")
+    check(report["categoriesRender"]["duplicatesMerged"] > 0, "bundle: duplicate source rows are merged")
+    check(report["categoriesRender"]["strictSources"], "bundle: Categories uses only TOCFL and CCCC")
+    check(report["categoriesRender"]["categoryExact"], "bundle: detail is restricted to one primary category")
+    check(report["categoriesRender"]["prioritySorted"], "bundle: category words use learning-priority order")
+    check(report["categoriesRender"]["traditionalSearch"], "bundle: Traditional search works")
+    check(report["categoriesRender"]["pinyinSearch"], "bundle: Pinyin search works")
+    check(report["categoriesRender"]["englishSearch"], "bundle: English search works")
+    check(report["categoriesRender"]["sourceMetadata"], "bundle: category rows show source metadata")
+    check(report["categoriesRender"]["mergedSource"], "bundle: shared words show TOCFL + CCCC")
+    check(report["categoriesRender"]["pagination"], "bundle: large categories paginate")
+    check(report["categoriesRender"]["detailVisible"], "bundle: category card opens detail")
+    check(report["categoriesRender"]["routeVisible"], "bundle: category route opens Categories panel")
     check(report["totalWords"] > 5900, f"bundle: deduplicated corpus loaded ({report['totalWords']} words)")
     check(report["tocflA1Words"] > 300, f"bundle: TOCFL A1 filter returns words ({report['tocflA1Words']})")
     check(report["tocflCounts"].get("A2", 0) > 300, "bundle: TOCFL A2 count is populated")

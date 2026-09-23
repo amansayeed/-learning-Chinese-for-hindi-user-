@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark light" />
-  <title>Chinese Characters by Frequency</title>
+  <title>Traditional and Simplified difference</title>
   <style>
 :root {
   --radius: 12px;
@@ -5462,35 +5462,35 @@ button.word-detail__script {
         <span class="mobile-bar__menu-icon" aria-hidden="true"></span>
       </button>
       <div class="mobile-bar__text">
-        <span class="mobile-bar__title">Chinese Characters</span>
-        <span class="mobile-bar__hint">Learn individual characters by frequency</span>
+        <span class="mobile-bar__title">Traditional and Simplified difference</span>
+        <span class="mobile-bar__hint">Characters from the 3,000 list that differ</span>
       </div>
     </header>
 
-    <div data-character-browser data-character-level="1000">
+    <div data-character-diff>
       <header class="header app-header">
         <div>
-          <p class="eyebrow">Character frequency learning</p>
-          <h1 data-character-role="title">1,000 Characters · Basic Reading</h1>
-          <p class="subtitle" data-character-role="subtitle">Characters ranked by frequency.</p>
+          <p class="eyebrow">From the 3,000 characters</p>
+          <h1 data-character-role="title">Traditional and Simplified difference</h1>
+          <p class="subtitle" data-character-role="subtitle">Characters whose Traditional and Simplified forms are different.</p>
         </div>
       </header>
       <main class="main">
-        <nav class="character-levels" data-character-role="levels" aria-label="Character learning levels"></nav>
-        <label class="filter-search character-search">Search this level
+        <nav class="character-levels hidden" data-character-role="levels" aria-label="Character learning levels" hidden></nav>
+        <label class="filter-search character-search">Search
           <input data-character-role="search" type="search" placeholder="字, zì, character, अक्षर…" autocomplete="off" />
         </label>
         <div class="result-heading">
-          <strong data-character-role="count">1,000 individual characters</strong>
-          <span>Tap a character for Traditional · Simplified · Pinyin · English · हिन्दी</span>
+          <strong data-character-role="count">Different characters</strong>
+          <span>Tap Traditional to hear it. Tap Simplified for details.</span>
         </div>
         <div class="character-grid" data-character-role="grid" aria-live="polite"></div>
         <nav class="words-pager words-pager--bottom" data-character-role="pagination" aria-label="Character pages"></nav>
-        <p class="hint">Source: Taiwan Ministry of Education character-frequency statistics. Each row is one Unicode Chinese character—not a word.</p>
+        <p class="hint">Only characters from the 3,000-character list whose Traditional and Simplified forms are not the same.</p>
       </main>
 
       <div class="character-detail-overlay hidden" data-character-role="details" aria-hidden="true">
-        <section class="character-detail" role="dialog" aria-modal="true" aria-labelledby="character-detail-title">
+        <section class="character-detail" role="dialog" aria-modal="true" aria-labelledby="character-diff-detail-title">
           <button type="button" class="character-detail__close" data-character-role="details-close" data-character-close aria-label="Close character details">×</button>
           <div data-character-role="details-content"></div>
         </section>

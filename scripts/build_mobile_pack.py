@@ -11,37 +11,32 @@ MOBILE = ROOT / "mobile"
 CSS = (ROOT / "css" / "styles.css").read_text(encoding="utf-8")
 
 PAGE_CONFIG = [
-    ("index.html", ["index.html", "mobile/words.html"], [
-        "js/offline.js", "data/vocabulary.js", "data/nhm-1000-common.js",
-        "js/sidebar.js", "js/app.js",
-    ]),
     ("pronunciation.html", ["pronunciation.html", "mobile/pronunciation.html"], [
-        "js/offline.js", "data/tocfl-8000.js", "data/tocfl-cccc.js", "data/vocabulary-master.js", "js/sidebar.js",
-        "js/learning-state.js", "js/vocab-store.js", "js/vocabulary-ui.js",
-        "js/pronunciation.js", "js/tocfl-ui.js",
+        "js/offline.js", "data/tocfl-8000.js", "data/tocfl-cccc.js", "data/vocabulary-master.js",
+        "js/category-taxonomy.js", "js/sidebar.js", "js/learning-state.js", "js/vocab-store.js",
+        "js/tocfl-store.js", "js/vocabulary-ui.js", "js/tocfl-ui.js",
     ]),
     ("tocfl.html", ["tocfl.html", "mobile/tocfl.html"], [
-        "js/offline.js", "data/tocfl-8000.js", "data/tocfl-cccc.js", "data/vocabulary-master.js", "js/sidebar.js",
-        "js/learning-state.js", "js/vocab-store.js", "js/vocabulary-ui.js",
-        "js/pronunciation.js", "js/tocfl-ui.js",
+        "js/offline.js", "data/tocfl-8000.js", "data/tocfl-cccc.js", "data/vocabulary-master.js",
+        "js/category-taxonomy.js", "js/sidebar.js", "js/learning-state.js", "js/vocab-store.js",
+        "js/tocfl-store.js", "js/vocabulary-ui.js", "js/tocfl-ui.js",
+    ]),
+    ("tocfl-8000.html", ["tocfl-8000.html", "mobile/tocfl-8000.html"], [
+        "js/offline.js", "data/tocfl-8000.js", "data/tocfl-cccc.js", "data/vocabulary-master.js",
+        "js/category-taxonomy.js", "js/sidebar.js", "js/learning-state.js", "js/vocab-store.js",
+        "js/tocfl-store.js", "js/vocabulary-ui.js", "js/tocfl-ui.js",
+    ]),
+    ("categories.html", ["categories.html", "mobile/categories.html"], [
+        "js/offline.js", "data/tocfl-8000.js", "data/tocfl-cccc.js", "data/vocabulary-master.js",
+        "js/category-taxonomy.js", "js/sidebar.js", "js/learning-state.js", "js/vocab-store.js",
+        "js/tocfl-store.js", "js/vocabulary-ui.js", "js/categories-ui.js",
     ]),
     ("characters.html", ["characters.html", "mobile/characters.html"], [
         "js/offline.js", "data/characters.js", "js/sidebar.js", "js/characters-ui.js",
     ]),
-    *[
-        (
-            "hsk.html" if level == 1 else f"hsk{level}.html",
-            [
-                "hsk.html" if level == 1 else f"hsk{level}.html",
-                f"mobile/{'hsk' if level == 1 else f'hsk{level}'}.html",
-            ],
-            [
-                "js/offline.js", f"data/hsk-{level}.js",
-                "js/sidebar.js", "js/app.js",
-            ],
-        )
-        for level in range(1, 7)
-    ],
+    ("character-diff.html", ["character-diff.html", "mobile/character-diff.html"], [
+        "js/offline.js", "data/characters.js", "js/sidebar.js", "js/characters-ui.js",
+    ]),
     ("tones.html", ["tones.html", "mobile/tones.html"], [
         "js/offline.js", "data/tone-page.data.js", "js/sidebar.js", "js/tones.js",
     ]),
@@ -49,20 +44,18 @@ PAGE_CONFIG = [
 
 UNIFIED_SCRIPTS = [
     "js/offline.js",
-    "data/vocabulary.js",
-    "data/nhm-1000-common.js",
-    *[f"data/hsk-{level}.js" for level in range(1, 7)],
     "data/tocfl-8000.js",
     "data/tocfl-cccc.js",
     "data/vocabulary-master.js",
     "data/characters.js",
     "data/tone-page.data.js",
+    "js/category-taxonomy.js",
     "js/sidebar.js",
     "js/learning-state.js",
     "js/vocab-store.js",
+    "js/tocfl-store.js",
     "js/vocabulary-ui.js",
-    "js/app.js",
-    "js/pronunciation.js",
+    "js/categories-ui.js",
     "js/tocfl-ui.js",
     "js/characters-ui.js",
     "js/tones.js",
@@ -110,10 +103,7 @@ def strip_assets(html: str) -> str:
 
 
 def fix_nav(html: str, mobile: bool) -> str:
-    html = re.sub(r'href="\./([^"]+\.html(?:#[^"]*)?)"', r'href="\1"', html)
-    if mobile:
-        html = html.replace('href="index.html"', 'href="words.html"')
-    return html
+    return re.sub(r'href="\./([^"]+\.html(?:#[^"]*)?)"', r'href="\1"', html)
 
 
 def bundle(source: str, outputs: list[str], scripts: list[str]) -> None:
@@ -128,15 +118,10 @@ def bundle(source: str, outputs: list[str], scripts: list[str]) -> None:
         "<script>window.__OFFLINE_FILE__=true;window.__MOBILE_PACK__=true;</script>"
     )
     boot = (
-        '<script>(function(){var v=(window.__VOCAB__&&window.__VOCAB__.levels)||'
-        '(window.__VOCAB_NHM__&&window.__VOCAB_NHM__.levels)||'
-        '(window.__VOCAB_HSK1__&&window.__VOCAB_HSK1__.levels)||'
-        '(window.__VOCAB_HSK2__&&window.__VOCAB_HSK2__.levels)||'
-        '(window.__VOCAB_HSK3__&&window.__VOCAB_HSK3__.levels)||'
-        '(window.__VOCAB_HSK4__&&window.__VOCAB_HSK4__.levels)||'
-        '(window.__VOCAB_HSK5__&&window.__VOCAB_HSK5__.levels)||'
-        '(window.__VOCAB_HSK6__&&window.__VOCAB_HSK6__.levels)||'
-        '(window.__VOCAB_MASTER__&&window.__VOCAB_MASTER__.words);'
+        '<script>(function(){var v=(window.__VOCAB_MASTER__&&window.__VOCAB_MASTER__.words)||'
+        '(window.__TOCFL_8000__&&window.__TOCFL_8000__.words)||'
+        '(window.__TOCFL_CCCC__&&window.__TOCFL_CCCC__.words)||'
+        '(window.__CHARACTERS__&&window.__CHARACTERS__.characters);'
         'var t=window.__TONE_PAGE_DATA__&&window.__TONE_PAGE_DATA__.quartets;'
         'if(v||t)return;var m=document.querySelector(".layout-main");if(!m)return;'
         'var b=document.createElement("div");b.setAttribute("role","alert");'
@@ -174,7 +159,7 @@ def bundle_unified() -> None:
     )
     html = html.replace("</head>", f"{head}\n</head>", 1)
     html = html.replace("</body>", f"{blocks}\n</body>", 1)
-    for relative in ("chinese.html", "mobile/chinese.html", "mobile/index.html"):
+    for relative in ("index.html", "chinese.html", "mobile/chinese.html", "mobile/index.html"):
         output = ROOT / relative
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(html, encoding="utf-8")
@@ -184,16 +169,14 @@ def bundle_unified() -> None:
 def write_launchers() -> None:
     links = [
         ("chinese.html", "🚀", "Open all-in-one app", "Dashboard, categories, search, learn and progress"),
-        ("words.html", "📖", "Words · table & study", "Browse TOCFL and common vocabulary"),
-        ("hsk.html", "1️⃣", "HSK 1 · 500 words", "Start with essential beginner vocabulary"),
-        ("hsk2.html", "2️⃣", "HSK 2 · 772 words", "Build everyday communication skills"),
-        ("hsk3.html", "3️⃣", "HSK 3 · 973 words", "Grow practical intermediate vocabulary"),
-        ("hsk4.html", "4️⃣", "HSK 4 · 1000 words", "Strengthen confident communication"),
-        ("hsk5.html", "5️⃣", "HSK 5 · 1071 words", "Study advanced words and expressions"),
-        ("hsk6.html", "6️⃣", "HSK 6 · 1140 words", "Master high-level vocabulary"),
+        ("chinese.html#browse", "📖", "Browse all words", "Search every word by level, topic and meaning"),
+        ("chinese.html#hsk1", "🧩", "HSK levels 1–6", "Each band as one alphabetical word list"),
         ("pronunciation.html", "🗣️", "Pronunciation", "Practice Chinese sounds and clusters"),
-        ("tocfl.html", "📘", "TOCFL 8,000", "Browse all seven official vocabulary levels"),
+        ("tocfl.html", "📘", "TOCFL + CCCC", "Browse all seven official vocabulary levels"),
+        ("tocfl-8000.html", "📗", "Official TOCFL vocabulary", "TOCFL 8000, all words arranged by pinyin"),
+        ("categories.html", "🗂️", "Categories", "Browse official TOCFL and CCCC words by topic"),
         ("characters.html", "字", "Chinese Characters", "Learn 1,000–3,000 characters by frequency"),
+        ("character-diff.html", "繁", "Traditional and Simplified difference", "Characters from the 3,000 list that differ"),
         ("tones.html", "🎵", "Four tones", "Train Mandarin tone recognition"),
     ]
     body = "\n".join(
@@ -247,10 +230,7 @@ h1{{margin:0;font-size:clamp(2rem,7vw,4rem);line-height:1.08;background:linear-g
 </body></html>"""
     MOBILE.mkdir(parents=True, exist_ok=True)
     (MOBILE / "START.html").write_text(template, encoding="utf-8")
-    (ROOT / "START.html").write_text(
-        template.replace('href="words.html"', 'href="index.html"'),
-        encoding="utf-8",
-    )
+    (ROOT / "START.html").write_text(template, encoding="utf-8")
 
 
 def main() -> None:

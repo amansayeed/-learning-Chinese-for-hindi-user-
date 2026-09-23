@@ -178,36 +178,169 @@
     return word.__searchText;
   }
 
-  /* Dictionary order: letters first, then tone 1–4 before the neutral tone, so
-     bā → bá → bǎ → bà → ba stay in the order a learner expects. */
-  function syllableTone(syllable) {
-    var decomposed = text(syllable).normalize("NFD");
-    if (decomposed.indexOf("\u0304") >= 0) return "1";
-    if (decomposed.indexOf("\u0301") >= 0) return "2";
-    if (decomposed.indexOf("\u030c") >= 0) return "3";
-    if (decomposed.indexOf("\u0300") >= 0) return "4";
-    var numbered = decomposed.match(/[1-5]/);
-    return numbered ? numbered[0] : "5";
+  /* Full-spelling order, one syllable at a time. Letters are compared with tone
+     marks removed; the tone (1→4, then neutral) breaks a tie only inside that
+     syllable, before the next syllable is considered. āngzāng therefore comes
+     before ángguì, and the Chinese characters are never a sort key. */
+  var MARKED_LETTER = {
+    "ā": "a1", "á": "a2", "ǎ": "a3", "à": "a4",
+    "ē": "e1", "é": "e2", "ě": "e3", "è": "e4",
+    "ī": "i1", "í": "i2", "ǐ": "i3", "ì": "i4",
+    "ō": "o1", "ó": "o2", "ǒ": "o3", "ò": "o4",
+    "ū": "u1", "ú": "u2", "ǔ": "u3", "ù": "u4",
+    "ǖ": "u1", "ǘ": "u2", "ǚ": "u3", "ǜ": "u4", "ü": "u5",
+    "ń": "n2", "ň": "n3", "ǹ": "n4", "ḿ": "m2",
+  };
+  var SYLLABLE_LIST = (
+    "a ai an ang ao ba bai ban bang bao bei ben beng bi bian biao bie bin bing bo bu " +
+    "ca cai can cang cao ce cen ceng cha chai chan chang chao che chen cheng chi chong chou chu chua chuai chuan chuang chui chun chuo ci cong cou cu cuan cui cun cuo " +
+    "da dai dan dang dao de dei den deng di dia dian diao die ding diu dong dou du duan dui dun duo " +
+    "e ei en eng er fa fan fang fei fen feng fo fou fu " +
+    "ga gai gan gang gao ge gei gen geng gong gou gu gua guai guan guang gui gun guo " +
+    "ha hai han hang hao he hei hen heng hm hng hong hou hu hua huai huan huang hui hun huo " +
+    "ji jia jian jiang jiao jie jin jing jiong jiu ju juan jue jun " +
+    "ka kai kan kang kao ke kei ken keng kong kou ku kua kuai kuan kuang kui kun kuo " +
+    "la lai lan lang lao le lei leng li lia lian liang liao lie lin ling liu lo long lou lu luan lue lun luo " +
+    "m ma mai man mang mao me mei men meng mi mian miao mie min ming miu mo mou mu " +
+    "n na nai nan nang nao ne nei nen neng ng ni nian niang niao nie nin ning niu nong nou nu nuan nue nun nuo " +
+    "o ou pa pai pan pang pao pei pen peng pi pian piao pie pin ping po pou pu " +
+    "qi qia qian qiang qiao qie qin qing qiong qiu qu quan que qun " +
+    "ran rang rao re ren reng ri rong rou ru rua ruan rui run ruo " +
+    "sa sai san sang sao se sen seng sha shai shan shang shao she shei shen sheng shi shou shu shua shuai shuan shuang shui shun shuo si song sou su suan sui sun suo " +
+    "ta tai tan tang tao te teng ti tian tiao tie ting tong tou tu tuan tui tun tuo " +
+    "wa wai wan wang wei wen weng wo wu " +
+    "xi xia xian xiang xiao xie xin xing xiong xiu xu xuan xue xun " +
+    "ya yai yan yang yao ye yi yin ying yo yong you yu yuan yue yun " +
+    "za zai zan zang zao ze zei zen zeng zha zhai zhan zhang zhao zhe zhei zhen zheng zhi zhong zhou zhu zhua zhuai zhuan zhuang zhui zhun zhuo zi zong zou zu zuan zui zun zuo"
+  ).split(" ");
+  var SYLLABLE_SET = {};
+  SYLLABLE_LIST.forEach(function (syllable) { SYLLABLE_SET[syllable] = true; });
+
+  function readChunk(chunk) {
+    var letters = "";
+    var tones = [];
+    var value = text(chunk).normalize("NFC").toLowerCase().replace(/u:/g, "u");
+    for (var i = 0; i < value.length; i++) {
+      var ch = value.charAt(i);
+      var marked = MARKED_LETTER[ch];
+      if (marked) {
+        letters += marked.charAt(0);
+        tones.push(marked.charAt(1));
+        continue;
+      }
+      if (ch === "v") {
+        letters += "u";
+        tones.push("5");
+        continue;
+      }
+      if (ch >= "a" && ch <= "z") {
+        letters += ch;
+        tones.push("5");
+        continue;
+      }
+      if (ch >= "1" && ch <= "5" && tones.length) tones[tones.length - 1] = ch;
+    }
+    return { letters: letters, tones: tones };
   }
 
-  function pinyinKey(word) {
-    if (word.__pinyinKey) return word.__pinyinKey;
-    var raw = text(word.pinyin).split("/")[0];
-    var han = text(word.traditional || word.simplified).split("/")[0];
-    word.__pinyinKey = {
-      letters: fold(raw).replace(/[^a-z]/g, "") || fold(han),
-      tones: raw.split(/\s+/).filter(Boolean).map(syllableTone).join(""),
-      han: han,
-    };
-    return word.__pinyinKey;
+  function erhuaCount(items) {
+    var count = 0;
+    items.forEach(function (item) {
+      var stem = item.letters.slice(0, -1);
+      if (
+        item.letters.charAt(item.letters.length - 1) === "r" &&
+        stem &&
+        SYLLABLE_SET[stem] &&
+        !SYLLABLE_SET[item.letters]
+      ) {
+        count += 1;
+      }
+    });
+    return count;
+  }
+
+  function segmentSyllables(letters, tones) {
+    var limit = letters.length;
+    var seen = [];
+    var memo = [];
+    function solve(index) {
+      if (index === limit) return [];
+      if (seen[index]) return memo[index];
+      seen[index] = true;
+      var best = null;
+      var bestErhua = 0;
+      var max = Math.min(6, limit - index);
+      for (var len = max; len >= 1; len--) {
+        var part = letters.substr(index, len);
+        var stem = part.charAt(part.length - 1) === "r" ? part.slice(0, -1) : "";
+        if (!SYLLABLE_SET[part] && !(stem && SYLLABLE_SET[stem])) continue;
+        var tone = "5";
+        var toneCount = 0;
+        for (var cursor = index; cursor < index + len; cursor++) {
+          if (tones[cursor] !== "5") {
+            toneCount += 1;
+            if (tone === "5") tone = tones[cursor];
+          }
+        }
+        if (toneCount > 1) continue;
+        var rest = solve(index + len);
+        if (!rest) continue;
+        var candidate = [{ letters: part, tone: tone }].concat(rest);
+        var candidateErhua = erhuaCount(candidate);
+        if (
+          !best ||
+          candidate.length < best.length ||
+          (candidate.length === best.length && candidateErhua < bestErhua)
+        ) {
+          best = candidate;
+          bestErhua = candidateErhua;
+        }
+      }
+      memo[index] = best;
+      return best;
+    }
+    var parsed = solve(0);
+    if (parsed) return parsed;
+    var tone = "5";
+    for (var index = 0; index < tones.length; index++) {
+      if (tones[index] !== "5") {
+        tone = tones[index];
+        break;
+      }
+    }
+    return [{ letters: letters, tone: tone }];
+  }
+
+  function pinyinSyllables(word) {
+    if (word.__pinyinSyllables) return word.__pinyinSyllables;
+    var primary = text(word.pinyin).split("/")[0].trim();
+    var chunks = primary.split(/[\s'’·]+/).filter(Boolean);
+    var syllables = [];
+    chunks.forEach(function (chunk) {
+      var read = readChunk(chunk);
+      if (!read.letters) return;
+      segmentSyllables(read.letters, read.tones).forEach(function (syllable) {
+        syllables.push(syllable);
+      });
+    });
+    word.__pinyinSyllables = syllables;
+    return syllables;
   }
 
   function comparePinyin(a, b) {
-    var ka = pinyinKey(a);
-    var kb = pinyinKey(b);
-    if (ka.letters !== kb.letters) return ka.letters < kb.letters ? -1 : 1;
-    if (ka.tones !== kb.tones) return ka.tones < kb.tones ? -1 : 1;
-    if (ka.han !== kb.han) return ka.han < kb.han ? -1 : 1;
+    var left = pinyinSyllables(a);
+    var right = pinyinSyllables(b);
+    var count = Math.max(left.length, right.length);
+    for (var index = 0; index < count; index++) {
+      if (!left[index]) return -1;
+      if (!right[index]) return 1;
+      if (left[index].letters !== right[index].letters) {
+        return left[index].letters < right[index].letters ? -1 : 1;
+      }
+      if (left[index].tone !== right[index].tone) {
+        return left[index].tone < right[index].tone ? -1 : 1;
+      }
+    }
     return 0;
   }
 
@@ -340,9 +473,12 @@
     meta: payload.meta || {},
     all: function () { return words.slice(); },
     byId: function (id) { return byId[id] || null; },
-    registerSupplemental: function (list) {
+    registerSupplemental: function (list, aliases) {
       (list || []).forEach(function (word) {
         if (word && word.id) byId[word.id] = word;
+      });
+      Object.keys(aliases || {}).forEach(function (duplicateId) {
+        byId[duplicateId] = byId[aliases[duplicateId]] || null;
       });
     },
     filter: filter,

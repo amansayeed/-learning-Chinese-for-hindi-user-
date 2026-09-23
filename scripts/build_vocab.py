@@ -14,8 +14,8 @@ from deep_translator import GoogleTranslator
 
 ROOT = Path(__file__).resolve().parents[1]
 XLSX = ROOT / "data" / "source" / "TOCFL_14425_word_list.xlsx"
+# JSON only: this list feeds the canonical master build, never a browser page.
 OUT = ROOT / "data" / "vocabulary.json"
-OUT_JS = ROOT / "data" / "vocabulary.js"
 
 LESSON_SIZE = 50
 HI_DELAY = 0.12
@@ -152,11 +152,7 @@ def main() -> None:
     with OUT.open("w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
 
-    text = json.dumps(payload, ensure_ascii=False)
-    OUT_JS.write_text("window.__VOCAB__ = " + text + ";\n", encoding="utf-8")
-
     print(f"Wrote {OUT}")
-    print(f"Wrote {OUT_JS}")
 
 
 if __name__ == "__main__":

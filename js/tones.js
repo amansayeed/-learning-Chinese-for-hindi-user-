@@ -1,37 +1,7 @@
 (function () {
   "use strict";
 
-  var THEME_KEY = "chinese-vocab-theme";
-  var themeToggle = document.getElementById("theme-toggle");
   var loadError = document.getElementById("tone-load-error");
-
-  function getTheme() {
-    return document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
-  }
-
-  function syncThemeToggle() {
-    if (!themeToggle) return;
-    var dark = getTheme() === "dark";
-    themeToggle.textContent = dark ? "Light mode" : "Dark mode";
-    themeToggle.setAttribute("aria-pressed", dark ? "true" : "false");
-    themeToggle.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
-  }
-
-  function setTheme(mode) {
-    if (mode !== "light" && mode !== "dark") return;
-    document.documentElement.setAttribute("data-theme", mode);
-    try {
-      localStorage.setItem(THEME_KEY, mode);
-    } catch (e) {}
-    syncThemeToggle();
-  }
-
-  if (themeToggle && !window.__UNIFIED_APP__) {
-    themeToggle.addEventListener("click", function () {
-      setTheme(getTheme() === "dark" ? "light" : "dark");
-    });
-    syncThemeToggle();
-  }
 
   function showLoadError(msg) {
     if (loadError) {

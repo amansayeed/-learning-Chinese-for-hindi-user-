@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Build data/hsk-N.json from New HSK word lists (txt source)."""
+"""Build data/hsk-N.json from New HSK word lists (txt source).
+
+The JSON feeds scripts/build_vocabulary_master.py; no page loads it directly.
+"""
 from __future__ import annotations
 
 import argparse
@@ -26,37 +29,31 @@ ANNOT_RE = re.compile(r"（[^）]*）")
 
 LEVELS = {
     1: {
-        "global": "__VOCAB_HSK1__",
         "code": "HSK1",
         "label": "HSK Level 1",
         "title": "New HSK 1 — 500 words",
     },
     2: {
-        "global": "__VOCAB_HSK2__",
         "code": "HSK2",
         "label": "HSK Level 2",
         "title": "New HSK 2 — 772 words",
     },
     3: {
-        "global": "__VOCAB_HSK3__",
         "code": "HSK3",
         "label": "HSK Level 3",
         "title": "New HSK 3 — 973 words",
     },
     4: {
-        "global": "__VOCAB_HSK4__",
         "code": "HSK4",
         "label": "HSK Level 4",
         "title": "New HSK 4 — 1000 words",
     },
     5: {
-        "global": "__VOCAB_HSK5__",
         "code": "HSK5",
         "label": "HSK Level 5",
         "title": "New HSK 5 — 1071 words",
     },
     6: {
-        "global": "__VOCAB_HSK6__",
         "code": "HSK6",
         "label": "HSK Level 6",
         "title": "New HSK 6 — 1140 words",
@@ -188,8 +185,8 @@ def build_level(level: int) -> None:
 
     cfg = LEVELS[level]
     txt_path = TXT_DIR / f"New-HSK-{level}-Word-List.txt"
+    # JSON only: the app reads the canonical master built from these lists.
     out_json = ROOT / "data" / f"hsk-{level}.json"
-    out_js = ROOT / "data" / f"hsk-{level}.js"
     hi_cache_path = ROOT / "data" / f"hsk-{level}-hindi-cache.json"
 
     if not txt_path.is_file():
@@ -245,10 +242,6 @@ def build_level(level: int) -> None:
     }
 
     out_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    out_js.write_text(
-        f"window.{cfg['global']} = " + json.dumps(payload, ensure_ascii=False) + ";\n",
-        encoding="utf-8",
-    )
     missing_hi = sum(1 for w in words if not w["hindi"])
     print(f"Wrote {out_json.name}: {len(words)} words, {missing_hi} without Hindi", file=sys.stderr)
 

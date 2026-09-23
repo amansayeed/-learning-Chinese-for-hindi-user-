@@ -732,334 +732,11 @@ input[type="search"] {
   padding: 1rem 0 2rem;
 }
 
-.table-panel.hidden {
-  display: none;
-}
-
-.table-wrap {
-  overflow-x: auto;
-  width: 100%;
-  min-height: min(70dvh, 900px);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow);
-  -webkit-overflow-scrolling: touch;
-}
-
-.word-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.95rem;
-  table-layout: auto;
-}
-
-.word-table th,
-.word-table td {
-  padding: 0.65rem 0.8rem;
-  text-align: left;
-  vertical-align: top;
-  border-bottom: 1px solid var(--border);
-}
-
-.word-table tbody tr:nth-child(even) td {
-  background: var(--table-row-even);
-}
-
-.word-table tbody tr:hover td {
-  background: var(--accent-soft) !important;
-}
-
-.word-table th {
-  position: sticky;
-  top: 0;
-  background: linear-gradient(180deg, var(--table-thead-start) 0%, var(--table-thead-end) 100%);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--table-thead-color);
-  font-weight: 700;
-  white-space: nowrap;
-  z-index: 1;
-  border-bottom: 2px solid var(--border);
-}
-
-/* Bold headers for the three “memory” columns */
-.word-table thead th:nth-child(2),
-.word-table thead th:nth-child(3),
-.word-table thead th:nth-child(4) {
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  color: var(--mem-head-color);
-  background: linear-gradient(180deg, var(--mem-head-start) 0%, var(--mem-head-end) 100%);
-}
-
-.word-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.col-num {
-  width: 3rem;
-  text-align: center !important;
-  font-variant-numeric: tabular-nums;
-  color: var(--muted);
-  font-size: 0.85rem;
-}
-
-/* Highlight Traditional / Simplified / Pinyin columns for memorization */
-.word-table tbody td:nth-child(2),
-.word-table tbody td:nth-child(3),
-.word-table tbody td:nth-child(4) {
-  background: var(--mem-cell);
-}
-
-.word-table tbody tr:nth-child(even) td:nth-child(2),
-.word-table tbody tr:nth-child(even) td:nth-child(3),
-.word-table tbody tr:nth-child(even) td:nth-child(4) {
-  background: var(--mem-cell-even);
-}
-
-.word-table tbody tr:hover td:nth-child(2),
-.word-table tbody tr:hover td:nth-child(3),
-.word-table tbody tr:hover td:nth-child(4) {
-  background: var(--mem-cell-hover) !important;
-}
-
-.trad-cell {
-  font-size: clamp(3.25rem, 2.2vw, 1.75rem);
-  
-  cursor: pointer;
-  color: var(--trad-color);
-  text-decoration: none;
-  font-family: var(--han);
-  border-radius: 8px;
-  padding: 0.2rem 0.45rem;
-  margin: -0.2rem -0.45rem;
-  border: 2px solid transparent;
-  background: var(--trad-bg);
-  text-align: left;
-  line-height: 1.35;
-  letter-spacing: 0.03em;
-}
-
-.trad-cell:hover {
-  background: var(--accent-soft);
-  border-color: var(--accent-border);
-  color: var(--trad-hover-color);
-}
-
-.trad-cell:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.simp-cell {
-  font-family: var(--han);
-  font-size: clamp(3.25rem, 2vw, 1.6rem);
- 
-  color: var(--simp-color);
-  line-height: 1.35;
-  letter-spacing: 0.03em;
-}
-
-.pinyin-cell {
-  font-family: var(--mono);
-  font-size: clamp(2.05rem, 1.5vw, 1.2rem);
-  font-weight: 700;
-  color: var(--pinyin-color);
-  letter-spacing: 0.04em;
-}
-
-.word-table td:nth-child(6) {
-  font-family: "Noto Sans Devanagari", "Nirmala UI", "Mangal", var(--font);
-  font-size: 0.92rem;
-  color: var(--hi-color);
-}
-
 .hint {
   margin: 1.25rem 0 0;
   font-size: 0.85rem;
   color: var(--muted);
   line-height: 1.5;
-}
-
-/* ——— Study mode ——— */
-.study-panel.hidden {
-  display: none;
-}
-
-.study-panel {
-  width: 100%;
-  padding: 0.25rem 0 1rem;
-}
-
-.study-progress-outer {
-  height: 8px;
-  background: var(--study-track);
-  border-radius: 999px;
-  overflow: hidden;
-  margin-bottom: 0.75rem;
-}
-
-.study-progress-inner {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, var(--accent), var(--progress-mid));
-  border-radius: 999px;
-  transition: width 0.2s ease;
-}
-
-.study-meta {
-  margin: 0 0 1rem;
-  font-size: 0.88rem;
-  color: var(--muted);
-  text-align: center;
-}
-
-.study-card {
-  max-width: min(36rem, 100%);
-  margin: 0 auto 1.25rem;
-  padding: 1.75rem 1.5rem 1.5rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  text-align: center;
-}
-
-.study-han {
-  display: block;
-  width: 100%;
-  margin: 0;
-  padding: 0.5rem;
-  font-family: var(--han);
-  font-size: clamp(2.25rem, 8vw, 3.25rem);
-  font-weight: 800;
-  line-height: 1.2;
-  color: var(--text);
-  background: linear-gradient(180deg, var(--study-han-start), var(--study-han-end));
-  border: 2px dashed var(--border);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-}
-
-.study-han:hover {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-}
-
-.study-py {
-  margin: 1rem 0 0;
-  font-family: var(--mono);
-  font-size: clamp(1.15rem, 3vw, 1.45rem);
-  font-weight: 700;
-  color: var(--study-py-color);
-  letter-spacing: 0.05em;
-}
-
-.study-meaning-wrap {
-  margin-top: 1.25rem;
-  padding-top: 1.1rem;
-  border-top: 1px solid var(--border);
-  text-align: left;
-}
-
-.study-meaning-wrap.is-hidden {
-  display: none;
-}
-
-.study-en {
-  margin: 0 0 0.65rem;
-  font-size: 1.05rem;
-  color: var(--text);
-  line-height: 1.45;
-}
-
-.study-hi {
-  margin: 0;
-  font-family: "Noto Sans Devanagari", "Nirmala UI", var(--font);
-  font-size: 1rem;
-  color: var(--study-hi-color);
-  line-height: 1.55;
-}
-
-.study-reveal-btn {
-  margin-top: 1rem;
-  width: 100%;
-  padding: 0.75rem 1rem;
-  font: inherit;
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: #fff;
-  background: var(--accent);
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.study-reveal-btn:hover {
-  background: var(--accent-hover);
-}
-
-.study-reveal-btn.is-hidden {
-  display: none;
-}
-
-.study-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  justify-content: center;
-  max-width: min(36rem, 100%);
-  margin: 0 auto;
-}
-
-.btn-nav {
-  flex: 1 1 auto;
-  min-width: 6rem;
-  padding: 0.65rem 1rem;
-  font: inherit;
-  font-weight: 600;
-  font-size: 0.92rem;
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-}
-
-.btn-nav:hover {
-  background: var(--accent-soft);
-  border-color: var(--accent-border);
-}
-
-.btn-nav--ghost {
-  flex: 0 1 auto;
-  min-width: unset;
-  font-weight: 500;
-  color: var(--muted);
-}
-
-.study-kbd-hint {
-  margin: 1rem 0 0;
-  font-size: 0.78rem;
-  color: var(--muted);
-  text-align: center;
-}
-
-.study-kbd-hint kbd {
-  display: inline-block;
-  padding: 0.1rem 0.4rem;
-  font-size: 0.75rem;
-  font-family: var(--mono);
-  background: var(--kbd-bg);
-  border-radius: 4px;
-  border: 1px solid var(--kbd-border);
-  color: var(--text);
 }
 
 .footer {
@@ -1278,19 +955,11 @@ input[type="search"] {
     min-width: 0;
   }
 
-  .word-table th,
-  .word-table td {
-    padding: 0.55rem 0.4rem;
-  }
+  
 
-  .word-table td:nth-child(5),
-  .word-table td:nth-child(6) {
-    font-size: 0.88rem;
-  }
+  
 
-  .study-card {
-    padding: 1.25rem 1rem;
-  }
+  
 
   .pronounce-en-btns {
     flex-direction: column;
@@ -1756,10 +1425,6 @@ html[data-theme="dark"] .tone-card .tone-char-tap--han {
   cursor: not-allowed;
 }
 
-.words-table-wrap {
-  margin-top: 0.25rem;
-}
-
 .words-char-tap {
   font-size: 1.12rem;
   padding: 0.12rem 0.32rem;
@@ -1827,7 +1492,6 @@ html[data-theme="dark"] .tone-card .tone-char-tap--han {
 .unified-app #app-view-learn:target,
 .unified-app #app-view-favorites:target,
 .unified-app #app-view-progress:target,
-.unified-app #app-view-words:target,
 .unified-app #app-view-pronounce:target,
 .unified-app #app-view-tones:target {
   display: block;
@@ -2073,6 +1737,62 @@ progress {
   font-size: 0.78rem;
 }
 
+.categories-grid {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.categories-card {
+  min-height: 118px;
+}
+
+.categories-card .category-card__icon {
+  font-size: 1.9rem;
+}
+
+.category-back {
+  min-height: 42px;
+  margin-bottom: 0.85rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.category-back:hover {
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
+}
+
+.category-detail-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.category-detail-heading > span {
+  display: grid;
+  width: 3.25rem;
+  height: 3.25rem;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  font-size: 1.8rem;
+}
+
+.category-detail-heading h2,
+.category-detail-heading p {
+  margin: 0;
+}
+
+.categories-filter-panel {
+  grid-template-columns: minmax(240px, 2fr) minmax(150px, 1fr) minmax(220px, 1fr);
+}
+
 .browse-content-tabs,
 .browse-tabs {
   display: inline-flex;
@@ -2302,6 +2022,131 @@ progress {
   }
 }
 
+.vocab-list-column-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  position: sticky;
+  top: 0.35rem;
+  z-index: 6;
+  margin: 0 0 0.55rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.vocab-list-column-controls__label {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.vocab-list-column-controls button {
+  min-height: 32px;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.vocab-list-column-controls button:hover,
+.vocab-list-column-controls button[aria-pressed="true"] {
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
+}
+
+.vocab-list.is-col-word-hidden [data-vocab-col="word"],
+.vocab-list.is-col-pinyin-hidden [data-vocab-col="pinyin"],
+.vocab-list.is-col-meaning-hidden [data-vocab-col="meaning"] {
+  display: none !important;
+}
+
+.vocab-list.is-col-word-hidden tr.is-showing-word [data-vocab-col="word"],
+.vocab-list.is-col-pinyin-hidden tr.is-showing-pinyin [data-vocab-col="pinyin"],
+.vocab-list.is-col-meaning-hidden tr.is-showing-meaning [data-vocab-col="meaning"] {
+  display: table-cell !important;
+}
+
+.vocab-list__row-actions {
+  width: 1%;
+  padding-left: 0.75rem;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.vocab-list__row-shows {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.3rem;
+}
+
+.vocab-list__row-shows:empty {
+  display: none;
+}
+
+.vocab-list__row-shows button {
+  min-height: 28px;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--accent-border);
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.vocab-list__word-cell {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.vocab-list__row-toggle {
+  min-height: 32px;
+  margin-left: auto;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.vocab-list__row-toggle:hover {
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.vocab-list__row-toggle[aria-pressed="true"] {
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+/* Hiding one word drops its pinyin and meaning, and leaves every other row. */
+.vocab-list__row.is-row-collapsed td[data-vocab-col="pinyin"],
+.vocab-list__row.is-row-collapsed td[data-vocab-col="meaning"] {
+  display: none;
+}
+
 .vocab-list-wrap {
   overflow-x: auto;
   border: 1px solid var(--border);
@@ -2468,6 +2313,34 @@ progress {
   color: var(--muted);
   font-size: 0.85rem;
   line-height: 1.3;
+}
+
+.vocab-list__metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+}
+
+.source-badge,
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.55rem;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--table-row-even);
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.source-badge {
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
+  color: var(--text);
 }
 
 .vocab-list__pinyin {
@@ -3674,8 +3547,16 @@ summary {
 /* A five-column table cannot stay readable on tablets, so the word list turns
    into stacked cards well before phone widths rather than scrolling sideways. */
 @media (max-width: 900px) {
-  .vocab-list-wrap,
-  .table-wrap {
+  .vocab-list-column-controls {
+    margin-bottom: 0.55rem;
+  }
+
+  .vocab-list-column-controls button,
+  .vocab-list__row-toggle {
+    min-height: 38px;
+  }
+
+  .vocab-list-wrap {
     overflow: visible;
     border: 0;
     background: transparent;
@@ -3683,24 +3564,23 @@ summary {
   }
 
   .vocab-list,
-  .vocab-list tbody,
-  .word-table,
-  .word-table tbody {
+  .vocab-list tbody {
     display: block;
     width: 100%;
   }
 
-  .vocab-list thead,
-  .word-table thead {
+  .vocab-list thead {
     display: none;
   }
 
-  .vocab-list tbody tr,
-  .word-table tbody tr {
+  /* One card per word: the repeated NO./WORD/PINYIN/MEANING captions cost more
+     space than they explain once the columns are stacked. */
+  .vocab-list tbody tr {
     width: 100%;
-    display: block;
-    margin-bottom: 0.8rem;
-    padding: 0.55rem;
+    display: grid;
+    gap: 0.3rem;
+    margin-bottom: 0.7rem;
+    padding: 0.7rem 0.75rem 0.75rem;
     overflow: hidden;
     border: 1px solid var(--border);
     border-radius: 16px;
@@ -3708,50 +3588,98 @@ summary {
     box-shadow: var(--shadow);
   }
 
-  .vocab-list tbody td,
-  .word-table tbody td {
+  .vocab-list tbody td {
     width: 100%;
-    display: grid;
-    grid-template-columns: minmax(4.5rem, 26%) minmax(0, 1fr);
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.5rem 0.4rem;
+    display: block;
+    padding: 0;
     border: 0;
-    border-bottom: 1px solid var(--border);
     background: transparent !important;
     text-align: left;
     overflow-wrap: anywhere;
   }
 
-  .vocab-list tbody td:last-child,
-  .word-table tbody td:last-child {
-    border-bottom: 0;
-  }
-
-  .vocab-list tbody td::before,
-  .word-table tbody td::before {
-    color: var(--muted);
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
   .vocab-list tbody td::before {
-    content: attr(data-label);
+    content: none;
   }
 
-  .word-table tbody td:nth-child(1)::before { content: "No."; }
-  .word-table tbody td:nth-child(2)::before { content: "Traditional"; }
-  .word-table tbody td:nth-child(3)::before { content: "Simplified"; }
-  .word-table tbody td:nth-child(4)::before { content: "Pinyin"; }
-  .word-table tbody td:nth-child(5)::before { content: "English"; }
-  .word-table tbody td:nth-child(6)::before { content: "Hindi"; }
+  .vocab-list__serial {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    font-size: 0.72rem;
+    text-align: left;
+  }
+
+  .vocab-list__serial-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.2rem;
+    min-height: 1.55rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background: var(--table-row-even);
+  }
+
+  .vocab-list__serial-num::before {
+    content: "#";
+    margin-right: 0.1rem;
+    opacity: 0.55;
+  }
+
+  .vocab-list tbody tr {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .vocab-list tbody td[data-vocab-col] {
+    grid-column: 1 / -1;
+  }
+
+  .vocab-list__serial {
+    grid-column: 1;
+    grid-row: 1;
+    width: auto;
+  }
+
+  .vocab-list tbody td.vocab-list__row-actions {
+    grid-column: 2;
+    grid-row: 1;
+    width: auto;
+    justify-self: end;
+    align-self: center;
+    white-space: normal;
+    text-align: right;
+  }
+
+  .vocab-list__pinyin {
+    font-size: clamp(1.45rem, 6vw, 1.9rem);
+  }
+
+  .vocab-list td:nth-child(4) strong {
+    font-size: 1rem;
+  }
 
   .script-pair--list {
     min-width: 0;
     width: 100%;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .vocab-list__row.is-row-collapsed td[data-vocab-col="pinyin"],
+  .vocab-list__row.is-row-collapsed td[data-vocab-col="meaning"] {
+    display: none;
+  }
+
+  .vocab-list.is-col-word-hidden tr.is-showing-word [data-vocab-col="word"],
+  .vocab-list.is-col-pinyin-hidden tr.is-showing-pinyin [data-vocab-col="pinyin"],
+  .vocab-list.is-col-meaning-hidden tr.is-showing-meaning [data-vocab-col="meaning"] {
+    display: block !important;
   }
 }
 
@@ -3818,8 +3746,7 @@ summary {
     font-size: 0.9rem;
   }
 
-  .vocab-list tbody td,
-  .word-table tbody td {
+  .vocab-list tbody td {
     grid-template-columns: 4.8rem minmax(0, 1fr);
     gap: 0.4rem;
   }
@@ -4641,14 +4568,12 @@ html[data-theme="dark"] .app-header h1 {
   box-shadow: 0 14px 34px rgba(36, 40, 63, 0.18);
 }
 
-.vocab-list th,
-.word-table th {
+.vocab-list th {
   background: linear-gradient(135deg, var(--table-thead-start), var(--table-thead-end));
   color: var(--table-thead-color);
 }
 
-.vocab-list tbody tr:hover,
-.word-table tbody tr:hover {
+.vocab-list tbody tr:hover {
   background: var(--accent-soft);
 }
 
@@ -4698,7 +4623,23 @@ html[data-theme="dark"] .bottom-nav {
 }
 
 .theme-float-toggle {
-  display: none;
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right, 0px));
+  bottom: calc(4.7rem + env(safe-area-inset-bottom, 0px));
+  z-index: 195;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 7px 22px rgba(35, 39, 62, 0.35);
 }
 
 @media (max-width: 1023px) {
@@ -5500,23 +5441,25 @@ button.word-detail__script {
 
     <nav class="sidebar-nav" aria-label="Pages">
       <a href="chinese.html#dashboard" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🏠</span>Dashboard</a>
-      <a href="chinese.html#categories" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🗂️</span>All Categories</a>
+      <a href="categories.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🗂️</span>Categories</a>
       <a href="chinese.html#hsk" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📚</span>HSK + Category Filters</a>
       <a href="chinese.html#learn" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🎯</span>Learn</a>
       <a href="chinese.html#favorites" class="sidebar-link"><span class="nav-icon" aria-hidden="true">⭐</span>Favorites</a>
       <a href="chinese.html#progress" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📈</span>Progress</a>
-      <a href="words.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📖</span>Words · table &amp; study</a>
       <a href="tocfl.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📘</span>TOCFL + CCCC</a>
+      <a href="tocfl-8000.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📗</span>Official TOCFL vocabulary</a>
       <a href="characters.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">字</span>Chinese Characters</a>
+      <a href="character-diff.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">繁</span>Traditional and Simplified difference</a>
       <details class="sidebar-dropdown" id="sidebar-hsk-menu">
         <summary class="sidebar-dropdown__toggle"><span class="nav-icon" aria-hidden="true">🧩</span>HSK · levels 1–6</summary>
         <div class="sidebar-dropdown__panel">
-          <a href="hsk.html" class="sidebar-link sidebar-link--sub">Level 1 · 500 words</a>
-          <a href="hsk2.html" class="sidebar-link sidebar-link--sub">Level 2 · 772 words</a>
-          <a href="hsk3.html" class="sidebar-link sidebar-link--sub">Level 3 · 973 words</a>
-          <a href="hsk4.html" class="sidebar-link sidebar-link--sub">Level 4 · 1000 words</a>
-          <a href="hsk5.html" class="sidebar-link sidebar-link--sub">Level 5 · 1071 words</a>
-          <a href="hsk6.html" class="sidebar-link sidebar-link--sub">Level 6 · 1140 words</a>
+          <a href="chinese.html#hsk1" class="sidebar-link sidebar-link--sub">Level 1</a>
+          <a href="chinese.html#hsk2" class="sidebar-link sidebar-link--sub">Level 2</a>
+          <a href="chinese.html#hsk3" class="sidebar-link sidebar-link--sub">Level 3</a>
+          <a href="chinese.html#hsk4" class="sidebar-link sidebar-link--sub">Level 4</a>
+          <a href="chinese.html#hsk5" class="sidebar-link sidebar-link--sub">Level 5</a>
+          <a href="chinese.html#hsk6" class="sidebar-link sidebar-link--sub">Level 6</a>
+          <a href="chinese.html#hsk-other" class="sidebar-link sidebar-link--sub">Outside HSK</a>
         </div>
       </details>
       <a href="pronunciation.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🗣️</span>Pronunciation</a>
@@ -5741,33 +5684,6 @@ button.word-detail__script {
     isSandboxed: isSandboxedDocument,
     offlineFetchHint: offlineFetchHint,
     hasGlobal: hasGlobal,
-    vocabPayload: function (key) {
-      if (key === "nhm") {
-        return hasGlobal("__VOCAB_NHM__") ? window.__VOCAB_NHM__ : null;
-      }
-      if (key === "hsk6") {
-        return hasGlobal("__VOCAB_HSK6__") ? window.__VOCAB_HSK6__ : null;
-      }
-      if (key === "hsk5") {
-        return hasGlobal("__VOCAB_HSK5__") ? window.__VOCAB_HSK5__ : null;
-      }
-      if (key === "hsk4") {
-        return hasGlobal("__VOCAB_HSK4__") ? window.__VOCAB_HSK4__ : null;
-      }
-      if (key === "hsk3") {
-        return hasGlobal("__VOCAB_HSK3__") ? window.__VOCAB_HSK3__ : null;
-      }
-      if (key === "hsk2") {
-        return hasGlobal("__VOCAB_HSK2__") ? window.__VOCAB_HSK2__ : null;
-      }
-      if (key === "hsk1") {
-        return hasGlobal("__VOCAB_HSK1__") ? window.__VOCAB_HSK1__ : null;
-      }
-      if (key === "tocfl") {
-        return hasGlobal("__VOCAB__") ? window.__VOCAB__ : null;
-      }
-      return null;
-    },
     tonePayload: function () {
       if (window.__TONE_PAGE_DATA__ && window.__TONE_PAGE_DATA__.quartets) {
         return window.__TONE_PAGE_DATA__;
@@ -6135,25 +6051,31 @@ window.__TONE_PAGE_DATA__ = {"meta":{"title":"Mandarin learning data: four-tone 
   if (sidebar) sidebar.setAttribute("aria-hidden", window.innerWidth < 1024 ? "true" : "false");
 })();
 
-</script>
-<script>
+/* The theme button lives in the sidebar (and a floating control on smaller
+   screens). It used to be wired by the retired table page, so clicks did nothing. */
 (function () {
   "use strict";
 
   var THEME_KEY = "chinese-vocab-theme";
-  var themeToggle = document.getElementById("theme-toggle");
-  var loadError = document.getElementById("tone-load-error");
 
-  function getTheme() {
-    return document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+  function currentTheme() {
+    return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
   }
 
-  function syncThemeToggle() {
-    if (!themeToggle) return;
-    var dark = getTheme() === "dark";
-    themeToggle.textContent = dark ? "Light mode" : "Dark mode";
-    themeToggle.setAttribute("aria-pressed", dark ? "true" : "false");
-    themeToggle.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
+  function paintTheme() {
+    var dark = currentTheme() === "dark";
+    var toggle = document.getElementById("theme-toggle");
+    if (toggle) {
+      toggle.textContent = dark ? "Light mode" : "Dark mode";
+      toggle.setAttribute("aria-pressed", dark ? "true" : "false");
+      toggle.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+    }
+    var floating = document.getElementById("theme-float-toggle");
+    if (floating) {
+      floating.textContent = dark ? "☀️" : "🌙";
+      floating.setAttribute("aria-pressed", dark ? "true" : "false");
+      floating.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+    }
   }
 
   function setTheme(mode) {
@@ -6162,15 +6084,40 @@ window.__TONE_PAGE_DATA__ = {"meta":{"title":"Mandarin learning data: four-tone 
     try {
       localStorage.setItem(THEME_KEY, mode);
     } catch (e) {}
-    syncThemeToggle();
+    paintTheme();
   }
 
-  if (themeToggle && !window.__UNIFIED_APP__) {
-    themeToggle.addEventListener("click", function () {
-      setTheme(getTheme() === "dark" ? "light" : "dark");
-    });
-    syncThemeToggle();
+  function ensureFloatingToggle() {
+    if (document.getElementById("theme-float-toggle") || !document.body) return;
+    var button = document.createElement("button");
+    button.type = "button";
+    button.id = "theme-float-toggle";
+    button.className = "theme-float-toggle";
+    document.body.appendChild(button);
   }
+
+  function bindTheme() {
+    ensureFloatingToggle();
+    paintTheme();
+    document.addEventListener("click", function (event) {
+      var hit = event.target && event.target.closest
+        ? event.target.closest("#theme-toggle, #theme-float-toggle")
+        : null;
+      if (!hit) return;
+      setTheme(currentTheme() === "dark" ? "light" : "dark");
+    });
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bindTheme);
+  else bindTheme();
+})();
+
+</script>
+<script>
+(function () {
+  "use strict";
+
+  var loadError = document.getElementById("tone-load-error");
 
   function showLoadError(msg) {
     if (loadError) {
@@ -6472,6 +6419,6 @@ window.__TONE_PAGE_DATA__ = {"meta":{"title":"Mandarin learning data: four-tone 
 })();
 
 </script>
-<script>(function(){var v=(window.__VOCAB__&&window.__VOCAB__.levels)||(window.__VOCAB_NHM__&&window.__VOCAB_NHM__.levels)||(window.__VOCAB_HSK1__&&window.__VOCAB_HSK1__.levels)||(window.__VOCAB_HSK2__&&window.__VOCAB_HSK2__.levels)||(window.__VOCAB_HSK3__&&window.__VOCAB_HSK3__.levels)||(window.__VOCAB_HSK4__&&window.__VOCAB_HSK4__.levels)||(window.__VOCAB_HSK5__&&window.__VOCAB_HSK5__.levels)||(window.__VOCAB_HSK6__&&window.__VOCAB_HSK6__.levels)||(window.__VOCAB_MASTER__&&window.__VOCAB_MASTER__.words);var t=window.__TONE_PAGE_DATA__&&window.__TONE_PAGE_DATA__.quartets;if(v||t)return;var m=document.querySelector(".layout-main");if(!m)return;var b=document.createElement("div");b.setAttribute("role","alert");b.style.cssText="margin:0 0 1rem;padding:.75rem;background:#991b1b;color:#fff;border-radius:8px;font-size:.9rem;font-weight:600";b.textContent="Word data did not load. Download this HTML again from git (large file, not a few KB).";m.insertBefore(b,m.firstChild);})();</script>
+<script>(function(){var v=(window.__VOCAB_MASTER__&&window.__VOCAB_MASTER__.words)||(window.__TOCFL_8000__&&window.__TOCFL_8000__.words)||(window.__TOCFL_CCCC__&&window.__TOCFL_CCCC__.words)||(window.__CHARACTERS__&&window.__CHARACTERS__.characters);var t=window.__TONE_PAGE_DATA__&&window.__TONE_PAGE_DATA__.quartets;if(v||t)return;var m=document.querySelector(".layout-main");if(!m)return;var b=document.createElement("div");b.setAttribute("role","alert");b.style.cssText="margin:0 0 1rem;padding:.75rem;background:#991b1b;color:#fff;border-radius:8px;font-size:.9rem;font-weight:600";b.textContent="Word data did not load. Download this HTML again from git (large file, not a few KB).";m.insertBefore(b,m.firstChild);})();</script>
 </body>
 </html>

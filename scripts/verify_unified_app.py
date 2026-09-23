@@ -72,8 +72,12 @@ def main() -> None:
         "window.LearningState",
         "window.VocabStore",
         "window.VocabularyUI",
+        "window.TocflStore",
+        "window.CategoriesUI",
+        "window.__CATEGORY_TAXONOMY__",
         'id="app-view-dashboard"',
         'id="app-view-browse"',
+        'id="app-view-categories"',
         'id="app-view-learn"',
         'id="app-view-favorites"',
         'id="app-view-progress"',
@@ -96,8 +100,14 @@ def main() -> None:
         'id="app-view-level"',
         'id="app-view-tocfl"',
         'data-app-view="tocfl"',
+        'id="app-view-tocfl8000"',
+        'data-tocfl-8000',
+        'data-app-view="tocfl8000"',
         'id="app-view-characters"',
         'data-app-view="characters"',
+        'id="app-view-script-diff"',
+        'data-character-diff',
+        'data-app-view="script-diff"',
         "data-character-browser",
         "data-tocfl-browser",
         "data-tocfl-pronunciation",
@@ -109,11 +119,8 @@ def main() -> None:
         'id="browse-pagination"',
         'id="level-pagination"',
         'data-app-view="favorites"',
-        'data-app-view="words"',
         'data-app-view="pronounce"',
         'data-app-view="tones"',
-        'data-app-view="lessons1"',
-        'data-app-view="lessons6"',
         'data-app-view="hsk1"',
         'data-app-view="hsk6"',
         'data-app-view="hsk-other"',
@@ -123,8 +130,15 @@ def main() -> None:
         "todayQueue",
         "sentence-card__script--traditional",
         "sentence-card__script--simplified",
+        "data-vocab-column-toggle=",
     ):
         check(marker in html, f"bundle marker {marker}")
+
+    for retired in (
+        'id="app-view-words"', 'class="word-table"', 'id="study-panel"',
+        "ChineseVocabApp", "data-vocab-column-hide=",
+    ):
+        check(retired not in html, f"bundle drops retired markup {retired}")
 
     payload = json.loads(MASTER.read_text(encoding="utf-8"))
     report = json.loads(REPORT.read_text(encoding="utf-8"))

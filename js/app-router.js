@@ -1,8 +1,11 @@
 (function () {
   "use strict";
 
-  /* Legacy lesson tables keep their own dataset and saved lesson position. */
-  var HSK_NAV = {
+  /* Retired lesson-table and all-words routes still live in old bookmarks and
+     in links saved to a phone home screen, so they resolve to the page that
+     replaced them instead of dropping the reader on the dashboard. */
+  var RETIRED_VIEWS = {
+    words: "browse",
     lessons1: "hsk1",
     lessons2: "hsk2",
     lessons3: "hsk3",
@@ -25,44 +28,49 @@
   var VIEWS = [
     "home",
     "browse",
+    "categories",
     "learn",
     "favorites",
     "progress",
     "tocfl",
+    "tocfl8000",
     "characters",
-    "words",
+    "script-diff",
     "pronounce",
     "tones",
-  ]
-    .concat(Object.keys(LEVEL_VIEWS))
-    .concat(Object.keys(HSK_NAV));
+  ].concat(Object.keys(LEVEL_VIEWS));
 
   function normalizeView(id) {
     if (!id || id === "dashboard") return "home";
-    if (id === "hsk" || id === "categories") return "browse";
+    if (id === "hsk") return "browse";
     if (id === "outside-hsk") return "hsk-other";
+    if (RETIRED_VIEWS[id]) return RETIRED_VIEWS[id];
     return id;
+  }
+
+  function parseRoute(value) {
+    var raw = String(value || "").replace(/^#/, "");
+    var match = raw.match(/^categories\/([a-z0-9-]+)$/);
+    if (match) return { view: "categories", slug: match[1], path: raw };
+    var view = normalizeView(raw);
+    return { view: view, slug: "", path: view };
   }
 
   function viewPanelId(view) {
     if (view === "home") return "app-view-dashboard";
     if (view === "browse") return "app-view-browse";
+    if (view === "categories") return "app-view-categories";
     if (LEVEL_VIEWS[view]) return "app-view-level";
     if (view === "learn") return "app-view-learn";
     if (view === "favorites") return "app-view-favorites";
     if (view === "progress") return "app-view-progress";
     if (view === "tocfl") return "app-view-tocfl";
+    if (view === "tocfl8000") return "app-view-tocfl8000";
     if (view === "characters") return "app-view-characters";
-    if (view === "words" || HSK_NAV[view]) return "app-view-words";
+    if (view === "script-diff") return "app-view-script-diff";
     if (view === "pronounce") return "app-view-pronounce";
     if (view === "tones") return "app-view-tones";
-    return "app-view-words";
-  }
-
-  function setToolbar(view) {
-    var wordsTb = document.getElementById("toolbar-words");
-    var isVocab = view === "words" || !!HSK_NAV[view];
-    if (wordsTb) wordsTb.classList.toggle("hidden", !isVocab);
+    return "app-view-dashboard";
   }
 
   function updateMobileTitle(view) {
@@ -72,17 +80,18 @@
       home: ["Home", "Today's lesson and progress"],
       learn: ["Learn", "Listen · I Know · Forgot"],
       browse: ["Browse", "Search all Chinese vocabulary"],
+      categories: ["Categories", "Official TOCFL and CCCC vocabulary"],
       favorites: ["Favorites", "Your saved vocabulary"],
       progress: ["Progress", "HSK completion and XP"],
-      tocfl: ["TOCFL 8,000", "Seven official levels grouped by category"],
+      tocfl: ["TOCFL + CCCC", "Seven official levels grouped by category"],
+      tocfl8000: ["Official TOCFL vocabulary", "TOCFL 8000 · arranged by pinyin"],
       characters: ["Chinese Characters", "Learn 1,000–3,000 characters by frequency"],
-      words: ["All words", "Table and study modes"],
+      "script-diff": ["Traditional and Simplified difference", "Characters from the 3,000 list that differ"],
       pronounce: ["Pronunciation", "Hear and practise each word"],
       tones: ["Four tones", "Mandarin tone practice"],
     };
     var value = labels[view];
     if (LEVEL_VIEWS[view]) value = [view === "hsk-other" ? "Outside HSK" : "HSK " + LEVEL_VIEWS[view], "Words grouped by useful topic"];
-    if (HSK_NAV[view]) value = ["HSK lesson table", "Browse words by lesson"];
     value = value || ["臺灣華語", "Chinese learning"];
     if (title) title.textContent = value[0];
     if (hint) hint.textContent = value[1];
@@ -95,8 +104,9 @@
     document.querySelectorAll("[data-app-view]").forEach(function (el) {
       var v = el.getAttribute("data-app-view");
       var activeView = view;
-      if (view === "words" || view === "tones" || HSK_NAV[view]) activeView = "browse";
+      if (view === "tones") activeView = "browse";
       if (view === "favorites" && el.closest(".bottom-nav")) activeView = "browse";
+      if (view === "categories" && el.closest(".bottom-nav")) activeView = "browse";
       /* Level pages stay highlighted themselves, and also light up Browse in the bottom bar. */
       if (LEVEL_VIEWS[view] && el.closest(".bottom-nav")) activeView = "browse";
       var on = v === activeView;
@@ -174,36 +184,38 @@
   }
 
   function go(view, replace) {
-    view = normalizeView(view);
-    if (VIEWS.indexOf(view) < 0 && !HSK_NAV[view]) view = "home";
+    var route = parseRoute(view);
+    view = route.view;
+    if (VIEWS.indexOf(view) < 0) view = "home";
 
     showPanel(view);
-    setToolbar(view);
     markNavActive(view);
     updateMobileTitle(view);
 
-    if (HSK_NAV[view] && window.ChineseVocabApp) {
-      window.ChineseVocabApp.switchTo(HSK_NAV[view]);
-    } else if (view === "words" && window.ChineseVocabApp) {
-      window.ChineseVocabApp.switchTo("words");
+    if (window.TocflUI && (view === "tocfl" || view === "tocfl8000" || view === "pronounce")) {
+      window.TocflUI.refresh(view === "pronounce" ? "pronunciation" : view === "tocfl8000" ? "tocfl8000" : "browser");
     }
-    if (window.TocflUI && (view === "tocfl" || view === "pronounce")) {
-      window.TocflUI.refresh(view === "pronounce" ? "pronunciation" : "browser");
-    }
-    if (view === "characters" && window.CharactersUI) {
+    if ((view === "characters" || view === "script-diff") && window.CharactersUI) {
       window.CharactersUI.refresh();
+    }
+    if (view === "categories" && window.CategoriesUI) {
+      if (route.slug) window.CategoriesUI.open(route.slug, { fromRouter: true });
+      else window.CategoriesUI.close({ fromRouter: true });
     }
     if (window.VocabularyUI && typeof window.VocabularyUI.onView === "function") {
       window.VocabularyUI.onView(view);
     }
 
-    updateUrlHash(view, replace);
+    updateUrlHash(view === "categories" && route.slug ? route.path : view, replace);
 
     window.scrollTo(0, 0);
   }
 
   window.AppRouter = {
     go: go,
+    goCategory: function (slug, replace) {
+      go("categories/" + String(slug || ""), replace);
+    },
     levelForView: function (view) {
       return LEVEL_VIEWS[view] || null;
     },
@@ -211,9 +223,9 @@
       return level === "outside-hsk" ? "hsk-other" : "hsk" + level;
     },
     init: function () {
-      var fromHash = normalizeView((location.hash || "").replace(/^#/, ""));
-      if (fromHash && VIEWS.indexOf(fromHash) >= 0) {
-        go(fromHash, true);
+      var fromHash = parseRoute(location.hash || "");
+      if (fromHash.view && VIEWS.indexOf(fromHash.view) >= 0) {
+        go(fromHash.path, true);
       } else {
         go("home", true);
       }
@@ -231,13 +243,13 @@
       });
 
       window.addEventListener("hashchange", function () {
-        var v = normalizeView((location.hash || "").replace(/^#/, ""));
-        go(v, true);
+        var route = parseRoute(location.hash || "");
+        go(route.path, true);
       });
 
       window.addEventListener("popstate", function () {
-        var v = normalizeView((location.hash || "").replace(/^#/, ""));
-        go(v || "home", true);
+        var route = parseRoute(location.hash || "");
+        go(route.path || "home", true);
       });
     },
   };

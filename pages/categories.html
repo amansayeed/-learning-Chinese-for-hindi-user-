@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark light" />
-  <title>TOCFL and CCCC pronunciation by category</title>
+  <title>Chinese vocabulary categories · TOCFL and CCCC</title>
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
 <body class="page-shell">
@@ -52,32 +52,55 @@
         <span class="mobile-bar__menu-icon" aria-hidden="true"></span>
       </button>
       <div class="mobile-bar__text">
-        <span class="mobile-bar__title">Pronunciation</span>
-        <span class="mobile-bar__hint">TOCFL levels by topic</span>
+        <span class="mobile-bar__title">Categories</span>
+        <span class="mobile-bar__hint">Official TOCFL and CCCC vocabulary</span>
       </div>
     </header>
 
-    <div data-tocfl-pronunciation data-tocfl-level="novice-1">
+    <div data-categories-browser>
       <header class="header app-header">
         <div>
-          <p class="eyebrow">TOCFL pronunciation practice</p>
-          <h1 data-tocfl-role="title">準備級一級 · Novice 1</h1>
-          <p class="subtitle" data-tocfl-role="subtitle">Hear Chinese and English, grouped by useful topic.</p>
+          <p class="eyebrow">Official vocabulary by topic</p>
+          <h1 data-categories-role="title">Categories</h1>
+          <p class="subtitle" data-categories-role="subtitle">TOCFL and CCCC vocabulary only.</p>
         </div>
       </header>
-      <main class="main pronounce-main">
-        <nav class="level-switch" data-tocfl-role="levels" aria-label="Switch pronunciation level"></nav>
-        <nav class="topic-chip-row" data-tocfl-role="categories" aria-label="Pronunciation topics"></nav>
-        <nav class="topic-chip-row hidden" data-tocfl-role="subcategories" aria-label="Pronunciation subcategories"></nav>
-        <section class="filter-panel filter-panel--compact" aria-label="Pronunciation filters">
-          <label class="filter-search">Search in this level
-            <input data-tocfl-role="search" type="search" placeholder="水, shuǐ, water, पानी…" autocomplete="off" />
-          </label>
+      <main class="main">
+        <section data-categories-role="landing" aria-labelledby="categories-landing-title">
+          <div class="section-heading">
+            <div><p class="eyebrow">Choose a learning topic</p><h2 id="categories-landing-title">48 unified categories</h2></div>
+          </div>
+          <div class="category-grid categories-grid" data-categories-role="grid"></div>
         </section>
-        <div class="result-heading"><strong data-tocfl-role="count">0 words</strong><span>Tap Chinese characters or an English play button</span></div>
-        <div class="pronounce-list" data-tocfl-role="results" aria-live="polite"></div>
-        <nav class="words-pager words-pager--bottom hidden" data-tocfl-role="pagination" aria-label="Pronunciation pages"></nav>
-        <p class="hint pronounce-footnote">English pronunciation is approximate machine speech, not dictionary IPA.</p>
+        <section class="hidden" data-categories-role="detail" aria-labelledby="category-detail-title">
+          <button type="button" class="category-back" data-category-back>← All categories</button>
+          <div class="category-detail-heading">
+            <span data-categories-role="detail-icon" aria-hidden="true"></span>
+            <div><p class="eyebrow">Category detail</p><h2 id="category-detail-title" data-categories-role="detail-title"></h2></div>
+          </div>
+          <section class="filter-panel categories-filter-panel" aria-label="Category word filters">
+            <label class="filter-search">Search this category
+              <input data-categories-role="search" type="search" placeholder="繁體中文, Pinyin, English…" autocomplete="off" />
+            </label>
+            <label>Source
+              <select data-categories-role="source">
+                <option value="all">TOCFL + CCCC</option>
+                <option value="TOCFL">TOCFL</option>
+                <option value="CCCC">CCCC</option>
+                <option value="both">In both sources</option>
+              </select>
+            </label>
+            <label>Official level
+              <select data-categories-role="level"></select>
+            </label>
+          </section>
+          <div class="result-heading">
+            <strong data-categories-role="count">0 unique words</strong>
+            <span>Traditional · Simplified · Pinyin · English · Source</span>
+          </div>
+          <div class="vocab-results--list" data-categories-role="results" aria-live="polite"></div>
+          <nav class="words-pager words-pager--bottom hidden" data-categories-role="pagination" aria-label="Category word pages"></nav>
+        </section>
       </main>
     </div>
   </div>
@@ -103,6 +126,6 @@
   <script src="./js/vocab-store.js" defer></script>
   <script src="./js/tocfl-store.js" defer></script>
   <script src="./js/vocabulary-ui.js" defer></script>
-  <script src="./js/tocfl-ui.js" defer></script>
+  <script src="./js/categories-ui.js" defer></script>
 </body>
 </html>

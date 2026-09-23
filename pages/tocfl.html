@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark light" />
-  <title>TOCFL and CCCC vocabulary by level and category</title>
+  <title>TOCFL + CCCC</title>
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
 <body class="page-shell">
@@ -15,23 +15,25 @@
     </div>
     <nav class="sidebar-nav" aria-label="Pages">
       <a href="./chinese.html#dashboard" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🏠</span>Dashboard</a>
-      <a href="./chinese.html#categories" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🗂️</span>All Categories</a>
+      <a href="./categories.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🗂️</span>Categories</a>
       <a href="./chinese.html#hsk" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📚</span>HSK + Category Filters</a>
       <a href="./chinese.html#learn" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🎯</span>Learn</a>
       <a href="./chinese.html#favorites" class="sidebar-link"><span class="nav-icon" aria-hidden="true">⭐</span>Favorites</a>
       <a href="./chinese.html#progress" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📈</span>Progress</a>
-      <a href="./index.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📖</span>Words · table &amp; study</a>
       <a href="./tocfl.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📘</span>TOCFL + CCCC</a>
+      <a href="./tocfl-8000.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">📗</span>Official TOCFL vocabulary</a>
       <a href="./characters.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">字</span>Chinese Characters</a>
+      <a href="./character-diff.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">繁</span>Traditional and Simplified difference</a>
       <details class="sidebar-dropdown" id="sidebar-hsk-menu">
         <summary class="sidebar-dropdown__toggle"><span class="nav-icon" aria-hidden="true">🧩</span>HSK · levels 1–6</summary>
         <div class="sidebar-dropdown__panel">
-          <a href="./hsk.html" class="sidebar-link sidebar-link--sub">Level 1 · 500 words</a>
-          <a href="./hsk2.html" class="sidebar-link sidebar-link--sub">Level 2 · 772 words</a>
-          <a href="./hsk3.html" class="sidebar-link sidebar-link--sub">Level 3 · 973 words</a>
-          <a href="./hsk4.html" class="sidebar-link sidebar-link--sub">Level 4 · 1000 words</a>
-          <a href="./hsk5.html" class="sidebar-link sidebar-link--sub">Level 5 · 1071 words</a>
-          <a href="./hsk6.html" class="sidebar-link sidebar-link--sub">Level 6 · 1140 words</a>
+          <a href="./chinese.html#hsk1" class="sidebar-link sidebar-link--sub">Level 1</a>
+          <a href="./chinese.html#hsk2" class="sidebar-link sidebar-link--sub">Level 2</a>
+          <a href="./chinese.html#hsk3" class="sidebar-link sidebar-link--sub">Level 3</a>
+          <a href="./chinese.html#hsk4" class="sidebar-link sidebar-link--sub">Level 4</a>
+          <a href="./chinese.html#hsk5" class="sidebar-link sidebar-link--sub">Level 5</a>
+          <a href="./chinese.html#hsk6" class="sidebar-link sidebar-link--sub">Level 6</a>
+          <a href="./chinese.html#hsk-other" class="sidebar-link sidebar-link--sub">Outside HSK</a>
         </div>
       </details>
       <a href="./pronunciation.html" class="sidebar-link"><span class="nav-icon" aria-hidden="true">🗣️</span>Pronunciation</a>
@@ -58,7 +60,7 @@
     <div data-tocfl-browser data-tocfl-level="novice-1">
       <header class="header app-header">
         <div>
-          <p class="eyebrow">Official TOCFL vocabulary</p>
+          <p class="eyebrow">TOCFL + CCCC</p>
           <h1 data-tocfl-role="title">準備級一級 · Novice 1</h1>
           <p class="subtitle" data-tocfl-role="subtitle">Words grouped by topic for this level.</p>
         </div>
@@ -101,11 +103,12 @@
   <script src="./data/tocfl-8000.js"></script>
   <script src="./data/tocfl-cccc.js"></script>
   <script src="./data/vocabulary-master.js"></script>
+  <script src="./js/category-taxonomy.js"></script>
   <script src="./js/sidebar.js" defer></script>
   <script src="./js/learning-state.js" defer></script>
   <script src="./js/vocab-store.js" defer></script>
+  <script src="./js/tocfl-store.js" defer></script>
   <script src="./js/vocabulary-ui.js" defer></script>
-  <script src="./js/pronunciation.js" defer></script>
   <script src="./js/tocfl-ui.js" defer></script>
 </body>
 </html>

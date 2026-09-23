@@ -54,33 +54,6 @@
     isSandboxed: isSandboxedDocument,
     offlineFetchHint: offlineFetchHint,
     hasGlobal: hasGlobal,
-    vocabPayload: function (key) {
-      if (key === "nhm") {
-        return hasGlobal("__VOCAB_NHM__") ? window.__VOCAB_NHM__ : null;
-      }
-      if (key === "hsk6") {
-        return hasGlobal("__VOCAB_HSK6__") ? window.__VOCAB_HSK6__ : null;
-      }
-      if (key === "hsk5") {
-        return hasGlobal("__VOCAB_HSK5__") ? window.__VOCAB_HSK5__ : null;
-      }
-      if (key === "hsk4") {
-        return hasGlobal("__VOCAB_HSK4__") ? window.__VOCAB_HSK4__ : null;
-      }
-      if (key === "hsk3") {
-        return hasGlobal("__VOCAB_HSK3__") ? window.__VOCAB_HSK3__ : null;
-      }
-      if (key === "hsk2") {
-        return hasGlobal("__VOCAB_HSK2__") ? window.__VOCAB_HSK2__ : null;
-      }
-      if (key === "hsk1") {
-        return hasGlobal("__VOCAB_HSK1__") ? window.__VOCAB_HSK1__ : null;
-      }
-      if (key === "tocfl") {
-        return hasGlobal("__VOCAB__") ? window.__VOCAB__ : null;
-      }
-      return null;
-    },
     tonePayload: function () {
       if (window.__TONE_PAGE_DATA__ && window.__TONE_PAGE_DATA__.quartets) {
         return window.__TONE_PAGE_DATA__;

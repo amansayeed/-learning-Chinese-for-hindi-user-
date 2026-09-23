@@ -10,7 +10,8 @@ from pathlib import Path
 
 import pandas as pd
 from deep_translator import GoogleTranslator
-from build_vocabulary_master import classify, load_category_seeds
+from category_taxonomy import apply_taxonomy_to_payload, write_taxonomy_js
+from tocfl_quality import head_candidates, polish_entry
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKBOOK = ROOT / "data" / "tocfl" / "CCCC_Vocabulary_2022 (1).xls"
@@ -56,11 +57,7 @@ def clean_pinyin(value: object) -> str:
 
 
 def form_candidates(value: str) -> list[str]:
-    candidates = [value, *re.split(r"[/／]", value)]
-    candidates += [re.sub(r"[()（）]", "", item) for item in list(candidates)]
-    candidates += [re.sub(r"[(（][^)）]*[)）]", "", item) for item in list(candidates)]
-    candidates += re.findall(r"[\u3400-\u9fff]+", value)
-    return list(dict.fromkeys(item.strip() for item in candidates if item.strip()))
+    return head_candidates(value)
 
 
 def master_word_lookup() -> dict[str, dict]:
@@ -107,7 +104,6 @@ def main() -> None:
         raise ValueError(f"Workbook is missing sheets: {missing_sheets}")
 
     master_by_form = master_word_lookup()
-    exact_form, exact_reading = load_category_seeds()
     cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.is_file() else {}
     words: list[dict] = []
     level_meta: list[dict] = []
@@ -136,25 +132,8 @@ def main() -> None:
             hindi = matched_hindi or translate_hindi(english, cache, args.translate_missing)
             broad = clean(row["分類"])
             detail = clean(row["細目"])
-            if master_word:
-                category = clean(master_word.get("primaryCategory")) or "Other / Miscellaneous"
-                secondary = [clean(item) for item in master_word.get("secondaryCategories", []) if clean(item)]
-                category_basis = "existing reviewed vocabulary category"
-            else:
-                category, secondary, category_basis = classify(
-                    simplified,
-                    traditional,
-                    clean_pinyin(row["漢拼"]),
-                    english,
-                    [],
-                    exact_form,
-                    exact_reading,
-                    [item.strip().lower() for item in re.split(r"[/,; ]+", clean(row["詞性"])) if item.strip()],
-                )
             source_category = CATEGORY_LABELS.get(broad, broad)
-            if source_category != category and source_category not in secondary:
-                secondary.append(source_category)
-            words.append({
+            words.append(polish_entry({
                 "id": f"cccc-{level_id}-{len(words) + 1:04d}",
                 "level": level_id,
                 "levelCode": sheet_name,
@@ -164,15 +143,15 @@ def main() -> None:
                 "english": english,
                 "hindi": hindi,
                 "partOfSpeech": clean(row["詞性"]),
-                "category": category,
-                "secondaryCategories": secondary[:3],
-                "categoryBasis": category_basis,
+                "category": "",
+                "secondaryCategories": [],
+                "categoryBasis": "",
                 "sourceCategory": source_category,
                 "categoryCode": broad,
                 "subcategory": detail,
                 "sourceSheet": sheet_name,
                 "sourceRow": int(index) + 3,
-            })
+            }))
         print(f"{sheet_name}: {len(frame)} words")
 
     index_sheet = pd.read_excel(WORKBOOK, sheet_name="三級詞彙", header=0, engine="xlrd")
@@ -182,7 +161,7 @@ def main() -> None:
     instructions = pd.read_excel(WORKBOOK, sheet_name="詞表說明", header=None, engine="xlrd")
     pos_legend = pd.read_excel(WORKBOOK, sheet_name="詞性縮寫對照表", header=None, engine="xlrd")
 
-    payload = {
+    payload = apply_taxonomy_to_payload({
         "meta": {
             "title": "Children's Chinese Competency Certification Vocabulary 2022",
             "source": WORKBOOK.name,
@@ -197,12 +176,13 @@ def main() -> None:
         },
         "levels": level_meta,
         "words": words,
-    }
+    }, 1197)
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     OUT_JS.write_text(
         "window.__TOCFL_CCCC__ = " + json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + ";\n",
         encoding="utf-8",
     )
+    write_taxonomy_js(ROOT / "js" / "category-taxonomy.js")
     CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {OUT.relative_to(ROOT)} and {OUT_JS.relative_to(ROOT)} ({len(words)} rows)")
 

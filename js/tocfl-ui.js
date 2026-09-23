@@ -2,67 +2,10 @@
   "use strict";
 
   var store = window.VocabStore;
-  var payloads = [window.__TOCFL_8000__, window.__TOCFL_CCCC__].filter(Boolean);
-  var payload = payloads.reduce(function (combined, item) {
-    combined.levels = combined.levels.concat(item.levels || []);
-    combined.words = combined.words.concat(item.words || []);
-    return combined;
-  }, { levels: [], words: [] });
-
-  var LEVEL_ORDER = [
-    "novice-1", "novice-2", "level-1", "level-2", "level-3", "level-4", "level-5",
-    "sprouting", "growing", "thriving",
-  ];
-
-  function uniqueKeyParts(word) {
-    var pinyin = String(word.pinyin || "").replace(/\s+/g, "");
-    var parts = [];
-    [word.traditional, word.simplified].forEach(function (value) {
-      String(value || "").split(/[/／]/).forEach(function (form) {
-        form = form.replace(/\s+/g, "");
-        if (form) parts.push(form + "\u001f" + pinyin);
-      });
-    });
-    return parts;
-  }
-
-  function uniqueWords(list) {
-    var rank = {};
-    LEVEL_ORDER.forEach(function (id, index) { rank[id] = index; });
-    var ordered = (list || []).slice().sort(function (a, b) {
-      var ra = rank[a.level];
-      var rb = rank[b.level];
-      if (ra == null) ra = 99;
-      if (rb == null) rb = 99;
-      if (ra !== rb) return ra - rb;
-      return 0;
-    });
-    var seen = {};
-    var kept = [];
-    ordered.forEach(function (word) {
-      var keys = uniqueKeyParts(word);
-      var duplicate = keys.some(function (key) { return seen[key]; });
-      if (duplicate) return;
-      keys.forEach(function (key) { seen[key] = true; });
-      kept.push(word);
-    });
-    return kept;
-  }
-
-  var sourceWords = uniqueWords(payload.words || []);
-  payload.levels = payload.levels.map(function (level) {
-    var count = sourceWords.filter(function (word) { return word.level === level.id; }).length;
-    return {
-      id: level.id,
-      code: level.code,
-      label: level.label,
-      wordCount: count,
-    };
-  }).filter(function (level) {
-    return level.wordCount > 0;
-  });
-  if (!store || !sourceWords.length) return;
-  if (store.registerSupplemental) store.registerSupplemental(sourceWords);
+  var tocflStore = window.TocflStore;
+  var sourceWords = tocflStore ? tocflStore.all() : [];
+  var payload = { levels: tocflStore ? tocflStore.levels() : [], words: sourceWords };
+  if (!store || !tocflStore || !sourceWords.length) return;
 
   var PAGE_SIZE = 50;
   var controllers = [];
@@ -88,7 +31,11 @@
 
   function Controller(root) {
     this.root = root;
-    this.mode = root.hasAttribute("data-tocfl-pronunciation") ? "pronunciation" : "browser";
+    this.mode = root.hasAttribute("data-tocfl-pronunciation")
+      ? "pronunciation"
+      : root.hasAttribute("data-tocfl-8000")
+        ? "tocfl8000"
+        : "browser";
     this.level =
       root.getAttribute("data-tocfl-level") ||
       (payload.levels[0] && payload.levels[0].id) ||
@@ -100,10 +47,16 @@
     this.render();
   }
 
+  function isTocfl8000(word) {
+    return /^(novice-[12]|level-[1-5])$/.test(word.level || "");
+  }
+
   Controller.prototype.wordsForLevel = function () {
+    var level = this.level;
+    var flat = this.mode === "tocfl8000";
     return store.pinyinOrder(sourceWords.filter(function (word) {
-      return word.level === this.level;
-    }, this));
+      return flat ? isTocfl8000(word) : word.level === level;
+    }));
   };
 
   Controller.prototype.categoryCounts = function () {
@@ -422,14 +375,24 @@
   Controller.prototype.render = function () {
     var title = one(this.root, "title");
     var subtitle = one(this.root, "subtitle");
-    var level = this.levelInfo();
-    var total = level.wordCount || this.wordsForLevel().length;
-    if (title) title.textContent = level.label;
-    if (subtitle) {
-      subtitle.textContent =
-        total + " words · " + Object.keys(this.categoryCounts()).length + " topics in this level";
+    var total = this.wordsForLevel().length;
+    if (this.mode === "tocfl8000") {
+      if (title) title.textContent = "TOCFL 8000";
+      if (subtitle) subtitle.textContent = total + " words · arranged by pinyin";
+      var levelNav = one(this.root, "levels");
+      if (levelNav) {
+        levelNav.innerHTML = "";
+        levelNav.classList.add("hidden");
+      }
+    } else {
+      var level = this.levelInfo();
+      if (title) title.textContent = level.label;
+      if (subtitle) {
+        subtitle.textContent =
+          (level.wordCount || total) + " words · " + Object.keys(this.categoryCounts()).length + " topics in this level";
+      }
+      this.renderLevels();
     }
-    this.renderLevels();
     this.renderCategories();
     this.renderSubcategories();
     this.renderResults();
@@ -445,7 +408,7 @@
     }
     this.root.addEventListener("click", function (event) {
       var levelButton = control(event.target, "data-tocfl-level");
-      if (levelButton) {
+      if (levelButton && self.mode !== "tocfl8000") {
         self.level = levelButton.getAttribute("data-tocfl-level");
         self.category = "all";
         self.subcategory = "all";
@@ -501,7 +464,7 @@
   };
 
   function init() {
-    document.querySelectorAll("[data-tocfl-browser], [data-tocfl-pronunciation]").forEach(function (root) {
+    document.querySelectorAll("[data-tocfl-browser], [data-tocfl-pronunciation], [data-tocfl-8000]").forEach(function (root) {
       controllers.push(new Controller(root));
     });
     if (window.LearningState && window.LearningState.subscribe) {
