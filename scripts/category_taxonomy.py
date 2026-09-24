@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Canonical 48-category taxonomy for TOCFL 8,000 and CCCC rows."""
+"""Topic taxonomy for TOCFL 8,000 and CCCC rows."""
 from __future__ import annotations
 
 import json
 import re
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -39,11 +40,7 @@ TAXONOMY: list[dict[str, Any]] = [
     {"label": "Music & Arts", "icon": "🎵", "slug": "music-arts"},
     {"label": "Sports & Activities", "icon": "⚽", "slug": "sports-activities"},
     {"label": "Feelings & Emotions", "icon": "💭", "slug": "feelings-emotions"},
-    {"label": "Adverbs & Connectors", "icon": "🔗", "slug": "adverbs-connectors"},
     {"label": "Prepositions & Particles", "icon": "📍", "slug": "prepositions-particles"},
-    {"label": "Adjectives & Descriptors", "icon": "✨", "slug": "adjectives-descriptors"},
-    {"label": "Common Verbs", "icon": "🏃", "slug": "common-verbs"},
-    {"label": "Abstract & Concepts", "icon": "💡", "slug": "abstract-concepts"},
     {"label": "Negation & Particles", "icon": "🚫", "slug": "negation-particles"},
     {"label": "Location & Direction", "icon": "🧭", "slug": "location-direction"},
     {"label": "Quantity & Degree", "icon": "📊", "slug": "quantity-degree"},
@@ -60,16 +57,67 @@ TAXONOMY: list[dict[str, Any]] = [
     {"label": "Plans & Suggestions", "icon": "📝", "slug": "plans-suggestions"},
 ]
 
+# The old catch-alls (about 1,000–2,000 words each) are split by part of speech
+# and Pinyin initial. Noun, action-verb, and adjective bands stay at least 300
+# words on the TOCFL 8000 list. Adverbs are one band because the whole set is
+# under 300. Nouns are named Nouns, not Abstract.
+NOUN_GROUPS = (
+    ("A-D", "abcd"),
+    ("E-J", "efghij"),
+    ("K-Q", "klmnopq"),
+    ("R-W", "rstuvw"),
+    ("X-Z", "xyz"),
+)
+VERB_GROUPS = (
+    ("A-F", "abcdef"),
+    ("G-L", "ghijkl"),
+    ("M-T", "mnopqrst"),
+    ("U-Z", "uvwxyz"),
+)
+ADJECTIVE_GROUPS = (
+    ("A-L", "abcdefghijkl"),
+    ("M-Z", "mnopqrstuvwxyz"),
+)
+ADVERB_GROUPS = (
+    ("A-Z", "abcdefghijklmnopqrstuvwxyz"),
+)
+
+
+def _band_categories(prefix: str, icon: str, slug: str, groups: tuple[tuple[str, str], ...]) -> list[dict[str, str]]:
+    return [
+        {
+            "label": f"{prefix} · {suffix}",
+            "icon": icon,
+            "slug": f"{slug}-{suffix.lower()}",
+        }
+        for suffix, _letters in groups
+    ]
+
+
+TAXONOMY.extend(_band_categories("Nouns", "📦", "nouns", NOUN_GROUPS))
+TAXONOMY.extend(_band_categories("Action Verbs", "🏃", "action-verbs", VERB_GROUPS))
+TAXONOMY.extend(_band_categories("Adjectives", "✨", "adjectives", ADJECTIVE_GROUPS))
+TAXONOMY.extend(_band_categories("Adverbs", "🔗", "adverbs", ADVERB_GROUPS))
+TAXONOMY.extend([
+    {"label": "Connectors", "icon": "🔀", "slug": "connectors"},
+    {"label": "Mental Verbs", "icon": "🧠", "slug": "mental-verbs"},
+    {"label": "Separable Verbs", "icon": "🧩", "slug": "separable-verbs"},
+    {"label": "Auxiliary Verbs", "icon": "🔧", "slug": "auxiliary-verbs"},
+    {"label": "States & Conditions", "icon": "🌡️", "slug": "states-conditions"},
+])
+
 LABELS = [item["label"] for item in TAXONOMY]
 LABEL_SET = set(LABELS)
 LABEL_INDEX = {label: index for index, label in enumerate(LABELS)}
 BY_SLUG = {item["slug"]: item for item in TAXONOMY}
 GENERIC_LABELS = {
+    "Prepositions & Particles",
+}
+RETIRED_CATCHALLS = {
     "Common Verbs",
     "Adjectives & Descriptors",
     "Adverbs & Connectors",
     "Abstract & Concepts",
-    "Prepositions & Particles",
 }
 CORE_FIELDS = (
     "id",
@@ -265,6 +313,10 @@ SOURCE_MAP: dict[str, str | None] = {
     "眼部動作": "Common Verbs",
     "鼻子動作": "Common Verbs",
 }
+SOURCE_MAP = {
+    key: None if value in RETIRED_CATCHALLS else value
+    for key, value in SOURCE_MAP.items()
+}
 
 RELATED_SECONDARIES = {
     "Food": ["Kitchen Items"],
@@ -278,7 +330,7 @@ RELATED_SECONDARIES = {
     "Places & City": ["Places & Structures"],
     "Banking & Finance": ["Shopping & Money"],
     "Shopping & Money": ["Banking & Finance"],
-    "Colors": ["Adjectives & Descriptors"],
+    "Colors": [],
     "Family & People": ["People & Roles"],
     "People & Roles": ["Family & People", "Work & Career"],
     "Music & Arts": ["Media & Entertainment"],
@@ -334,7 +386,7 @@ KEYWORD_RULES: list[tuple[str, tuple[str, ...], tuple[str, ...]]] = [
     ("People & Roles", ("司機", "服務員", "經理", "職業"), ("driver", "manager", "waiter", "occupation")),
     ("Plans & Suggestions", ("計畫", "計劃", "打算", "建議", "提議", "準備", "安排", "目標"), ("suggest", "prepare", "arrange")),
     ("Manner & Style", ("方式", "方法", "樣子", "態度", "風格", "仔細", "慢慢", "輕輕"), ("manner", "attitude", "carefully", "slowly")),
-    ("Adverbs & Connectors", ("但是", "可是", "然後", "而且", "或者", "還是", "雖然", "如果", "要是"), ("however", "although", "therefore")),
+    ("Connectors", ("但是", "可是", "然後", "而且", "或者", "還是", "雖然", "如果", "要是"), ("however", "although", "therefore")),
     ("Prepositions & Particles", ("對於", "關於", "除了", "為了", "按照", "通過"), ("particle")),
 ]
 
@@ -355,16 +407,27 @@ def validate_taxonomy_definitions() -> None:
     labels = [item["label"] for item in TAXONOMY]
     slugs = [item["slug"] for item in TAXONOMY]
     icons = [item["icon"] for item in TAXONOMY]
-    if len(TAXONOMY) != 48:
-        raise ValueError(f"taxonomy must contain 48 categories, found {len(TAXONOMY)}")
-    if len(set(labels)) != 48:
+    expected = len(TAXONOMY)
+    alphabet = set("abcdefghijklmnopqrstuvwxyz")
+    for name, groups in (
+        ("noun", NOUN_GROUPS),
+        ("action-verb", VERB_GROUPS),
+        ("adjective", ADJECTIVE_GROUPS),
+        ("adverb", ADVERB_GROUPS),
+    ):
+        covered = set("".join(letters for _suffix, letters in groups))
+        if covered != alphabet:
+            raise ValueError(f"{name} Pinyin bands must cover a–z")
+    if len(TAXONOMY) != expected:
+        raise ValueError(f"taxonomy must contain {expected} categories, found {len(TAXONOMY)}")
+    if len(set(labels)) != expected:
         raise ValueError("taxonomy labels are not unique")
-    if len(set(slugs)) != 48:
+    if len(set(slugs)) != expected:
         raise ValueError("taxonomy slugs are not unique")
-    if len(icons) != 48 or any(not icon for icon in icons):
+    if len(icons) != expected or any(not icon for icon in icons):
         raise ValueError("every taxonomy category needs an icon")
-    if "Other / Miscellaneous" in labels:
-        raise ValueError("Other / Miscellaneous is not part of the 48-category taxonomy")
+    if "Other / Miscellaneous" in labels or RETIRED_CATCHALLS & set(labels):
+        raise ValueError("retired catch-all categories are not part of the taxonomy")
     for label, mapped in SOURCE_MAP.items():
         if mapped is not None and mapped not in LABEL_SET:
             raise ValueError(f"SOURCE_MAP target {mapped!r} for {label!r} is not in the taxonomy")
@@ -464,31 +527,56 @@ def keyword_matches(word: dict[str, Any]) -> list[str]:
     return hits
 
 
+def pinyin_initial(word: dict[str, Any]) -> str:
+    raw = clean(word.get("pinyin")).split("/")[0]
+    folded = unicodedata.normalize("NFD", raw).lower()
+    letters = "".join(ch for ch in folded if "a" <= ch <= "z")
+    return letters[:1] or "z"
+
+
+def band_label(prefix: str, initial: str, groups: tuple[tuple[str, str], ...]) -> str:
+    for suffix, letters in groups:
+        if initial in letters:
+            return f"{prefix} · {suffix}"
+    return f"{prefix} · {groups[-1][0]}"
+
+
 def pos_fallback(word: dict[str, Any]) -> str:
     pos = clean(word.get("partOfSpeech")).upper().replace("；", "/").replace(";", "/")
     tokens = [item.strip() for item in re.split(r"[/, ]+", pos) if item.strip()]
     joined = " ".join(tokens)
+    initial = pinyin_initial(word)
+
+    def starts(prefix: str) -> bool:
+        return any(token.startswith(prefix) for token in tokens)
+
     if any(token in {"PRON", "PRONOUN"} for token in tokens):
         return "Pronouns & Quantifiers"
     if "DET" in tokens:
         return "Pronouns & Quantifiers"
-    if any(token in {"ADV"} for token in tokens):
-        return "Adverbs & Connectors"
     if any(token in {"CONJ"} for token in tokens):
-        return "Adverbs & Connectors"
+        return "Connectors"
+    if any(token in {"ADV"} for token in tokens):
+        return band_label("Adverbs", initial, ADVERB_GROUPS)
     if any(token in {"PREP", "PTC", "PARTICLE", "ASP", "BA", "BEI", "AFFIX"} for token in tokens):
         return "Prepositions & Particles"
     if any(token in {"M", "NUM"} for token in tokens):
         return "Quantity & Degree"
-    if any(token.startswith("VS") or token in {"ADJ", "A"} for token in tokens):
-        return "Adjectives & Descriptors"
-    if any(token.startswith("V") for token in tokens):
-        return "Common Verbs"
+    if starts("VST"):
+        return "States & Conditions"
+    if any("SEP" in token for token in tokens):
+        return "Separable Verbs"
+    if starts("VS") or any(token in {"ADJ", "A"} for token in tokens):
+        return band_label("Adjectives", initial, ADJECTIVE_GROUPS)
+    if starts("VAUX"):
+        return "Auxiliary Verbs"
+    if starts("VP"):
+        return "Mental Verbs"
+    if starts("V"):
+        return band_label("Action Verbs", initial, VERB_GROUPS)
     if "INT" in joined or "INTERJ" in joined:
         return "Greetings & Basics"
-    if any(token == "N" for token in tokens):
-        return "Abstract & Concepts"
-    return "Abstract & Concepts"
+    return band_label("Nouns", initial, NOUN_GROUPS)
 
 
 def pick_primary(mapped: list[str], keywords: list[str], pos_category: str) -> tuple[str, str]:
@@ -661,7 +749,7 @@ def remap_existing_datasets() -> None:
         payload = json.loads(json_path.read_text(encoding="utf-8"))
         apply_taxonomy_to_payload(payload, expected)
         write_dataset(payload, json_path, js_path, global_name)
-        print(f"Remapped {json_path.name}: {expected} rows, 48 categories")
+        print(f"Remapped {json_path.name}: {expected} rows, {len(TAXONOMY)} categories")
     write_taxonomy_js(ROOT / "js" / "category-taxonomy.js")
     print("Wrote js/category-taxonomy.js")
 

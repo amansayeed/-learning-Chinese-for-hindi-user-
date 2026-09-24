@@ -19,7 +19,7 @@
     "note": "Vocabulary comes from the three level sheets; the combined index and documentation sheets are validated but not duplicated.",
     "taxonomy": {
       "version": 1,
-      "count": 48,
+      "count": 61,
       "categories": [
         {
           "label": "Greetings & Basics",
@@ -196,118 +196,196 @@
           "order": 29
         },
         {
-          "label": "Adverbs & Connectors",
-          "icon": "🔗",
-          "slug": "adverbs-connectors",
-          "order": 30
-        },
-        {
           "label": "Prepositions & Particles",
           "icon": "📍",
           "slug": "prepositions-particles",
-          "order": 31
-        },
-        {
-          "label": "Adjectives & Descriptors",
-          "icon": "✨",
-          "slug": "adjectives-descriptors",
-          "order": 32
-        },
-        {
-          "label": "Common Verbs",
-          "icon": "🏃",
-          "slug": "common-verbs",
-          "order": 33
-        },
-        {
-          "label": "Abstract & Concepts",
-          "icon": "💡",
-          "slug": "abstract-concepts",
-          "order": 34
+          "order": 30
         },
         {
           "label": "Negation & Particles",
           "icon": "🚫",
           "slug": "negation-particles",
-          "order": 35
+          "order": 31
         },
         {
           "label": "Location & Direction",
           "icon": "🧭",
           "slug": "location-direction",
-          "order": 36
+          "order": 32
         },
         {
           "label": "Quantity & Degree",
           "icon": "📊",
           "slug": "quantity-degree",
-          "order": 37
+          "order": 33
         },
         {
           "label": "Reflexive & Self",
           "icon": "🔄",
           "slug": "reflexive-self",
-          "order": 38
+          "order": 34
         },
         {
           "label": "Manner & Style",
           "icon": "🎭",
           "slug": "manner-style",
-          "order": 39
+          "order": 35
         },
         {
           "label": "Places & Structures",
           "icon": "🏛️",
           "slug": "places-structures",
-          "order": 40
+          "order": 36
         },
         {
           "label": "Emergency & Safety",
           "icon": "🆘",
           "slug": "emergency-safety",
-          "order": 41
+          "order": 37
         },
         {
           "label": "Reason & Proof",
           "icon": "📋",
           "slug": "reason-proof",
-          "order": 42
+          "order": 38
         },
         {
           "label": "Tools & Materials",
           "icon": "🔧",
           "slug": "tools-materials",
-          "order": 43
+          "order": 39
         },
         {
           "label": "Start & Conclusion",
           "icon": "▶️",
           "slug": "start-conclusion",
-          "order": 44
+          "order": 40
         },
         {
           "label": "Writing & Recording",
           "icon": "✍️",
           "slug": "writing-recording",
-          "order": 45
+          "order": 41
         },
         {
           "label": "Legal & Crime",
           "icon": "⚖️",
           "slug": "legal-crime",
-          "order": 46
+          "order": 42
         },
         {
           "label": "People & Roles",
           "icon": "👥",
           "slug": "people-roles",
-          "order": 47
+          "order": 43
         },
         {
           "label": "Plans & Suggestions",
           "icon": "📝",
           "slug": "plans-suggestions",
+          "order": 44
+        },
+        {
+          "label": "Nouns · A-D",
+          "icon": "📦",
+          "slug": "nouns-a-d",
+          "order": 45
+        },
+        {
+          "label": "Nouns · E-J",
+          "icon": "📦",
+          "slug": "nouns-e-j",
+          "order": 46
+        },
+        {
+          "label": "Nouns · K-Q",
+          "icon": "📦",
+          "slug": "nouns-k-q",
+          "order": 47
+        },
+        {
+          "label": "Nouns · R-W",
+          "icon": "📦",
+          "slug": "nouns-r-w",
           "order": 48
+        },
+        {
+          "label": "Nouns · X-Z",
+          "icon": "📦",
+          "slug": "nouns-x-z",
+          "order": 49
+        },
+        {
+          "label": "Action Verbs · A-F",
+          "icon": "🏃",
+          "slug": "action-verbs-a-f",
+          "order": 50
+        },
+        {
+          "label": "Action Verbs · G-L",
+          "icon": "🏃",
+          "slug": "action-verbs-g-l",
+          "order": 51
+        },
+        {
+          "label": "Action Verbs · M-T",
+          "icon": "🏃",
+          "slug": "action-verbs-m-t",
+          "order": 52
+        },
+        {
+          "label": "Action Verbs · U-Z",
+          "icon": "🏃",
+          "slug": "action-verbs-u-z",
+          "order": 53
+        },
+        {
+          "label": "Adjectives · A-L",
+          "icon": "✨",
+          "slug": "adjectives-a-l",
+          "order": 54
+        },
+        {
+          "label": "Adjectives · M-Z",
+          "icon": "✨",
+          "slug": "adjectives-m-z",
+          "order": 55
+        },
+        {
+          "label": "Adverbs · A-Z",
+          "icon": "🔗",
+          "slug": "adverbs-a-z",
+          "order": 56
+        },
+        {
+          "label": "Connectors",
+          "icon": "🔀",
+          "slug": "connectors",
+          "order": 57
+        },
+        {
+          "label": "Mental Verbs",
+          "icon": "🧠",
+          "slug": "mental-verbs",
+          "order": 58
+        },
+        {
+          "label": "Separable Verbs",
+          "icon": "🧩",
+          "slug": "separable-verbs",
+          "order": 59
+        },
+        {
+          "label": "Auxiliary Verbs",
+          "icon": "🔧",
+          "slug": "auxiliary-verbs",
+          "order": 60
+        },
+        {
+          "label": "States & Conditions",
+          "icon": "🌡️",
+          "slug": "states-conditions",
+          "order": 61
         }
       ]
     },
@@ -475,7 +553,7 @@
       "secondaryCategories": [
         "Family & People"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "人物 · People",
       "categoryCode": "人物",
       "subcategory": "人物",
@@ -496,7 +574,7 @@
       "secondaryCategories": [
         "Family & People"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "人物 · People",
       "categoryCode": "人物",
       "subcategory": "人物",
@@ -1351,7 +1429,6 @@
       "partOfSpeech": "N/V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1374,7 +1451,6 @@
       "category": "Family & People",
       "secondaryCategories": [
         "Prepositions & Particles",
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1396,7 +1472,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1418,7 +1493,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1440,7 +1514,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1462,7 +1535,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1484,7 +1556,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1506,7 +1577,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1528,7 +1598,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1550,7 +1619,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1572,11 +1640,10 @@
       "partOfSpeech": "V",
       "category": "Travel & Transport",
       "secondaryCategories": [
-        "Common Verbs",
         "Family & People",
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "人物 · People",
       "categoryCode": "人物",
       "subcategory": "腳部動作",
@@ -1595,7 +1662,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1617,7 +1683,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1639,7 +1704,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1661,7 +1725,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1683,7 +1746,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1705,7 +1767,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1727,7 +1788,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -1749,7 +1809,6 @@
       "partOfSpeech": "Particle",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -2101,7 +2160,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -2123,7 +2181,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -2145,7 +2202,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -2167,7 +2223,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -2189,7 +2244,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -2211,7 +2265,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -2233,7 +2286,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -2255,7 +2307,6 @@
       "partOfSpeech": "ADV",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -2302,7 +2353,7 @@
         "People & Roles",
         "Family & People"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "人物 · People",
       "categoryCode": "人物",
       "subcategory": "職業",
@@ -2324,7 +2375,7 @@
         "People & Roles",
         "Family & People"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "人物 · People",
       "categoryCode": "人物",
       "subcategory": "職業",
@@ -2347,7 +2398,7 @@
         "Family & People",
         "Body Parts"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "人物 · People",
       "categoryCode": "人物",
       "subcategory": "職業",
@@ -2392,7 +2443,7 @@
         "Family & People",
         "Body Parts"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "人物 · People",
       "categoryCode": "人物",
       "subcategory": "職業",
@@ -2414,7 +2465,7 @@
         "People & Roles",
         "Family & People"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "人物 · People",
       "categoryCode": "人物",
       "subcategory": "職業",
@@ -2436,7 +2487,7 @@
         "People & Roles",
         "Family & People"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "人物 · People",
       "categoryCode": "人物",
       "subcategory": "職業",
@@ -2876,9 +2927,9 @@
       "english": "page; partial measure word for one side of a book or magazine",
       "hindi": "पेज",
       "partOfSpeech": "N/M",
-      "category": "Quantity & Degree",
+      "category": "Media & Entertainment",
       "secondaryCategories": [
-        "Media & Entertainment",
+        "Quantity & Degree",
         "Prepositions & Particles"
       ],
       "categoryBasis": "mapped source category refined by row fields",
@@ -3080,9 +3131,9 @@
       "english": "how much",
       "hindi": "संख्या; मात्रा; कुछ हद तक",
       "partOfSpeech": "N",
-      "category": "Quantity & Degree",
+      "category": "Questions & Interrogatives",
       "secondaryCategories": [
-        "Questions & Interrogatives",
+        "Quantity & Degree",
         "Shopping & Money"
       ],
       "categoryBasis": "mapped source category refined by row fields",
@@ -3429,7 +3480,7 @@
       "secondaryCategories": [
         "Time"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "時間 · Time",
       "categoryCode": "時間",
       "subcategory": "年月日星期",
@@ -3602,7 +3653,7 @@
       "secondaryCategories": [
         "Time"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "時間 · Time",
       "categoryCode": "時間",
       "subcategory": "時間",
@@ -3835,9 +3886,7 @@
       "hindi": "रंग; मुखाकृति; दिखावट; चेहरे का भाव; वर्णक; रंगद्रव्य",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -3856,9 +3905,7 @@
       "hindi": "सफ़ेद",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -3877,9 +3924,7 @@
       "hindi": "पीला",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -3898,9 +3943,7 @@
       "hindi": "काला",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -3919,9 +3962,7 @@
       "hindi": "हरा",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -3940,9 +3981,7 @@
       "hindi": "नीला",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -3961,9 +4000,7 @@
       "hindi": "लाल",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -3982,9 +4019,7 @@
       "hindi": "चमकदार",
       "partOfSpeech": "VS",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped existing/source category",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -4129,9 +4164,7 @@
       "hindi": "परिपत्र",
       "partOfSpeech": "VS/N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped existing/source category",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -4150,9 +4183,7 @@
       "hindi": "त्रिकोण",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped existing/source category",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -4171,9 +4202,7 @@
       "hindi": "वर्ग",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped existing/source category",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -4192,9 +4221,7 @@
       "hindi": "आयत",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped existing/source category",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -4384,7 +4411,7 @@
       "secondaryCategories": [
         "Clothing"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "衣物飾品",
@@ -4619,7 +4646,7 @@
         "House & Furniture",
         "Food"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -4660,7 +4687,7 @@
         "House & Furniture",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -4681,7 +4708,7 @@
       "secondaryCategories": [
         "House & Furniture"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -4703,7 +4730,7 @@
         "House & Furniture",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -4763,7 +4790,7 @@
         "House & Furniture",
         "Food"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -4786,7 +4813,7 @@
         "House & Furniture",
         "Food"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -4808,7 +4835,7 @@
         "House & Furniture",
         "Food"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -4831,7 +4858,7 @@
         "House & Furniture",
         "Kitchen Items"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -4890,7 +4917,7 @@
       "secondaryCategories": [
         "House & Furniture"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -4930,7 +4957,7 @@
       "secondaryCategories": [
         "House & Furniture"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -5292,7 +5319,7 @@
       "secondaryCategories": [
         "Food"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "飲食",
@@ -5439,7 +5466,7 @@
       "secondaryCategories": [
         "Food"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "飲食",
@@ -5481,7 +5508,7 @@
       "secondaryCategories": [
         "Food"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "飲食",
@@ -5502,7 +5529,7 @@
       "secondaryCategories": [
         "Food"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "飲食",
@@ -5523,7 +5550,7 @@
       "secondaryCategories": [
         "Food"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "飲食",
@@ -5544,7 +5571,7 @@
       "secondaryCategories": [
         "Food"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "飲食",
@@ -5954,7 +5981,7 @@
       "secondaryCategories": [
         "School & Learning"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "學校",
@@ -6334,10 +6361,9 @@
       "partOfSpeech": "N",
       "category": "Colors",
       "secondaryCategories": [
-        "School & Learning",
-        "Adjectives & Descriptors"
+        "School & Learning"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "學校",
@@ -6396,7 +6422,7 @@
       "secondaryCategories": [
         "School & Learning"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "學校",
@@ -6770,7 +6796,7 @@
       "secondaryCategories": [
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -6792,7 +6818,7 @@
         "Sports & Activities",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -6814,7 +6840,7 @@
         "Sports & Activities",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -6940,7 +6966,7 @@
       "secondaryCategories": [
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -6961,7 +6987,7 @@
       "secondaryCategories": [
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -6982,7 +7008,7 @@
       "secondaryCategories": [
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -7003,7 +7029,7 @@
       "secondaryCategories": [
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -7804,7 +7830,7 @@
       "secondaryCategories": [
         "Nature & Weather"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "自然 · Nature",
       "categoryCode": "自然",
       "subcategory": "植物",
@@ -8549,7 +8575,7 @@
         "Location & Direction",
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "方位",
@@ -8571,7 +8597,7 @@
         "Location & Direction",
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "方位",
@@ -8656,7 +8682,7 @@
         "Location & Direction",
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "方位",
@@ -8678,7 +8704,7 @@
         "Location & Direction",
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "方位",
@@ -8699,7 +8725,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -8720,7 +8746,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -8741,7 +8767,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -8762,7 +8788,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -8784,7 +8810,7 @@
         "Places & City",
         "Kitchen Items"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -8806,7 +8832,7 @@
         "Places & City",
         "Body Parts"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -8869,7 +8895,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -8890,7 +8916,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -8933,7 +8959,7 @@
         "Places & City",
         "Banking & Finance"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -8955,7 +8981,7 @@
         "Places & City",
         "Banking & Finance"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -8977,7 +9003,7 @@
         "Shopping & Money",
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -9238,9 +9264,9 @@
       "english": "Never mind.",
       "hindi": "कोई फर्क नहीं पड़ता कि",
       "partOfSpeech": "V",
-      "category": "Greetings & Basics",
+      "category": "Negation & Particles",
       "secondaryCategories": [
-        "Negation & Particles"
+        "Greetings & Basics"
       ],
       "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "常用語 · Common Expressions",
@@ -9301,7 +9327,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -9341,7 +9367,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -9362,7 +9388,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -9402,7 +9428,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -9518,7 +9544,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -9539,7 +9565,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -9560,7 +9586,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -9581,7 +9607,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -9602,7 +9628,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -9623,7 +9649,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -9644,7 +9670,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -9760,7 +9786,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -9838,7 +9864,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -10256,7 +10282,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10278,7 +10303,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10300,7 +10324,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10322,7 +10345,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10344,7 +10366,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10366,7 +10387,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10388,7 +10408,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10410,7 +10429,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10432,7 +10450,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10454,7 +10471,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10476,7 +10492,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10498,7 +10513,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10520,7 +10534,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10542,7 +10555,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10564,7 +10576,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10586,7 +10597,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10872,7 +10882,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10894,7 +10903,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10916,7 +10924,6 @@
       "partOfSpeech": "N",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10938,7 +10945,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10960,7 +10966,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -10982,7 +10987,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -11004,7 +11008,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -11026,7 +11029,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -11095,7 +11097,7 @@
         "People & Roles",
         "Family & People"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "人物 · People",
       "categoryCode": "人物",
       "subcategory": "職業",
@@ -11363,7 +11365,7 @@
       "secondaryCategories": [
         "Quantity & Degree"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "數量 · Numbers",
       "categoryCode": "數量",
       "subcategory": "數字",
@@ -11477,10 +11479,10 @@
       "english": "individual measure word for clothes, etc., for furniture, jewelry, etc., and for affairs, incidents, etc.",
       "hindi": "वस्तु; घटक; घटनाओं; चीजों",
       "partOfSpeech": "M",
-      "category": "Quantity & Degree",
+      "category": "House & Furniture",
       "secondaryCategories": [
-        "House & Furniture",
-        "Clothing"
+        "Clothing",
+        "Quantity & Degree"
       ],
       "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "數量 · Numbers",
@@ -11537,9 +11539,10 @@
       "english": "individual measure word for long, narrow things, such as rivers, pants, snakes, etc.",
       "hindi": "पट्टी; वस्तु; लेख; खंड (कानून या संधि का)",
       "partOfSpeech": "M",
-      "category": "Quantity & Degree",
+      "category": "Clothing",
       "secondaryCategories": [
-        "Clothing"
+        "Quantity & Degree",
+        "Personal Items"
       ],
       "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "數量 · Numbers",
@@ -11832,7 +11835,7 @@
         "Shopping & Money",
         "Quantity & Degree"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "數量 · Numbers",
       "categoryCode": "數量",
       "subcategory": "金錢",
@@ -12364,11 +12367,11 @@
       "english": "then",
       "hindi": "फिर; उसके बाद",
       "partOfSpeech": "Conj",
-      "category": "Time",
+      "category": "Connectors",
       "secondaryCategories": [
-        "Adverbs & Connectors"
+        "Time"
       ],
-      "categoryBasis": "mapped existing/source category",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "時間 · Time",
       "categoryCode": "時間",
       "subcategory": "時間",
@@ -12405,9 +12408,7 @@
       "hindi": "स्लेटी",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -12426,9 +12427,7 @@
       "hindi": "बैंगनी",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -12447,9 +12446,7 @@
       "hindi": "नारंगी",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped existing/source category",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -12573,9 +12570,7 @@
       "hindi": "पक्ष; किनारा; मार्जिन; सीमा; एक साथ; स्थानीयता की संज्ञा का प्रत्यय",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped existing/source category",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -12744,7 +12739,7 @@
       "secondaryCategories": [
         "Clothing"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "衣物飾品",
@@ -12939,7 +12934,7 @@
         "Prepositions & Particles",
         "House & Furniture"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -13037,7 +13032,7 @@
         "House & Furniture",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -13153,7 +13148,7 @@
       "secondaryCategories": [
         "House & Furniture"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -13175,7 +13170,7 @@
         "House & Furniture",
         "Food"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -13198,7 +13193,7 @@
         "House & Furniture",
         "Food"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -13295,7 +13290,7 @@
       "secondaryCategories": [
         "House & Furniture"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -13744,7 +13739,7 @@
       "secondaryCategories": [
         "Food"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "飲食",
@@ -13786,7 +13781,7 @@
       "secondaryCategories": [
         "Food"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "飲食",
@@ -14039,7 +14034,7 @@
         "Food",
         "House & Furniture"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "飲食",
@@ -14290,7 +14285,7 @@
       "secondaryCategories": [
         "School & Learning"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "學校",
@@ -14350,7 +14345,7 @@
         "School & Learning",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "學校",
@@ -14430,7 +14425,7 @@
       "secondaryCategories": [
         "School & Learning"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "學校",
@@ -14452,7 +14447,7 @@
         "School & Learning",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "學校",
@@ -14492,7 +14487,7 @@
       "secondaryCategories": [
         "School & Learning"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "學校",
@@ -14552,7 +14547,7 @@
         "School & Learning",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "學校",
@@ -14650,7 +14645,7 @@
         "School & Learning",
         "Health & Feelings"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "學校",
@@ -14790,7 +14785,7 @@
         "Sports & Activities",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -14833,7 +14828,7 @@
         "Sports & Activities",
         "Banking & Finance"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -14877,7 +14872,7 @@
         "Sports & Activities",
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -14957,9 +14952,9 @@
       "english": "ping-pong/table tennis",
       "hindi": "टेबल टेनिस",
       "partOfSpeech": "N",
-      "category": "Sports & Activities",
+      "category": "House & Furniture",
       "secondaryCategories": [
-        "House & Furniture",
+        "Sports & Activities",
         "Media & Entertainment"
       ],
       "categoryBasis": "mapped source category refined by row fields",
@@ -15047,7 +15042,7 @@
         "Sports & Activities",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -15090,7 +15085,7 @@
         "Sports & Activities",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -15133,7 +15128,7 @@
         "Prepositions & Particles",
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -15176,7 +15171,7 @@
         "Prepositions & Particles",
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -15197,7 +15192,7 @@
       "secondaryCategories": [
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -15218,7 +15213,7 @@
       "secondaryCategories": [
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -15239,7 +15234,7 @@
       "secondaryCategories": [
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -15685,7 +15680,7 @@
         "Travel & Transport",
         "Health & Feelings"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "交通 · Transportation",
       "categoryCode": "交通",
       "subcategory": "交通工具",
@@ -15707,7 +15702,7 @@
         "Travel & Transport",
         "Health & Feelings"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "交通 · Transportation",
       "categoryCode": "交通",
       "subcategory": "交通工具",
@@ -16233,7 +16228,7 @@
       "secondaryCategories": [
         "Nature & Weather"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "自然 · Nature",
       "categoryCode": "自然",
       "subcategory": "自然環境",
@@ -16603,7 +16598,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -16624,7 +16619,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -16666,7 +16661,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -16708,7 +16703,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -16729,7 +16724,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -16772,7 +16767,7 @@
         "Places & City",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -16814,7 +16809,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -16835,7 +16830,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -16857,7 +16852,7 @@
         "Places & City",
         "Shopping & Money"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -16878,7 +16873,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -16900,7 +16895,7 @@
         "Media & Entertainment",
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -16921,7 +16916,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -16942,7 +16937,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -16963,7 +16958,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -16984,7 +16979,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -17005,7 +17000,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -17026,7 +17021,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -17047,7 +17042,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -17519,11 +17514,11 @@
       "english": "or; still",
       "hindi": "अभी भी (पहले की तरह); बेहतर था; अप्रत्याशित रूप से; या",
       "partOfSpeech": "Conj",
-      "category": "Adverbs & Connectors",
+      "category": "Connectors",
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "refined generic category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -17544,7 +17539,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -17561,11 +17556,11 @@
       "english": "if",
       "hindi": "यदि; मामले में; उस स्थिति में",
       "partOfSpeech": "Conj",
-      "category": "Adverbs & Connectors",
+      "category": "Connectors",
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "refined generic category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -17582,11 +17577,11 @@
       "english": "but",
       "hindi": "लेकिन; तथापि",
       "partOfSpeech": "Conj",
-      "category": "Adverbs & Connectors",
+      "category": "Connectors",
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "refined generic category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -17607,7 +17602,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -17649,7 +17644,7 @@
       "secondaryCategories": [
         "Family & People"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "人物 · People",
       "categoryCode": "人物",
       "subcategory": "人物",
@@ -17775,7 +17770,7 @@
       "secondaryCategories": [
         "Family & People"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "人物 · People",
       "categoryCode": "人物",
       "subcategory": "家庭",
@@ -17838,7 +17833,7 @@
       "secondaryCategories": [
         "Family & People"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "人物 · People",
       "categoryCode": "人物",
       "subcategory": "家庭",
@@ -18053,7 +18048,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18075,7 +18069,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18097,7 +18090,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18119,7 +18111,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18141,7 +18132,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18163,7 +18153,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18185,7 +18174,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18207,7 +18195,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18229,7 +18216,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18251,7 +18237,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18273,7 +18258,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18295,7 +18279,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18317,7 +18300,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18339,7 +18321,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18361,7 +18342,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18383,7 +18363,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18405,7 +18384,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18427,7 +18405,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18449,7 +18426,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18471,7 +18447,6 @@
       "partOfSpeech": "V",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18493,7 +18468,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Common Verbs",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18911,7 +18885,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18933,7 +18906,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18955,7 +18927,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18977,7 +18948,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -18999,7 +18969,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -19021,7 +18990,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -19043,7 +19011,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -19065,7 +19032,6 @@
       "partOfSpeech": "VS",
       "category": "Family & People",
       "secondaryCategories": [
-        "Adjectives & Descriptors",
         "People & Roles"
       ],
       "categoryBasis": "mapped existing/source category",
@@ -19424,9 +19390,10 @@
       "english": "individual measure word for calligraphy, painting, etc.",
       "hindi": "चित्र का वर्गीकरणकर्ता",
       "partOfSpeech": "M",
-      "category": "Quantity & Degree",
+      "category": "Music & Arts",
       "secondaryCategories": [
-        "Music & Arts"
+        "Quantity & Degree",
+        "Media & Entertainment"
       ],
       "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "數量 · Numbers",
@@ -19521,10 +19488,11 @@
       "english": "individual measure word for long things and for soft and slender things, such as a banana, a lock of hair, etc.",
       "hindi": "जड़",
       "partOfSpeech": "M",
-      "category": "Quantity & Degree",
+      "category": "Body Parts",
       "secondaryCategories": [
-        "Body Parts",
-        "Prepositions & Particles"
+        "Quantity & Degree",
+        "Prepositions & Particles",
+        "Health & Feelings"
       ],
       "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "數量 · Numbers",
@@ -19766,7 +19734,7 @@
       "secondaryCategories": [
         "Quantity & Degree"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "程度 · Degree",
       "categoryCode": "程度",
       "subcategory": "程度",
@@ -20091,7 +20059,7 @@
       "secondaryCategories": [
         "Time"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "時間 · Time",
       "categoryCode": "時間",
       "subcategory": "時間",
@@ -20209,7 +20177,7 @@
       "secondaryCategories": [
         "Time"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "時間 · Time",
       "categoryCode": "時間",
       "subcategory": "時間",
@@ -20265,9 +20233,7 @@
       "hindi": "सोना",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped existing/source category",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -20286,9 +20252,7 @@
       "hindi": "चाँदी",
       "partOfSpeech": "N",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped existing/source category",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -20328,9 +20292,7 @@
       "hindi": "सीधा",
       "partOfSpeech": "VS",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped existing/source category",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -20349,9 +20311,7 @@
       "hindi": "समतल",
       "partOfSpeech": "VS",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped existing/source category",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -20370,9 +20330,7 @@
       "hindi": "मुड़ा हुआ",
       "partOfSpeech": "VS",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped existing/source category",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -20391,9 +20349,7 @@
       "hindi": "कर्ल",
       "partOfSpeech": "VS",
       "category": "Colors",
-      "secondaryCategories": [
-        "Adjectives & Descriptors"
-      ],
+      "secondaryCategories": [],
       "categoryBasis": "mapped existing/source category",
       "sourceCategory": "形色 · Shapes & Colors",
       "categoryCode": "形色",
@@ -20584,7 +20540,7 @@
         "Clothing",
         "Health & Feelings"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "衣物飾品",
@@ -20668,7 +20624,7 @@
       "secondaryCategories": [
         "Clothing"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "衣物飾品",
@@ -20790,7 +20746,7 @@
       "secondaryCategories": [
         "House & Furniture"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -20925,7 +20881,7 @@
       "secondaryCategories": [
         "House & Furniture"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -20986,7 +20942,7 @@
       "secondaryCategories": [
         "House & Furniture"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -21007,7 +20963,7 @@
       "secondaryCategories": [
         "House & Furniture"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -21028,7 +20984,7 @@
       "secondaryCategories": [
         "House & Furniture"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -21069,7 +21025,7 @@
         "House & Furniture",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -21092,7 +21048,7 @@
         "House & Furniture",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -21132,7 +21088,7 @@
       "secondaryCategories": [
         "House & Furniture"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "居家用品",
@@ -21485,7 +21441,7 @@
       "secondaryCategories": [
         "Food"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "飲食",
@@ -21911,7 +21867,7 @@
         "School & Learning",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "學校",
@@ -21933,7 +21889,7 @@
         "School & Learning",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "學校",
@@ -21973,7 +21929,7 @@
       "secondaryCategories": [
         "School & Learning"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "學校",
@@ -22279,7 +22235,7 @@
       "secondaryCategories": [
         "School & Learning"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "學校",
@@ -22320,7 +22276,7 @@
         "Prepositions & Particles",
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -22448,7 +22404,7 @@
         "Sports & Activities",
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -22574,7 +22530,7 @@
       "secondaryCategories": [
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -22595,7 +22551,7 @@
       "secondaryCategories": [
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -22617,7 +22573,7 @@
         "Sports & Activities",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -22659,7 +22615,7 @@
       "secondaryCategories": [
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -22702,7 +22658,7 @@
         "Sports & Activities",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -22849,7 +22805,7 @@
       "secondaryCategories": [
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -22870,7 +22826,7 @@
       "secondaryCategories": [
         "Sports & Activities"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "生活 · Daily Life",
       "categoryCode": "生活",
       "subcategory": "休閒活動",
@@ -23144,7 +23100,7 @@
         "Travel & Transport",
         "Health & Feelings"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "交通 · Transportation",
       "categoryCode": "交通",
       "subcategory": "交通工具",
@@ -23187,7 +23143,7 @@
         "Travel & Transport",
         "Health & Feelings"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "交通 · Transportation",
       "categoryCode": "交通",
       "subcategory": "交通工具",
@@ -23365,7 +23321,7 @@
         "Nature & Weather",
         "Health & Feelings"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "自然 · Nature",
       "categoryCode": "自然",
       "subcategory": "現象",
@@ -24017,7 +23973,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -24060,7 +24016,7 @@
         "Places & City",
         "Media & Entertainment"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -24081,7 +24037,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -24123,7 +24079,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -24144,7 +24100,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -24186,7 +24142,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -24208,7 +24164,7 @@
         "Places & City",
         "Banking & Finance"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -24271,7 +24227,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -24292,7 +24248,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -24355,7 +24311,7 @@
       "secondaryCategories": [
         "Places & City"
       ],
-      "categoryBasis": "refined source category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "地方 · Places",
       "categoryCode": "地方",
       "subcategory": "處所",
@@ -24605,7 +24561,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -24812,11 +24768,11 @@
       "english": "but",
       "hindi": "लेकिन; तथापि; (जोर देने के लिए प्रयुक्त) वास्तव में",
       "partOfSpeech": "Conj",
-      "category": "Adverbs & Connectors",
+      "category": "Connectors",
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "refined generic category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -24833,11 +24789,11 @@
       "english": "although",
       "hindi": "हालांकि; यद्यपि",
       "partOfSpeech": "Conj",
-      "category": "Adverbs & Connectors",
+      "category": "Connectors",
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "refined generic category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -24911,11 +24867,11 @@
       "english": "moreover",
       "hindi": "(दो संज्ञाओं को जोड़ने वाला) तथा; के साथ साथ; (ताइवान जनसंपर्क ) के साथ",
       "partOfSpeech": "Conj",
-      "category": "Adverbs & Connectors",
+      "category": "Connectors",
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "refined generic category by row fields",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",
@@ -24936,7 +24892,7 @@
       "secondaryCategories": [
         "Prepositions & Particles"
       ],
-      "categoryBasis": "row field keyword",
+      "categoryBasis": "mapped source category refined by row fields",
       "sourceCategory": "功能詞 · Function Words",
       "categoryCode": "功能詞",
       "subcategory": "功能詞",

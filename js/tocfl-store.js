@@ -22,6 +22,75 @@
     thriving: 10,
   };
   var SOURCE_ORDER = { TOCFL: 1, CCCC: 2 };
+  var DISPLAY_RANK = {
+    "novice-1": 1,
+    "novice-2": 1,
+    "level-1": 1,
+    sprouting: 1,
+    growing: 1,
+    thriving: 1,
+    "level-2": 2,
+    "level-3": 3,
+    "level-4": 4,
+    "level-5": 5,
+  };
+  /* Confirmed same learner word. Tone sandhi, neutral tone, optional
+     characters, and spacing differ. Different readings stay separate. */
+  var VARIANT_GROUPS = [
+    ["cccc-thriving-0885", "tocfl8k-level-3-01793"],
+    ["cccc-growing-0794", "tocfl8k-level-2-00882"],
+    ["cccc-sprouting-0346", "tocfl8k-level-2-00905"],
+    ["cccc-thriving-1006", "tocfl8k-level-2-00966"],
+    ["cccc-sprouting-0447", "tocfl8k-level-2-01161"],
+    ["cccc-thriving-1196", "tocfl8k-level-2-01162"],
+    ["cccc-thriving-0877", "tocfl8k-level-3-01626"],
+    ["cccc-thriving-1011", "tocfl8k-level-3-01776"],
+    ["cccc-growing-0759", "tocfl8k-level-3-01809"],
+    ["cccc-sprouting-0236", "tocfl8k-level-3-01823"],
+    ["cccc-sprouting-0028", "tocfl8k-level-3-02108"],
+    ["cccc-sprouting-0042", "tocfl8k-level-3-02213"],
+    ["cccc-thriving-0996", "tocfl8k-level-4-02504"],
+    ["cccc-thriving-1088", "tocfl8k-level-4-03435"],
+    ["cccc-growing-0771", "tocfl8k-level-5-05462"],
+    ["tocfl8k-level-4-03670", "tocfl8k-level-5-06229"],
+    ["cccc-growing-0482", "tocfl8k-level-2-01062"],
+    ["tocfl8k-level-4-03319", "tocfl8k-level-4-03320"],
+    ["tocfl8k-novice-1-00016", "cccc-sprouting-0009"],
+    ["tocfl8k-novice-2-00165", "cccc-sprouting-0010"],
+    ["tocfl8k-novice-2-00168", "cccc-sprouting-0026"],
+    ["tocfl8k-novice-1-00052", "cccc-sprouting-0030"],
+    ["tocfl8k-novice-2-00321", "cccc-sprouting-0037"],
+    ["tocfl8k-novice-2-00343", "cccc-sprouting-0061"],
+    ["tocfl8k-novice-2-00344", "cccc-sprouting-0063"],
+    ["tocfl8k-novice-1-00093", "cccc-sprouting-0080"],
+    ["tocfl8k-novice-1-00067", "cccc-sprouting-0088"],
+    ["tocfl8k-novice-2-00381", "cccc-sprouting-0118"],
+    ["tocfl8k-novice-2-00341", "cccc-sprouting-0137", "tocfl8k-level-3-02244"],
+    ["tocfl8k-novice-1-00026", "cccc-sprouting-0151"],
+    ["tocfl8k-novice-1-00030", "cccc-sprouting-0155"],
+    ["tocfl8k-level-1-00509", "cccc-sprouting-0199"],
+    ["tocfl8k-level-1-00515", "cccc-sprouting-0206"],
+    ["tocfl8k-novice-1-00094", "cccc-sprouting-0210"],
+    ["tocfl8k-level-1-00700", "cccc-sprouting-0214"],
+    ["tocfl8k-novice-2-00292", "cccc-sprouting-0390"],
+    ["tocfl8k-novice-2-00189", "cccc-sprouting-0422"],
+    ["tocfl8k-novice-1-00118", "cccc-sprouting-0430"],
+    ["tocfl8k-level-1-00583", "cccc-sprouting-0432"],
+    ["tocfl8k-novice-1-00119", "cccc-sprouting-0434"],
+    ["tocfl8k-novice-2-00225", "cccc-sprouting-0450"],
+    ["tocfl8k-novice-2-00214", "cccc-growing-0532"],
+    ["tocfl8k-novice-1-00137", "cccc-growing-0555"],
+    ["tocfl8k-novice-2-00173", "cccc-growing-0565"],
+    ["tocfl8k-level-1-00643", "cccc-growing-0575"],
+    ["tocfl8k-level-1-00620", "cccc-growing-0614"],
+    ["tocfl8k-novice-2-00237", "cccc-growing-0678"],
+    ["tocfl8k-level-1-00678", "cccc-growing-0826"],
+    ["tocfl8k-novice-2-00386", "cccc-growing-0836"],
+    ["tocfl8k-novice-2-00233", "cccc-thriving-0878"],
+    ["tocfl8k-novice-2-00249", "cccc-thriving-0942"],
+    ["tocfl8k-level-1-00413", "cccc-thriving-1008"],
+    ["tocfl8k-level-1-00710", "cccc-thriving-1032"],
+  ];
   var levelMeta = {};
   var rows = [];
 
@@ -101,6 +170,21 @@
     });
   });
 
+  var indexById = {};
+  var variantMark = {};
+  rows.forEach(function (row, index) { indexById[row.word.id] = index; });
+  for (var mark = 0; mark < VARIANT_GROUPS.length; mark += 1) {
+    var ids = VARIANT_GROUPS[mark];
+    var first = null;
+    for (var idIndex = 0; idIndex < ids.length; idIndex += 1) {
+      var variantId = ids[idIndex];
+      if (indexById[variantId] === undefined) continue;
+      variantMark[variantId] = mark;
+      if (first === null) first = indexById[variantId];
+      else unite(first, indexById[variantId]);
+    }
+  }
+
   var groups = {};
   rows.forEach(function (row, index) {
     var key = root(index);
@@ -143,7 +227,19 @@
 
   var aliases = {};
   var words = Object.keys(groups).map(function (groupKey) {
+    var marks = {};
+    groups[groupKey].forEach(function (item) {
+      var mark = variantMark[item.word.id];
+      if (mark !== undefined) marks[mark] = (marks[mark] || 0) + 1;
+    });
+    var preferLowestBand = Object.keys(marks).some(function (mark) {
+      return marks[mark] > 1;
+    });
     var occurrences = groups[groupKey].slice().sort(function (a, b) {
+      if (preferLowestBand) {
+        var band = (DISPLAY_RANK[a.word.level] || 9) - (DISPLAY_RANK[b.word.level] || 9);
+        if (band) return band;
+      }
       return compareTuple(priority(a), priority(b));
     });
     var canonical = copy(occurrences[0].word);

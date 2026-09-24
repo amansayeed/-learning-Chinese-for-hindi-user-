@@ -285,6 +285,7 @@ report.tocflCombinedLevels =
   (window.__TOCFL_8000__ ? window.__TOCFL_8000__.levels.length : 0) +
   (window.__TOCFL_CCCC__ ? window.__TOCFL_CCCC__.levels.length : 0);
 report.tocflLevelSizes = {};
+report.tocflVariantMerge = { sameWord: false, differentReading: false };
 report.tocflUniqueTotal = 0;
 report.tocflUniqueDuplicates = 0;
 report.tocflAllLevelsSorted = true;
@@ -293,6 +294,10 @@ report.totalWords = report.storeLoaded ? window.VocabStore.all().length : 0;
 report.duplicatesRemoved = report.storeLoaded ? window.VocabStore.duplicateCount : 0;
 report.tocflCounts = report.storeLoaded ? window.VocabStore.tocflCounts() : {};
 report.tocflA1Words = report.storeLoaded ? window.VocabStore.filter({ tocfl: "A1" }).length : 0;
+report.tocflEntryLevel = {
+  buttons: 0, titled: false, hidesMergedButtons: false, keepsLater: false,
+  onlyEntry: false, coversEach: false
+};
 report.tocflRender = {
   levels: 0, categories: 0, subcategories: 0, results: 0, count: "",
   levelWordCount: 0, categoryCountMatches: false, categoryExact: false,
@@ -321,6 +326,7 @@ report.characterDiff = {
   title: "", subtitle: "", count: 0, expected: 0, allDifferent: false,
   levelsHidden: false, pinyinSorted: false, sampleDifferent: false
 };
+report.characterColumns = { controls: false, hides: false, rowShows: false, rowReveal: false };
 if (window.CharactersUI && window.CharactersUI.mount) {
   var characterRoles = {};
   ["title", "subtitle", "levels", "search", "count", "grid", "pagination", "details", "details-content", "details-close"]
@@ -416,6 +422,45 @@ if (window.CharactersUI && window.CharactersUI.mount) {
         diffRoles.grid.innerHTML.indexOf("character-list__han--traditional") !== -1 &&
         diffRoles.grid.innerHTML.indexOf("character-list__han--simplified") !== -1
     };
+    window.CharactersUI.setColumn("pinyin", false);
+    window.CharactersUI.setColumn("meaning", false);
+    var firstCharacterId = (characterRoles.grid.innerHTML.match(/data-character-id="([^"]+)"/) || [])[1];
+    report.characterColumns = {
+      controls: characterRoles.grid.innerHTML.indexOf(">Hide Word<") !== -1 &&
+        characterRoles.grid.innerHTML.indexOf(">Show Pinyin<") !== -1 &&
+        characterRoles.grid.innerHTML.indexOf(">Show Meaning<") !== -1,
+      hides: characterRoles.grid.innerHTML.indexOf("is-col-pinyin-hidden") !== -1 &&
+        characterRoles.grid.innerHTML.indexOf("is-col-meaning-hidden") !== -1,
+      rowShows: (characterRoles.grid.innerHTML.match(/data-character-row-show="pinyin"/g) || []).length === 50 &&
+        characterRoles.grid.innerHTML.indexOf("vocab-list__row-actions") !== -1,
+      rowReveal: false
+    };
+    window.CharactersUI.setColumn("word", false);
+    firstCharacterId = (characterRoles.grid.innerHTML.match(/data-character-id="([^"]+)"/) || [])[1];
+    if (firstCharacterId) {
+      characterClick({
+        target: {
+          closest: function (selector) {
+            if (selector === "[data-character-row-show]") {
+              return {
+                getAttribute: function (name) {
+                  if (name === "data-character-id") return firstCharacterId;
+                  if (name === "data-character-row-show") return "word";
+                  return null;
+                }
+              };
+            }
+            return null;
+          }
+        }
+      });
+      report.characterColumns.rowReveal =
+        characterRoles.grid.innerHTML.indexOf("is-showing-word") !== -1 &&
+        characterRoles.grid.innerHTML.indexOf('data-character-row="' + firstCharacterId + '"') !== -1;
+    }
+    window.CharactersUI.setColumn("word", true);
+    window.CharactersUI.setColumn("pinyin", true);
+    window.CharactersUI.setColumn("meaning", true);
   } catch (e) {
     report.errors.push("character renderer: " + e);
   }
@@ -542,6 +587,15 @@ if (window.TocflUI && window.TocflUI.mount) {
         report.tocflLevelAssignmentCorrect = false;
       }
     });
+    var troubleLow = window.TocflStore.byId("cccc-thriving-0885");
+    var troubleHigh = window.TocflStore.byId("tocfl8k-level-3-01793");
+    var haoLow = window.TocflStore.byId("tocfl8k-novice-1-00070");
+    var haoHigh = window.TocflStore.byId("tocfl8k-level-3-01559");
+    var entryBand = { "novice-1": 1, "novice-2": 1, "level-1": 1, sprouting: 1, growing: 1, thriving: 1 };
+    report.tocflVariantMerge = {
+      sameWord: !!(troubleLow && troubleHigh && troubleLow.id === troubleHigh.id && entryBand[troubleLow.level]),
+      differentReading: !!(haoLow && haoHigh && haoLow.id !== haoHigh.id)
+    };
     var uniqueSeen = {};
     report.tocflUniqueTotal = 0;
     report.tocflUniqueDuplicates = 0;
@@ -594,6 +648,26 @@ if (window.TocflUI && window.TocflUI.mount) {
     tocflController.subcategory = "all";
     tocflController.page = 1;
     tocflController.render();
+    var entryIds = ["novice-1", "novice-2", "level-1", "sprouting", "growing", "thriving"];
+    tocflController.level = "entry-level";
+    var entryWords = tocflController.wordsForLevel();
+    report.tocflEntryLevel = {
+      buttons: (tocflRoles.levels.innerHTML.match(/data-tocfl-level=/g) || []).length,
+      titled: tocflRoles.levels.innerHTML.indexOf("入門級 · Level 1") !== -1,
+      hidesMergedButtons: entryIds.every(function (id) {
+        return tocflRoles.levels.innerHTML.indexOf('data-tocfl-level="' + id + '"') === -1;
+      }),
+      keepsLater: ["level-2", "level-3", "level-4", "level-5"].every(function (id) {
+        return tocflRoles.levels.innerHTML.indexOf('data-tocfl-level="' + id + '"') !== -1;
+      }),
+      onlyEntry: entryWords.length > 0 && entryWords.every(function (word) {
+        return entryIds.indexOf(word.level) >= 0;
+      }),
+      coversEach: entryIds.every(function (id) {
+        return entryWords.some(function (word) { return word.level === id; });
+      })
+    };
+    tocflController.level = "novice-1";
     var groupedHtml = tocflRoles.results.innerHTML;
     var headKeys = [];
     var headPattern = /data-tocfl-category="([^"]+)"/g;
@@ -656,7 +730,25 @@ if (window.TocflUI && window.TocflUI.mount) {
       pinyinSorted: pinyinAscending(flatWords.map(function (word) { return word.pinyin; })),
       onlyTocfl: flatWords.every(function (word) {
         return /^(novice-[12]|level-[1-5])$/.test(word.level);
-      })
+      }),
+      largeBands: (function () {
+        var counts = flatController.categoryCounts();
+        function stats(prefixes) {
+          var bands = Object.keys(counts).filter(function (label) {
+            return prefixes.some(function (prefix) { return label.indexOf(prefix) === 0; });
+          });
+          return {
+            count: bands.length,
+            min: bands.reduce(function (min, label) {
+              return Math.min(min, counts[label] || 0);
+            }, bands.length ? Infinity : 0)
+          };
+        }
+        return {
+          sized: stats(["Nouns · ", "Action Verbs · ", "Adjectives · "]),
+          adverbs: stats(["Adverbs · "])
+        };
+      })()
     };
   } catch (e) {
     report.errors.push("TOCFL renderer: " + e);
@@ -992,6 +1084,10 @@ def main() -> None:
     check(report["characterCount"] == 3000, "CharactersUI exposes exactly 3,000 individual characters")
     check(report["characterRender"]["levels"] == 3, "CharactersUI renders all three learning levels")
     check(report["characterRender"]["tiles"] == 50, "CharactersUI renders 50 individual character rows per page")
+    check(report["characterColumns"]["controls"], "character list can hide or show Word, Pinyin, and Meaning")
+    check(report["characterColumns"]["hides"], "hiding Pinyin and Meaning marks those character columns hidden")
+    check(report["characterColumns"]["rowShows"], "each character row offers Show Pinyin and Show Meaning on the right")
+    check(report["characterColumns"]["rowReveal"], "Show Word on one character row reveals only that row's word")
     check(report["characterRender"]["count"] == "1,000 individual characters", "Basic Reading contains exactly 1,000 characters")
     check(report["characterRender"]["details"] > 0, "clicking a character renders its multilingual details")
     check(report["characterRender"]["traditionalAudio"], "Traditional character buttons are audio-only controls")
@@ -1039,6 +1135,8 @@ def main() -> None:
     check(report["tocflLevelSizes"]["novice-2"] == 234, "Novice 2 keeps its first-occurrence 234 words")
     check(report["tocflLevelSizes"]["level-1"] < 347, "Level 1 drops later repeats of the same word")
     check(report["tocflUniqueDuplicates"] == 0, "no unique Chinese+pinyin word is shown twice")
+    check(report["tocflVariantMerge"]["sameWord"], "same-word variants such as 麻煩 stay in the lower level")
+    check(report["tocflVariantMerge"]["differentReading"], "different readings such as 好 hǎo and 好 hào stay separate")
     check(
         report["categoriesRender"]["uniqueWords"] + report["categoriesRender"]["duplicatesMerged"] == 8714,
         "deduplication accounts for all 8,714 TOCFL and CCCC source rows",
@@ -1051,6 +1149,11 @@ def main() -> None:
         "TOCFL and CCCC level counts account for every deduplicated word exactly once",
     )
     check(report["tocflRender"]["levelWordCount"] == 160, "selected Novice 1 remains limited to 160 words")
+    check(report["tocflEntryLevel"]["buttons"] == 5, "TOCFL switch shows 入門級 · Level 1 plus Levels 2–5")
+    check(report["tocflEntryLevel"]["titled"], "merged band is titled 入門級 · Level 1")
+    check(report["tocflEntryLevel"]["hidesMergedButtons"], "Novice, Sprouting, Growing, Thriving, and Level 1 are not separate buttons")
+    check(report["tocflEntryLevel"]["keepsLater"], "Level 2, Level 3, Level 4, and Level 5 stay separate")
+    check(report["tocflEntryLevel"]["onlyEntry"] and report["tocflEntryLevel"]["coversEach"], "入門級 · Level 1 contains the six merged bands")
     check(report["tocflRender"]["categoryCountMatches"], "selected category count matches its actual words")
     check(report["tocflRender"]["categoryExact"], "selected category contains no other level or category")
     check(report["tocflRender"]["subcategories"] > 0, "selected category renders only its subcategories")
@@ -1072,11 +1175,13 @@ def main() -> None:
     check(report["tocfl8000"]["levelsHidden"], "Official TOCFL vocabulary has no level switcher")
     check(report["tocfl8000"]["pinyinSorted"], "Official TOCFL vocabulary list is in pinyin order")
     check(report["tocfl8000"]["onlyTocfl"], "Official TOCFL vocabulary leaves out CCCC-only levels")
+    check(report["tocfl8000"]["largeBands"]["sized"]["min"] >= 300, "TOCFL 8000 noun, action-verb, and adjective topics each have at least 300 words")
+    check(report["tocfl8000"]["largeBands"]["adverbs"]["count"] == 1, "TOCFL 8000 adverbs stay in one topic")
     check(report["tocflClickFlow"]["countMatches"], "displayed count matches the clicked category selection")
     check(report["tocflRender"]["categories"] > 0, "TOCFL renders category chips")
     check(report["tocflRender"]["results"] > 0, f"TOCFL renders words ({report['tocflRender']['count']})")
-    check(report["categoriesRender"]["taxonomy"] == 48, "CategoriesUI exposes the exact 48-category taxonomy")
-    check(report["categoriesRender"]["cards"] == 48, "Categories landing renders all 48 category cards")
+    check(report["categoriesRender"]["taxonomy"] == 61, "CategoriesUI exposes the split topic taxonomy")
+    check(report["categoriesRender"]["cards"] == 61, "Categories landing renders every topic card")
     check(report["categoriesRender"]["dynamicCounts"], "category counts are computed from deduplicated source words")
     check(report["categoriesRender"]["duplicatesMerged"] > 0, "TOCFL/CCCC duplicate rows are merged")
     check(report["categoriesRender"]["strictSources"], "Categories contains only TOCFL and CCCC words")

@@ -5,6 +5,10 @@
   if (!payload || !Array.isArray(payload.characters)) return;
 
   var PAGE_SIZE = 50;
+  var COLUMN_KEY = "chinese-character-table-columns-v1";
+  var COLUMN_LABELS = { word: "Word", pinyin: "Pinyin", meaning: "Meaning" };
+  var characterColumns = readCharacterColumns();
+  var revealedCharacterRows = {};
   var controllers = [];
   var byId = {};
   payload.characters.forEach(function (item) {
@@ -38,6 +42,81 @@
 
   function shortPinyin(value) {
     return String(value || "").split("/")[0].replace(/\s+/g, "");
+  }
+
+  function readCharacterColumns() {
+    var defaults = { word: true, pinyin: true, meaning: true };
+    try {
+      var saved = JSON.parse(localStorage.getItem(COLUMN_KEY) || "null");
+      Object.keys(defaults).forEach(function (key) {
+        if (saved && saved[key] === false) defaults[key] = false;
+      });
+    } catch (e) {}
+    return defaults;
+  }
+
+  function saveCharacterColumns() {
+    try { localStorage.setItem(COLUMN_KEY, JSON.stringify(characterColumns)); } catch (e) {}
+  }
+
+  function characterColumnClasses() {
+    return Object.keys(COLUMN_LABELS).map(function (key) {
+      return characterColumns[key] ? "" : " is-col-" + key + "-hidden";
+    }).join("");
+  }
+
+  function characterColumnControls() {
+    return '<span class="vocab-list-column-controls__label">Columns</span>' +
+      Object.keys(COLUMN_LABELS).map(function (key) {
+        var hidden = !characterColumns[key];
+        return (
+          '<button type="button" data-character-column-toggle="' +
+          key +
+          '" aria-pressed="' +
+          (hidden ? "true" : "false") +
+          '" aria-label="' +
+          (hidden ? "Show " : "Hide ") +
+          COLUMN_LABELS[key] +
+          ' column">' +
+          (hidden ? "Show " : "Hide ") +
+          COLUMN_LABELS[key] +
+          "</button>"
+        );
+      }).join("");
+  }
+
+  function characterRowShows(id) {
+    var revealed = revealedCharacterRows[id] || {};
+    return Object.keys(COLUMN_LABELS).filter(function (key) {
+      return !characterColumns[key] && !revealed[key];
+    }).map(function (key) {
+      return (
+        '<button type="button" data-character-row-show="' +
+        key +
+        '" data-character-id="' +
+        escapeHtml(id) +
+        '">Show ' +
+        COLUMN_LABELS[key] +
+        "</button>"
+      );
+    }).join("");
+  }
+
+  function showCharacterColumn(id, key) {
+    if (!id || !(key in characterColumns) || characterColumns[key]) return;
+    if (!revealedCharacterRows[id]) revealedCharacterRows[id] = {};
+    revealedCharacterRows[id][key] = true;
+    controllers.forEach(function (controller) { controller.renderGrid(); });
+  }
+
+  function setCharacterColumn(key, visible) {
+    if (!(key in characterColumns)) return;
+    characterColumns[key] = visible;
+    Object.keys(revealedCharacterRows).forEach(function (id) {
+      if (revealedCharacterRows[id]) delete revealedCharacterRows[id][key];
+    });
+    saveCharacterColumns();
+    controllers.forEach(function (controller) { controller.renderGrid(); });
   }
 
   function pinyinKey(item) {
@@ -167,14 +246,27 @@
     }
     if (grid) {
       grid.innerHTML = visible.length
-        ? '<div class="character-list-wrap"><table class="character-list">' +
-          '<thead><tr><th scope="col">#</th><th scope="col">Character</th>' +
-          '<th scope="col">Pinyin</th><th scope="col">Meaning</th></tr></thead><tbody>' +
+        ? '<div class="vocab-list-column-controls" aria-label="Choose visible character columns">' +
+          characterColumnControls() +
+          '</div><div class="character-list-wrap"><table class="character-list' +
+          characterColumnClasses() +
+          '"><thead><tr><th scope="col">#</th>' +
+          '<th scope="col" data-character-col="word">Word</th>' +
+          '<th scope="col" data-character-col="pinyin">Pinyin</th>' +
+          '<th scope="col" data-character-col="meaning">Meaning</th>' +
+          '<th scope="col" class="vocab-list__row-actions"></th></tr></thead><tbody>' +
           visible.map(function (item, index) {
+            var revealed = revealedCharacterRows[item.id] || {};
             return (
-              '<tr><td class="character-list__rank" data-label="#">' +
+              '<tr class="' +
+              (revealed.word ? "is-showing-word " : "") +
+              (revealed.pinyin ? "is-showing-pinyin " : "") +
+              (revealed.meaning ? "is-showing-meaning" : "") +
+              '" data-character-row="' +
+              escapeHtml(item.id) +
+              '"><td class="character-list__rank" data-label="#">' +
               (start + index + 1) +
-              '</td><td data-label="Character"><div class="character-list__scripts">' +
+              '</td><td data-label="Word" data-character-col="word"><div class="character-list__scripts">' +
               '<button type="button" class="character-list__han character-list__han--traditional" ' +
               'data-character-speak="' +
               escapeHtml(item.traditional) +
@@ -191,13 +283,15 @@
               '" title="Simplified · click for details">' +
               escapeHtml(item.simplified) +
               '</button></div></td>' +
-              '<td class="character-list__pinyin" data-label="Pinyin">' +
+              '<td class="character-list__pinyin" data-label="Pinyin" data-character-col="pinyin">' +
               escapeHtml(shortPinyin(item.pinyin)) +
-              '</td><td class="character-list__meaning" data-label="Meaning"><strong>' +
+              '</td><td class="character-list__meaning" data-label="Meaning" data-character-col="meaning"><strong>' +
               escapeHtml(item.english) +
               '</strong><small lang="hi">' +
               escapeHtml(item.hindi) +
-              "</small></td></tr>"
+              '</small></td><td class="vocab-list__row-actions"><span class="vocab-list__row-shows">' +
+              characterRowShows(item.id) +
+              "</span></td></tr>"
             );
           }).join("") +
           "</tbody></table></div>"
@@ -351,6 +445,20 @@
     var self = this;
     this.root.addEventListener("click", function (event) {
       var target = event.target;
+      var columnToggle = target.closest("[data-character-column-toggle]");
+      if (columnToggle) {
+        var columnKey = columnToggle.getAttribute("data-character-column-toggle");
+        setCharacterColumn(columnKey, !characterColumns[columnKey]);
+        return;
+      }
+      var rowShow = target.closest("[data-character-row-show]");
+      if (rowShow) {
+        showCharacterColumn(
+          rowShow.getAttribute("data-character-id"),
+          rowShow.getAttribute("data-character-row-show")
+        );
+        return;
+      }
       var level = target.closest("[data-character-level]");
       if (level && level !== self.root && !self.diff) {
         self.level = level.getAttribute("data-character-level");
@@ -418,6 +526,7 @@
       controllers.push(controller);
       return controller;
     },
+    setColumn: setCharacterColumn,
     refresh: function () {
       controllers.forEach(function (controller) {
         controller.render();

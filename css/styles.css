@@ -4852,6 +4852,22 @@ html[data-theme="dark"] .bottom-nav {
   vertical-align: middle;
 }
 
+.character-list.is-col-word-hidden [data-character-col="word"],
+.character-list.is-col-pinyin-hidden [data-character-col="pinyin"],
+.character-list.is-col-meaning-hidden [data-character-col="meaning"] {
+  display: none !important;
+}
+
+.character-list.is-col-word-hidden tr.is-showing-word [data-character-col="word"],
+.character-list.is-col-pinyin-hidden tr.is-showing-pinyin [data-character-col="pinyin"],
+.character-list.is-col-meaning-hidden tr.is-showing-meaning [data-character-col="meaning"] {
+  display: table-cell !important;
+}
+
+.character-list:not(.is-col-word-hidden):not(.is-col-pinyin-hidden):not(.is-col-meaning-hidden) .vocab-list__row-actions {
+  display: none;
+}
+
 .character-list tbody tr:last-child td {
   border-bottom: 0;
 }
@@ -5114,10 +5130,59 @@ html[data-theme="dark"] .character-list__han--simplified {
 
   .character-list,
   .character-list tbody,
-  .character-list tr,
   .character-list td {
     display: block;
     width: 100%;
+  }
+
+  .character-list tr {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .character-list td[data-character-col] {
+    grid-column: 1 / -1;
+  }
+
+  .character-list td.character-list__rank {
+    grid-column: 1;
+    grid-row: 1;
+    width: auto;
+  }
+
+  .character-list tr:not(:has(button[data-character-row-show])) td.character-list__rank {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .character-list td.vocab-list__row-actions {
+    display: flex;
+    grid-column: 2;
+    grid-row: 1;
+    width: auto;
+    justify-self: stretch;
+    align-self: stretch;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 0;
+    border-bottom: 0;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+  }
+
+  .character-list td.vocab-list__row-actions::before {
+    content: none;
+  }
+
+  .character-list td.vocab-list__row-actions .vocab-list__row-shows button {
+    background: #fff;
+    color: #1e1b4b;
+  }
+
+  .character-list.is-col-word-hidden tr.is-showing-word [data-character-col="word"],
+  .character-list.is-col-pinyin-hidden tr.is-showing-pinyin [data-character-col="pinyin"],
+  .character-list.is-col-meaning-hidden tr.is-showing-meaning [data-character-col="meaning"] {
+    display: block !important;
   }
 
   .character-list thead {

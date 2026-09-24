@@ -51,11 +51,19 @@
     return /^(novice-[12]|level-[1-5])$/.test(word.level || "");
   }
 
+  /* On the leveled TOCFL page, Novice 1–2, Level 1, and the three CCCC bands
+     share one switch. Each word keeps its original level. */
+  var ENTRY_ID = "entry-level";
+  var ENTRY_LABEL = "入門級 · Level 1";
+  var ENTRY_LEVELS = ["novice-1", "novice-2", "level-1", "sprouting", "growing", "thriving"];
+  var LATER_BROWSER_LEVELS = ["level-2", "level-3", "level-4", "level-5"];
+
   Controller.prototype.wordsForLevel = function () {
     var level = this.level;
     var flat = this.mode === "tocfl8000";
+    var ids = this.mode === "browser" && level === ENTRY_ID ? ENTRY_LEVELS : [level];
     return store.pinyinOrder(sourceWords.filter(function (word) {
-      return flat ? isTocfl8000(word) : word.level === level;
+      return flat ? isTocfl8000(word) : ids.indexOf(word.level) >= 0;
     }));
   };
 
@@ -116,6 +124,14 @@
 
   Controller.prototype.levelInfo = function () {
     var current = this.level;
+    if (this.mode === "browser" && current === ENTRY_ID) {
+      return {
+        id: ENTRY_ID,
+        code: "入門級",
+        label: ENTRY_LABEL,
+        wordCount: this.wordsForLevel().length,
+      };
+    }
     return payload.levels.filter(function (level) {
       return level.id === current;
     })[0] || payload.levels[0] || {
@@ -139,7 +155,18 @@
     if (!wrap) return;
     var counts = this.levelCounts();
     var self = this;
-    wrap.innerHTML = payload.levels.map(function (level) {
+    var levels = payload.levels;
+    if (this.mode === "browser") {
+      var byId = {};
+      payload.levels.forEach(function (level) { byId[level.id] = level; });
+      var entryCount = ENTRY_LEVELS.reduce(function (sum, id) {
+        return sum + ((byId[id] && byId[id].wordCount) || 0);
+      }, 0);
+      levels = [{ id: ENTRY_ID, label: ENTRY_LABEL, wordCount: entryCount }].concat(
+        LATER_BROWSER_LEVELS.map(function (id) { return byId[id]; }).filter(Boolean)
+      );
+    }
+    wrap.innerHTML = levels.map(function (level) {
       return (
         '<button type="button" class="level-switch__button' +
         (self.level === level.id ? " is-active" : "") +
@@ -150,7 +177,7 @@
         '"><span>' +
         escapeHtml(level.label) +
         "</span><small>" +
-        (counts[level.id] || 0) +
+        (level.wordCount != null ? level.wordCount : counts[level.id] || 0) +
         " words</small></button>"
       );
     }).join("");
@@ -161,7 +188,7 @@
     if (!wrap) return;
     var counts = this.categoryCounts();
     var categories = Object.keys(counts).sort(function (a, b) {
-      return counts[b] - counts[a] || a.localeCompare(b);
+      return counts[a] - counts[b] || a.localeCompare(b);
     });
     var self = this;
     wrap.innerHTML =
@@ -192,7 +219,7 @@
     if (!wrap) return;
     var counts = this.subcategoryCounts();
     var subcategories = Object.keys(counts).sort(function (a, b) {
-      return counts[b] - counts[a] || a.localeCompare(b);
+      return counts[a] - counts[b] || a.localeCompare(b);
     });
     var self = this;
     wrap.classList.toggle("hidden", this.category === "all" || !subcategories.length);

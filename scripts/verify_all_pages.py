@@ -181,9 +181,9 @@ def main() -> None:
     check(tocfl["meta"]["missingHindi"] == 0, "every TOCFL word has a Hindi meaning")
     check(all(re.search(r"[\u0900-\u097f]", word["hindi"]) for word in tocfl["words"]), "every TOCFL Hindi meaning uses Devanagari")
     requested_taxonomy = tocfl["meta"]["taxonomy"]
-    check(requested_taxonomy["count"] == 48, "TOCFL/CCCC taxonomy contains exactly 48 categories")
+    check(requested_taxonomy["count"] == 61, "TOCFL/CCCC taxonomy contains the split topic categories")
     labels = [item["label"] for item in requested_taxonomy["categories"]]
-    check(len(labels) == len(set(labels)) == 48, "TOCFL/CCCC category labels are unique")
+    check(len(labels) == len(set(labels)) == 61, "TOCFL/CCCC category labels are unique")
     check(
         cccc["meta"]["taxonomy"] == requested_taxonomy,
         "TOCFL and CCCC use the same ordered category taxonomy",
